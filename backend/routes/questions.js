@@ -6,21 +6,21 @@ import { createQuestion, getQuestionById, getAllQuestions,
 const router = express.Router();
 
 // CREATE a new question (only accessible to logged-in users)
-router.post('/', verifyToken, createQuestion); // POST /question/
+router.post('/', verifyToken, createQuestion); // POST /questions/
 
-// READ a question by ID (accessible to everyone)
-router.get('/:id', verifyToken, getQuestionById); // GET /question/:id
+// READ a questions by ID (accessible to everyone)
+router.get('/:id', verifyToken, getQuestionById); // GET /questions/:id
 
 // READ all questions (accessible to everyone)
-router.get('/', verifyToken, getAllQuestions); // GET /question/
+router.get('/', verifyToken, getAllQuestions); // GET /questions/
 
-// UPDATE a question by ID (only accessible to logged-in users)
-router.put('/:id', verifyToken, updateQuestion); // PUT /question/:id
+// UPDATE a questions by ID (only accessible to logged-in users)
+router.put('/:id', verifyToken, updateQuestion); // PUT /questions/:id
 
-// DELETE a question by ID (only accessible to logged-in users)
-router.delete('/:id', verifyToken, deleteQuestion); // DELETE /question/:id
+// DELETE a questions bsy ID (only accessible to logged-in users)
+router.delete('/:id', verifyToken, deleteQuestion); // DELETE /questions/:id
 
-// LIKE or UNLIKE a question (only accessible to logged-in users)
-router.patch('/:id/like', verifyToken, likeQuestion); // PATCH /question/:id/like
+// LIKE or UNLIKE a questions (only accessible to logged-in users)
+router.patch('/:id/like', verifyToken, likeQuestion); // PATCH /questions/:id/like
 
 export default router;
