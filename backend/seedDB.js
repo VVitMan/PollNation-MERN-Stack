@@ -18,7 +18,7 @@ const seedData = async () => {
       lastName: 'Doe',
       email: 'john@example.com',
       password: 'hashedpassword1', // Assuming password is already hashed
-      profilePicture: '/public/assets/profile_johndoe.jpg'
+      picturePath: '/public/assets/profile_johndoe.jpg'
     });
 
     const user2 = new User({
@@ -27,7 +27,7 @@ const seedData = async () => {
       lastName: 'Doe',
       email: 'jane@example.com',
       password: 'hashedpassword2', // Assuming password is already hashed
-      profilePicture: '/public/assets/profile_janedoe.jpg'
+      picturePath: '/public/assets/profile_janedoe.jpg'
     });
 
     await user1.save();
@@ -38,7 +38,7 @@ const seedData = async () => {
       userId: user1._id,
       questionText: 'What is the capital of France?',
       questionType: 'quiz',
-      picturePath: '/public/assets/question_image.jpg',
+      picture: '/public/assets/question_image.jpg',
       choices: [
         {
           choiceText: 'Paris',
