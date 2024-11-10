@@ -9,6 +9,11 @@
     border-radius: 15px; /* Add rounded corners */
     margin: 0.5rem; /* Optional: Add some spacing around the navbar */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a subtle shadow */
+    
+    margin-left: 19%;
+    margin-right: 20%;
+    margin-bottom: 1rem;
+    width: 60%;
 }
 
 .logo {

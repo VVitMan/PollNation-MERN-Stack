@@ -3,9 +3,10 @@
     border-radius: 10px;
     box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
     padding: 20px;
-    margin: 10px;
-    width: 850px;
-    max-width: 850px;
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top: 1rem;
+    width: 60%;
 }
 
 .cardHeader {
