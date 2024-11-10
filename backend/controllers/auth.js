@@ -1,3 +1,4 @@
+// controllers/auth.js
 import bcrypt from "bcrypt";                // Import bcrypt library for hashing and comparing passwords.
 import jwt from "jsonwebtoken";             // Import jsonwebtoken library for creating and verifying JSON Web Tokens.
 import User from "../models/User.js";       // Import the User model to interact with the user data in the database.
@@ -6,7 +7,8 @@ import User from "../models/User.js";       // Import the User model to interact
 export const register = async (req, res) => {
     try {
         // Destructure user details from the request body
-        const { firstName, lastName, username, email, password, picturePath } = req.body;
+        const { firstName, lastName, username, email, password } = req.body;
+        const picturePath = req.file ? `/public/assets/${req.file.filename}` : '';
 
         // Generate a salt for hashing the password
         const salt = await bcrypt.genSalt();
