@@ -1,0 +1,76 @@
+/* Basic styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #333;
+    color: #fff;
+    border-radius: 15px; /* Add rounded corners */
+    margin: 0.5rem; /* Optional: Add some spacing around the navbar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a subtle shadow */
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navLinks {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.navLinks li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.active a {
+    color: #4caf50;
+    font-weight: bold;
+    border-bottom: 2px solid #4caf50;
+}
+
+/* Hamburger menu (for mobile) */
+.hamburger {
+    display: none;
+    cursor: pointer;
+}
+
+.hamburger .line {
+    width: 25px;
+    height: 3px;
+    background-color: #fff;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .navLinks {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 90%; /* Make it slightly narrower for better mobile view */
+        background-color: #333;
+        text-align: center;
+        gap: 1rem;
+        padding: 1rem 0;
+        transition: all 0.3s ease;
+        border-radius: 15px; /* Rounded corners for the mobile menu as well */
+        margin: 0 auto; /* Center the mobile menu */
+    }
+
+    .navLinks.open {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+}

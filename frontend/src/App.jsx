@@ -3,12 +3,15 @@ import { useState } from 'react'
 //import viteLogo from '/vite.svg'
 import './App.css'
 import Poll from './Poll/Poll.jsx'
+import Navbar from './Navbar/Navbar.jsx'
+
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+      <Navbar />
       <Poll />
     </>
   )
