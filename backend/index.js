@@ -40,6 +40,7 @@ app.use(cors()); // Allows cross-origin requests, enabling the API to be accesse
 // Serve static files, local machine
 app.use("/assets", express.static(path.join(__dirname, 'public/assets'))); // Serves static files (like images) from the 'public/assets' directory.
 
+// index.js
 /* FILES STORAGE */
 const storage = multer.diskStorage({
     // Set the destination for uploaded files
@@ -48,7 +49,7 @@ const storage = multer.diskStorage({
     },
     // Set the filename for uploaded files
     filename: function (req, file, cb) {
-        cb(null, file.originalname); // Use the original file name as the name for the uploaded file.
+        cb(null, `${Date.now()}-${file.originalname}`); // Use the original file name as the name for the uploaded file.
     }
 });
 // Initialize multer with the defined storage settings
