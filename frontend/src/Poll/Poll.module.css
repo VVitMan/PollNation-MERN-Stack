@@ -1,0 +1,63 @@
+.card {
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
+    padding: 20px;
+    margin: 10px;
+    max-width: 350px;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: -18px;
+}
+
+.cardImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.cardTitle {
+    font-family: Arial, sans-serif;
+    font-size: 1.2em;
+}
+
+.cardDescription {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 15px;
+    margin-left: 20px;
+}
+
+.voteSection {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.voteCount {
+    margin-left: 20px;
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 5px; /* Optional, adjust if you want to align it vertically */
+}
+
+.pollOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+input[type="radio"] {
+    accent-color: #4caf50;
+}
