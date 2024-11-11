@@ -1,0 +1,118 @@
+/* Profile Page Container */
+.profilePage {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Profile Header */
+.profileHeader {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profileImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.username {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.bio {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.tab {
+    font-size: 1em;
+    cursor: pointer;
+    color: #666;
+    padding: 5px 10px;
+}
+
+.activeTab {
+    font-weight: bold;
+    color: #000;
+    border-bottom: 2px solid #000;
+}
+
+/* Posts Section */
+.posts {
+    margin-top: 20px;
+}
+
+/* Individual Post Card */
+.postCard {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Post Header */
+.postHeader {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.postProfileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.postUsername {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.editIcon {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+/* Vote Count */
+.voteCount {
+    font-size: 0.9em;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* Options */
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.option label {
+    font-size: 0.9em;
+}
