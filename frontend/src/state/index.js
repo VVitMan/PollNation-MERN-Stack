@@ -22,18 +22,18 @@ export const authSlice = createSlice({
       state.user = null;
       state.token = null;
     },
-    // setFriends: (state, action) => {
-    //   if (state.user) {
-    //     state.user.friends = action.payload.friends;
-    //   } else {
-    //     console.error("user friends non-existent :(");
-    //   }
-    // },
+    /* setFriends: (state, action) => {
+      if (state.user) {
+        state.user.friends = action.payload.friends;
+      } else {
+        console.error("user friends non-existent :(");
+      }
+    }, */
     setQuestions: (state, action) => {
-      state.Questions = action.payload.Questions;
+      state.questions = action.payload.questions;
     },
     setQuestion: (state, action) => {
-      const updatedQuestions = state.Questions.map((question) => {
+      const updatedQuestions = state.questions.map((question) => {
         if (question._id === action.payload.question._id) return action.payload.question;
         return question;
       });

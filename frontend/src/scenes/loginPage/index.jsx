@@ -17,6 +17,7 @@ const LoginPage = () => {
         </Typography>
       </Box>
 
+      {/* For Mobile */}
       <Box
         width={isNonMobileScreens ? "50%" : "93%"}
         p="2rem"

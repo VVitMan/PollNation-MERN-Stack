@@ -16,29 +16,31 @@ import { setLogin } from "../../state";
 import Dropzone from "react-dropzone";
 import FlexBetween from "../../components/FlexBetween";
 
+/* Register Structure Validation  */
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
   lastName: yup.string().required("required"),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
-//   location: yup.string().required("required"),
-//   occupation: yup.string().required("required"),
   picture: yup.string().required("required"),
 });
 
+/* Login Structure Validation  */
 const loginSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
 });
 
+/* register initial value */
 const initialValuesRegister = {
   firstName: "",
   lastName: "",
   email: "",
   password: "",
-  picture: ""
+  picture: "",
 };
 
+/* login initial value */
 const initialValuesLogin = {
   email: "",
   password: "",
@@ -50,9 +52,10 @@ const Form = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const isLogin = pageType === "login";
-  const isRegister = pageType === "register";
+  const isLogin = pageType === "login"; // boolean
+  const isRegister = pageType === "register"; // boolean
 
+  /* REGISTER */
   const register = async (values, onSubmitProps) => {
     // this allows us to send form info with image
     const formData = new FormData();
@@ -71,11 +74,24 @@ const Form = () => {
     const savedUser = await savedUserResponse.json();
     onSubmitProps.resetForm();
 
+    /* set page => login page after save user already */
     if (savedUser) {
       setPageType("login");
     }
+
+    /* Set Page => Home Page after Signup */  
+    /* if (savedUser) {
+      dispatch(
+        setLogin({
+          user: savedUser.user,
+          token: savedUser.token,
+        })
+      );
+      navigate("/home");
+    } */
   };
 
+  /* LOGIN */
   const login = async (values, onSubmitProps) => {
     const loggedInResponse = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
@@ -100,6 +116,7 @@ const Form = () => {
     if (isRegister) await register(values, onSubmitProps);
   };
 
+  /* Display FRONTEND */
   return (
     <Formik
       onSubmit={handleFormSubmit}
@@ -127,6 +144,7 @@ const Form = () => {
           >
             {isRegister && (
               <>
+                {/* First Name */}
                 <TextField
                   label="First Name"
                   onBlur={handleBlur}
@@ -139,6 +157,8 @@ const Form = () => {
                   helperText={touched.firstName && errors.firstName}
                   sx={{ gridColumn: "span 2" }}
                 />
+
+                {/* Last Name */}
                 <TextField
                   label="Last Name"
                   onBlur={handleBlur}
@@ -149,7 +169,8 @@ const Form = () => {
                   helperText={touched.lastName && errors.lastName}
                   sx={{ gridColumn: "span 2" }}
                 />
-                
+
+                {/* Picture File Upload */}
                 <Box
                   gridColumn="span 4"
                   border={`1px solid ${palette.neutral.medium}`}
@@ -174,6 +195,7 @@ const Form = () => {
                         {!values.picture ? (
                           <p>Add Picture Here</p>
                         ) : (
+                            /* Show image name in zone */
                           <FlexBetween>
                             <Typography>{values.picture.name}</Typography>
                             <EditOutlinedIcon />
@@ -186,6 +208,7 @@ const Form = () => {
               </>
             )}
 
+            {/* Email */}
             <TextField
               label="Email"
               onBlur={handleBlur}
@@ -196,6 +219,8 @@ const Form = () => {
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
             />
+
+            {/* Password */}
             <TextField
               label="Password"
               type="password"
