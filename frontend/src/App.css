@@ -1,8 +1,35 @@
-#root {
-  margin: 0 auto;
-  padding: 2rem;
+/* App.css */
+
+/* Reset margins, paddings, and set box-sizing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/* Center body content */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Ensure root container centers the app */
+#root {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Limit maximum width for the main content */
+.main-container {
+  width: 100%;
+  max-width: 1200px; /* Adjust based on preference */
+  padding: 20px;
+}
 
 
 

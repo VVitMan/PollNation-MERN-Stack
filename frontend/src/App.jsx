@@ -1,23 +1,24 @@
-import { useState } from 'react'
-//import reactLogo from './assets/react.svg'
-//import viteLogo from '/vite.svg'
-import './App.css'
-import Poll from './Poll/Poll.jsx'
-import Navbar from './Navbar/Navbar.jsx'
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './Navbar/Navbar.jsx';
+import Poll from './Poll/Poll.jsx';
+import ProfilePage from './ProfilePage/ProfilePage.jsx'; // Import the ProfilePage component
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <Router>
+      <div className="main-container">
       <Navbar />
-      <Poll />
-    </>
-  )
+      <Routes>
+        <Route path="/" element={<Poll />} /> {/* Main Poll Page */}
+        <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
+      </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
+
 
 /*
       <div>

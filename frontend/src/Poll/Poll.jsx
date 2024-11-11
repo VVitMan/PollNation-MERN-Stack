@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Poll.module.css';
 
 function Poll() {
     const [pollData, setPollData] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState({});
     const [showResults, setShowResults] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPollData = async () => {
@@ -175,14 +177,16 @@ function Poll() {
         fetchPollData();
     }, []);
 
+    const handleProfileClick = (username) => {
+        navigate(`/profile/${username}`);
+    };
+
     const handleOptionSelect = (pollIndex, optionId) => {
-        // Toggle selection if the same option is clicked again
         setSelectedOptions((prev) => ({
             ...prev,
             [pollIndex]: prev[pollIndex] === optionId ? null : optionId
         }));
 
-        // Reset showResults to false if option is unselected in quizzes
         if (pollData[pollIndex].questionType === "Quiz") {
             setShowResults((prev) => ({
                 ...prev,
@@ -200,8 +204,18 @@ function Poll() {
             {pollData.map((poll, index) => (
                 <div key={index} className={styles.card}>
                     <div className={styles.cardHeader}>
-                        <img className={styles.cardImage} src={poll.profilePic} alt="Profile" />
-                        <h2 className={styles.cardTitle}>{poll.username}</h2>
+                        <img
+                            className={styles.cardImage}
+                            src={poll.profilePic}
+                            alt="Profile"
+                            onClick={() => handleProfileClick(poll.username)}
+                        />
+                        <h2
+                            className={styles.cardTitle}
+                            onClick={() => handleProfileClick(poll.username)}
+                        >
+                            {poll.username}
+                        </h2>
                     </div>
                     <p className={styles.cardDescription}>
                         {poll.description}

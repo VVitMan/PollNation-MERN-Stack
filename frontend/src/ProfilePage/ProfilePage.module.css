@@ -1,14 +1,18 @@
-/* Profile Page Container */
 .profilePage {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 0 auto; /* Centers the page horizontally */
     padding: 20px;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the child elements within the container */
 }
 
 /* Profile Header */
 .profileHeader {
     text-align: center;
     margin-bottom: 20px;
+    width: 100%; /* Ensures full width for text alignment */
 }
 
 .profileImage {
@@ -38,6 +42,7 @@
     margin-top: 10px;
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
+    width: 90%; /* Ensures the tabs are centered */
 }
 
 .tab {
@@ -53,35 +58,38 @@
     border-bottom: 2px solid #000;
 }
 
-/* Posts Section */
-.posts {
+/* Polls List */
+.pollsList {
     margin-top: 20px;
+    width: 90%; /* Ensures the poll list is centered */
 }
 
-/* Individual Post Card */
-.postCard {
+/* Individual Poll Card */
+.pollCard {
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 20px;
     position: relative;
+    width: 100%; /* Makes each poll card fill the available width */
+    max-width: 700px; /* Restricts poll card width for better alignment */
 }
 
-/* Post Header */
-.postHeader {
+/* Poll Header */
+.pollHeader {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.postProfileImage {
+.pollProfileImage {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.postUsername {
+.pollUsername {
     font-size: 1.1em;
     font-weight: bold;
 }
@@ -91,9 +99,15 @@
     cursor: pointer;
 }
 
-/* Vote Count */
-.voteCount {
+/* Poll Description and Vote Count */
+.pollDescription {
     font-size: 0.9em;
+    color: #333;
+    margin-top: 5px;
+}
+
+.voteCount {
+    font-size: 0.85em;
     color: #888;
     margin-top: 5px;
 }
@@ -111,8 +125,18 @@
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .option label {
     font-size: 0.9em;
+}
+
+.optionImage {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
 }

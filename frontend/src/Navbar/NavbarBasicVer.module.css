@@ -6,27 +6,18 @@
     padding: 1rem 2rem;
     background-color: #333;
     color: #fff;
-    border-radius: 15px; /* Add rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a subtle shadow */
-    margin-left: 19.5%;
-    margin-right: 20%;
-    margin-bottom: 2rem;
-    margin-top: 1rem;
-    width: 60%;
+    font-family: Arial, sans-serif;
+    position: relative;
 }
 
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #fff; /* Set color to white */
-}
-
-.logoLink {
-    color: #fff; /* Ensures the link color is white */
-    text-decoration: none; /* Remove underline */
+    color: #fff;
 }
 
 .navLinks {
+    color: #fff; /* Ensures the link color is white */
     list-style: none;
     display: flex;
     gap: 1.5rem;
@@ -48,49 +39,38 @@
 .hamburger {
     display: none;
     cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .hamburger .line {
     width: 25px;
     height: 3px;
     background-color: #fff;
-    margin: 5px 0;
     transition: 0.3s;
 }
-
-.profilePic {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-left: 9px;
-    vertical-align: middle;
-}
-
 
 /* Responsive styling */
 @media (max-width: 768px) {
     .navLinks {
-        display: none;
+        display: none; /* Hide nav links on mobile by default */
         flex-direction: column;
         position: absolute;
         top: 70px;
         left: 0;
-        width: 90%; /* Make it slightly narrower for better mobile view */
+        width: 100%;
         background-color: #333;
         text-align: center;
         gap: 1rem;
         padding: 1rem 0;
         transition: all 0.3s ease;
-        border-radius: 15px; /* Rounded corners for the mobile menu as well */
-        margin: 0 auto; /* Center the mobile menu */
     }
 
     .navLinks.open {
-        display: flex;
+        display: flex; /* Show nav links when menu is open */
     }
 
     .hamburger {
-        display: block;
+        display: flex; /* Show hamburger icon on mobile */
     }
 }
