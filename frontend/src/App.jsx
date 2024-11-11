@@ -1,38 +1,51 @@
 import { useState } from 'react'
-//import reactLogo from './assets/react.svg'
-//import viteLogo from '/vite.svg'
-import './App.css'
-import Poll from './Poll/Poll.jsx'
+// import reactLogo from './assets/react.svg'
+// import viteLogo from '/vite.svg'
+// import './App.css'
+// import Poll from './Poll/Poll.jsx'
 
-// vit try
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import Home from './pages/Home';
-import Questions from './pages/Questions';
+import { BrowserRouter, Navigate, Routes, Route} from 'react-router-dom';
+import HomePage from './scenes/homePage';
+import LoginPage from './scenes/loginPage';
+import ProfilePage from './scenes/profilePage';
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
-  return (
-    // <>
-    //   <Poll />
-    // </>
-
-    // vit
+  return ( <div className='app'>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/questions" element={<Questions />} />
+        <Route path='/' element={<LoginPage />} />
+        <Route path='/home' element={<HomePage />} />
+        <Route path='/profile/:userId' element={<ProfilePage />} />
       </Routes>
     </BrowserRouter>
+  </div>
   )
 }
 
 export default App
+
+
+
+
+
+/* 
+<>
+  <Poll />
+</> 
+*/
+
+/* vit
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Navigate to="/login" />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<Signup />} />
+    <Route path="/home" element={<Home />} />
+    <Route path="/questions" element={<Questions />} />
+  </Routes>
+</BrowserRouter> */
 
 /*
       <div>

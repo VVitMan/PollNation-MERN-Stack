@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import Question from './models/Question.js';
-import User from './models/User.js';
+import Question from '../models/Question.js';
+import User from '../models/User.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
