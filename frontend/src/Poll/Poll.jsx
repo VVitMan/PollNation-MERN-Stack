@@ -3,11 +3,10 @@ import styles from './Poll.module.css';
 
 function Poll() {
     const [pollData, setPollData] = useState([]);
+    const [selectedOptions, setSelectedOptions] = useState({});
 
     useEffect(() => {
-        // Mock API call to fetch multiple poll data
         const fetchPollData = async () => {
-            // Simulate API response
             const response = await new Promise((resolve) =>
                 setTimeout(() => {
                     resolve([
@@ -161,6 +160,13 @@ function Poll() {
         fetchPollData();
     }, []);
 
+    const handleOptionSelect = (pollIndex, optionId) => {
+        setSelectedOptions((prev) => ({
+            ...prev,
+            [pollIndex]: prev[pollIndex] === optionId ? null : optionId
+        }));
+    };
+
     if (pollData.length === 0) {
         return <p>Loading...</p>;
     }
@@ -180,8 +186,24 @@ function Poll() {
                         <p className={styles.voteCount}>{poll.votes} Votes</p>
                         <div className={styles.pollOptions}>
                             {poll.options.map(option => (
-                                <div key={option.id} className={styles.option}>
-                                    <input type="radio" name={`poll-${index}`} value={option.id} />
+                                <div
+                                    key={option.id}
+                                    className={`${styles.option} ${
+                                        selectedOptions[index] === option.id
+                                            ? styles.selected
+                                            : selectedOptions[index]
+                                            ? styles.unselected
+                                            : ''
+                                    }`}
+                                    onClick={() => handleOptionSelect(index, option.id)}
+                                >
+                                    <input
+                                        type="radio"
+                                        name={`poll-${index}`}
+                                        value={option.id}
+                                        checked={selectedOptions[index] === option.id}
+                                        onChange={() => handleOptionSelect(index, option.id)}
+                                    />
                                     <label>{option.text}</label>
                                 </div>
                             ))}

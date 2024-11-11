@@ -1,4 +1,4 @@
-.card {
+.card { 
     border: 1px solid hsl(0, 0%, 80%);
     border-radius: 10px;
     box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
@@ -20,11 +20,11 @@
     margin-left: 5px;
     width: 50px;
     height: 50px;
-    border-radius: 50%; /* Makes the image circular */
-    object-fit: cover; /* Crops the image to fit within the area */
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.cardTitle { /* Name */
+.cardTitle {
     margin-left: 5px;
     font-family: Arial, sans-serif;
     font-size: 1.2em;
@@ -47,17 +47,7 @@
     margin-left: 5px;
     font-size: 0.85em;
     color: #666;
-    margin-top: 5px; /* Optional, adjust if you want to align it vertically */
-}
-
-.option {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border: 1px solid hsl(0, 0%, 80%);
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    margin-top: 5px;
 }
 
 .pollOptions {
@@ -66,7 +56,55 @@
     gap: 10px;
 }
 
+/* Option Styling with Progress Bar */
+.option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
 
+/* Hidden radio input */
 input[type="radio"] {
     accent-color: #4caf50;
+}
+
+/* Label styling */
+.option label {
+    flex-grow: 1;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+}
+
+/* Progress bar background within option */
+.option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0%; /* Default width for unselected options */
+    background-color: #d3d3d3;
+    z-index: 0;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 8px;
+}
+
+/* Style for the selected option */
+.option.selected::before {
+    width: 60%; /* Result of the selected option */
+    background-color: #80bfff;
+}
+
+/* Style for unselected options when a selection is made */
+.option.unselected::before {
+    width: 10%; /* Result of the non-selected option */
+    background-color: #e0e0e0;
 }
