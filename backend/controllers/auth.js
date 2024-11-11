@@ -7,8 +7,8 @@ import User from "../models/User.js";       // Import the User model to interact
 export const register = async (req, res) => {
     try {
         // Destructure user details from the request body
-        const { firstName, lastName, username, email, password } = req.body;
-        const picturePath = req.file ? `/public/assets/${req.file.filename}` : '';
+        const { firstName, lastName, username, email, password, picturePath } = req.body;
+        // const picturePath = req.file ? `/public/assets/${req.file.filename}` : '';
 
         // Generate a salt for hashing the password
         const salt = await bcrypt.genSalt();

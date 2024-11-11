@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
     },
     // Set the filename for uploaded files
     filename: function (req, file, cb) {
-        cb(null, `${Date.now()}-${file.originalname}`); // Use the original file name as the name for the uploaded file.
+        cb(null, file.originalname); // Use the original file name as the name for the uploaded file.
     }
 });
 // Initialize multer with the defined storage settings
