@@ -56,7 +56,6 @@
     gap: 10px;
 }
 
-/* Option Styling with Progress Bar */
 .option {
     display: flex;
     align-items: center;
@@ -70,12 +69,10 @@
     overflow: hidden;
 }
 
-/* Hidden radio input */
 input[type="radio"] {
-    accent-color: #4caf50;
+    accent-color: #0077ff;
 }
 
-/* Label styling */
 .option label {
     flex-grow: 1;
     position: relative;
@@ -107,4 +104,52 @@ input[type="radio"] {
 .option.unselected::before {
     width: 10%; /* Result of the non-selected option */
     background-color: #e0e0e0;
+}
+
+/* Correct answer styling */
+.option.correct {
+    border: 2px solid #4caf50;
+    background-color: #e0ffe0; /* Light green background */
+}
+
+.option.correct::before {
+    background-color: #4caf50; /* Green progress bar for correct answer */
+    width: 80%;
+}
+
+/* Wrong answer styling */
+.option.wrong {
+    border: 2px solid #ff4d4d;
+    background-color: #ffe0e0; /* Light red background */
+}
+
+.option.wrong::before {
+    background-color: #ff4d4d; /* Red progress bar for wrong answer */
+    width: 20%;
+}
+
+/* Explanation box styling */
+.explanation {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    color: #333;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+/* Submit Button */
+.submitButton {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #45a049;
 }

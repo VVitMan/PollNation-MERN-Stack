@@ -4,6 +4,7 @@ import styles from './Poll.module.css';
 function Poll() {
     const [pollData, setPollData] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState({});
+    const [showResults, setShowResults] = useState({});
 
     useEffect(() => {
         const fetchPollData = async () => {
@@ -14,6 +15,7 @@ function Poll() {
                             username: "Mary",
                             profilePic: "/Mary.jfif",
                             description: "This is Mary's poll description.",
+                            questionType: "Poll",
                             votes: 880,
                             options: [
                                 { id: 1, text: "Option 1" },
@@ -26,7 +28,10 @@ function Poll() {
                             username: "Perth",
                             profilePic: "/Portrait-Tarnakij.png",
                             description: "This is Perth's poll description test. Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus perspiciatis aut quisquam, ipsam quidem quis asperiores, natus cumque illo ut sunt accusamus dignissimos iste ratione. Perspiciatis eum voluptatem eius incidunt.",
+                            questionType: "Quiz",
                             votes: 530,
+                            correctAnswer: 2, // The correct answer ID
+                            explanation: "The capital of France is Paris.",
                             options: [
                                 { id: 1, text: "True" },
                                 { id: 2, text: "False" },
@@ -36,6 +41,7 @@ function Poll() {
                             username: "Alice",
                             profilePic: "/Unknown.png",
                             description: "Alice's favorite color poll. What's your favorite color?",
+                            questionType: "Poll",
                             votes: 1200,
                             options: [
                                 { id: 1, text: "Red" },
@@ -48,6 +54,7 @@ function Poll() {
                             username: "John",
                             profilePic: "/Unknown.png",
                             description: "John is curious about the best programming language for beginners.",
+                            questionType: "Poll",
                             votes: 750,
                             options: [
                                 { id: 1, text: "Python" },
@@ -60,6 +67,7 @@ function Poll() {
                             username: "Sophia",
                             profilePic: "/Unknown.png",
                             description: "Sophia wants to know your preferred travel destination.",
+                            questionType: "Poll",
                             votes: 410,
                             options: [
                                 { id: 1, text: "Beach" },
@@ -72,6 +80,7 @@ function Poll() {
                             username: "Leo",
                             profilePic: "Unknown.png",
                             description: "Leo asks: 'Do you prefer cats or dogs?'",
+                            questionType: "Poll",
                             votes: 950,
                             options: [
                                 { id: 1, text: "Cats" },
@@ -84,6 +93,7 @@ function Poll() {
                             username: "Emma",
                             profilePic: "/Unknown.png",
                             description: "Emma is interested in your favorite season.",
+                            questionType: "Poll",
                             votes: 610,
                             options: [
                                 { id: 1, text: "Spring" },
@@ -96,6 +106,7 @@ function Poll() {
                             username: "Oliver",
                             profilePic: "/Unknown.png",
                             description: "Oliver wants to know your favorite sport to watch.",
+                            questionType: "Poll",
                             votes: 340,
                             options: [
                                 { id: 1, text: "Football" },
@@ -108,6 +119,7 @@ function Poll() {
                             username: "Mia",
                             profilePic: "/Unknown.png",
                             description: "Mia asks: 'Do you prefer online shopping or in-store shopping?'",
+                            questionType: "Poll",
                             votes: 290,
                             options: [
                                 { id: 1, text: "Online" },
@@ -118,6 +130,7 @@ function Poll() {
                             username: "Lucas",
                             profilePic: "/Unknown.png",
                             description: "Lucas wants to know your favorite genre of music.",
+                            questionType: "Poll",
                             votes: 860,
                             options: [
                                 { id: 1, text: "Rock" },
@@ -130,6 +143,7 @@ function Poll() {
                             username: "Ava",
                             profilePic: "/Unknown.png",
                             description: "Ava is curious about your favorite social media platform.",
+                            questionType: "Poll",
                             votes: 500,
                             options: [
                                 { id: 1, text: "Facebook" },
@@ -142,6 +156,7 @@ function Poll() {
                             username: "Ethan",
                             profilePic: "/Unknown.png",
                             description: "Ethan's movie genre poll: What's your favorite movie genre?",
+                            questionType: "Poll",
                             votes: 700,
                             options: [
                                 { id: 1, text: "Action" },
@@ -161,10 +176,19 @@ function Poll() {
     }, []);
 
     const handleOptionSelect = (pollIndex, optionId) => {
+        // Toggle selection if the same option is clicked again
         setSelectedOptions((prev) => ({
             ...prev,
             [pollIndex]: prev[pollIndex] === optionId ? null : optionId
         }));
+
+        // Reset showResults to false if option is unselected in quizzes
+        if (pollData[pollIndex].questionType === "Quiz") {
+            setShowResults((prev) => ({
+                ...prev,
+                [pollIndex]: prev[pollIndex] === true && selectedOptions[pollIndex] === optionId ? false : true
+            }));
+        }
     };
 
     if (pollData.length === 0) {
@@ -183,7 +207,7 @@ function Poll() {
                         {poll.description}
                     </p>
                     <div className={styles.voteInfo}>
-                        <p className={styles.voteCount}>{poll.votes} Votes</p>
+                        <p className={styles.voteCount}>{poll.votes} {poll.questionType === 'Quiz' ? 'Answered' : 'Votes'}</p>
                         <div className={styles.pollOptions}>
                             {poll.options.map(option => (
                                 <div
@@ -191,8 +215,16 @@ function Poll() {
                                     className={`${styles.option} ${
                                         selectedOptions[index] === option.id
                                             ? styles.selected
-                                            : selectedOptions[index]
+                                            : selectedOptions[index] !== undefined && selectedOptions[index] !== null
                                             ? styles.unselected
+                                            : ''
+                                    } ${
+                                        poll.questionType === 'Quiz' && showResults[index]
+                                            ? option.id === poll.correctAnswer
+                                                ? styles.correct
+                                                : selectedOptions[index] === option.id
+                                                ? styles.wrong
+                                                : ''
                                             : ''
                                     }`}
                                     onClick={() => handleOptionSelect(index, option.id)}
@@ -208,6 +240,11 @@ function Poll() {
                                 </div>
                             ))}
                         </div>
+                        {poll.questionType === 'Quiz' && showResults[index] && poll.explanation && (
+                            <div className={styles.explanation}>
+                                <strong>Explanation:</strong> {poll.explanation}
+                            </div>
+                        )}
                     </div>
                 </div>
             ))}
