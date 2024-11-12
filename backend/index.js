@@ -2,10 +2,14 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from "./routes/user.route.js";
+import authRoutes from "./routes/auth.route.js";
 dotenv.config();
 
 
 const app = express();
+
+/* allow json parsing from body request */
+app.use(express.json());
 
 const port = 3000;
 app.listen(port, () => {
@@ -24,3 +28,4 @@ mongoose.connect(process.env.MONGO_URL)
 
 /* Routes */
 app.use("/api/user", userRoutes);
+app.use("/api/auth", authRoutes);
