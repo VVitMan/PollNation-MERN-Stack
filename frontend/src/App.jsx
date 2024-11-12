@@ -19,7 +19,7 @@ function App() {
   // const [count, setCount] = useState(0)
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  /* Check Authentication By State token */
+  /* Check Authorization By State token */
   const isAuth = Boolean(useSelector((state) => state.token));
 
   return ( <div className='app'>
@@ -28,9 +28,9 @@ function App() {
         <CssBaseline />
         <Routes>
           <Route path='/' element={<LoginPage />} />
-          {/* Need Login Before go HomePage */}
+          {/* Need permission Before go HomePage */}
           <Route path='/home' element={isAuth ? <HomePage /> : <Navigate to={"/"}/> } />
-          {/* Need Login Before go Profilepage */}
+          {/* Need permission Before go Profilepage */}
           <Route path='/profile/:userId' element={isAuth ? <ProfilePage /> : <Navigate to={"/"}/> } />
         </Routes>
       </ThemeProvider>
