@@ -13,8 +13,11 @@ export const signup = async (req, res, next) => {
     } catch (error) {
         /* do not need to write error multiple times */
         next(error);
+
         /* Custom Error */
         // next(errorCustom(300, "test error"));
+        
+        /* Write own */
         // res.status(500).json({ message: "User Already Exists" });
     }
     
