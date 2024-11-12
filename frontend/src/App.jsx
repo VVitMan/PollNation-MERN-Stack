@@ -4,17 +4,20 @@ import Signup from "./pages/Signup";
 import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
+import Header from "./components/Header";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/sign-up" element={<Signup />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/community" element={<Community />} />
-      </Routes>
+      {/* Header */}
+      <Header/>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/community" element={<Community />} />
+        </Routes>
     </BrowserRouter>
   );
 }
