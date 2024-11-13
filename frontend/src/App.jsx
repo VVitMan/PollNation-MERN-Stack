@@ -6,6 +6,7 @@ import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import Header from "./components/Header";
 import Poll from "./Poll/Poll";
+import PrivateRoute from "./components/PrivateRoute";
 
 export default function App() {
   return (
@@ -16,10 +17,11 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
-          
-          <PrivateRoute element={<Profile />}>
+
+          {/* Private Routes */}
+          <Route element={<PrivateRoute />}>
             <Route path="/profile" element={<Profile />} />
-          </PrivateRoute>
+          </Route>
           
           <Route path="/community" element={<Community />} />
           {/* Poll */}
