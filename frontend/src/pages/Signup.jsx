@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Signup() {
+export default function SignUp() {
+  /* Navigate */
+  const navigate = useNavigate();
+
   /* Loading and Error State */
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -34,6 +37,8 @@ export default function Signup() {
         setError(true);
         return;
       }
+      /* Navigate to the Home page */
+      navigate('/')
     } catch (error) {
         setLoading(false);
         setError(true);

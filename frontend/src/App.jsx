@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
+import SignUp from "./pages/Signup";
 import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
@@ -14,7 +14,7 @@ export default function App() {
       <Header/>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/sign-up" element={<Signup />} />
+          <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/community" element={<Community />} />
