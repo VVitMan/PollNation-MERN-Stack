@@ -30,7 +30,6 @@ export default function SignUp() {
         body: JSON.stringify(formData)
       });
       const data = await res.json();
-      console.log(data);
       setLoading(false);
       // fetch need to have it
       if (data.success === false) {
