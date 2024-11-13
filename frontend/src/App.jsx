@@ -16,7 +16,11 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/profile" element={<Profile />} />
+          
+          <PrivateRoute element={<Profile />}>
+            <Route path="/profile" element={<Profile />} />
+          </PrivateRoute>
+          
           <Route path="/community" element={<Community />} />
           {/* Poll */}
           <Route path="/poll" element={<Poll />} />

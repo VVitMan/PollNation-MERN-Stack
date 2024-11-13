@@ -6,6 +6,7 @@ import {
   signInFailure,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   /* Navigate */
@@ -81,6 +82,9 @@ export default function SignIn() {
           {/* Loading Effect */}
           {loading ? "Loading..." : "Sign in"}
         </button>
+
+        {/* OAuth */}
+        <OAuth />
       </form>
 
       {/* Sign Up Link */}

@@ -21,7 +21,7 @@ const userSlice = createSlice({
         signInFailure: (state, action) => {
             state.loading = false;
             state.error = action.payload;
-            // state.currentUser = null; // ล้างข้อมูลผู้ใช้เมื่อเข้าสู่ระบบล้มเหลว ไว้ใช้ใน logoutSuccess
+            // state.currentUser = null; /* ล้างข้อมูลผู้ใช้เมื่อเข้าสู่ระบบล้มเหลว ไว้ใช้ใน logoutSuccess */
         }
     }
 });
