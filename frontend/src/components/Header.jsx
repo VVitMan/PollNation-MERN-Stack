@@ -15,6 +15,11 @@ export default function Header() {
                     <li>Home</li>
                 </Link>
 
+                {/* Poll */}
+                <Link to={"/poll"}>
+                    <li>Poll</li>
+                </Link>
+
                 {/* Community */}
                 <Link to={"/community"}>
                     <li>Community</li>

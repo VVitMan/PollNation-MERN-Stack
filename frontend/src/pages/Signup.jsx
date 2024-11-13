@@ -18,6 +18,7 @@ export default function Signup() {
     try {
       setLoading(true);
       setError(false);
+      /* Fetch API */
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
@@ -28,6 +29,7 @@ export default function Signup() {
       const data = await res.json();
       console.log(data);
       setLoading(false);
+      // fetch need to have it
       if (data.success === false) {
         setError(true);
         return;

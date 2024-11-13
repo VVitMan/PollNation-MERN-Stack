@@ -5,6 +5,7 @@ import SignIn from "./pages/SignIn";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import Header from "./components/Header";
+import Poll from "./Poll/Poll";
 
 export default function App() {
   return (
@@ -17,6 +18,8 @@ export default function App() {
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/community" element={<Community />} />
+          {/* Poll */}
+          <Route path="/poll" element={<Poll />} />
         </Routes>
     </BrowserRouter>
   );
