@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './Navbar/Navbar.jsx';
 import Poll from './Poll/Poll.jsx';
 import ProfilePage from './ProfilePage/ProfilePage.jsx'; // Import the ProfilePage component
+import EditProfile from './EditProfile/EditProfile.jsx';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Poll />} /> {/* Main Poll Page */}
         <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
+        <Route path='/edit-profile' element={<EditProfile />}></Route> {/* Edit Profile Page */}
       </Routes>
       </div>
     </Router>

@@ -1,3 +1,5 @@
+/* EditProfile.module.css */
+
 .editProfile {
     max-width: 500px;
     margin: 0 auto;
@@ -12,16 +14,21 @@ h1 {
 }
 
 .pictureSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 20px;
 }
 
 .profilePicContainer {
     width: 100px;
     height: 100px;
-    margin: 0 auto;
     border-radius: 50%;
     overflow: hidden;
     border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profilePic {
@@ -41,6 +48,14 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 0.9em;
+}
+
+.recommendationText {
+    font-size: 0.8em;
+    color: #777;
+    margin-top: 5px;
+    text-align: center;
 }
 
 .label {
@@ -76,6 +91,7 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1em;
 }
 
 .saveButton {
@@ -85,4 +101,5 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1em;
 }
