@@ -67,7 +67,10 @@
     vertical-align: middle;
 }
 
-
+a:hover {
+    color: #eeeeee;
+}
+  
 /* Responsive styling */
 @media (max-width: 768px) {
     .navLinks {

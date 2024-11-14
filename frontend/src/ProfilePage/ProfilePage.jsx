@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './ProfilePage.module.css';
+import { Link } from 'react-router-dom';
+import { FaPencilAlt } from 'react-icons/fa'; // Import pencil icon from Font Awesome
 
 function ProfilePage() {
     const { username } = useParams();
@@ -52,7 +54,10 @@ function ProfilePage() {
             {/* Profile Header */}
             <div className={styles.profileHeader}>
                 <img className={styles.profileImage} src={userData.profilePic} alt="Profile" />
-                <h1 className={styles.username}>{userData.username}</h1>
+                <h1 className={styles.username}>{userData.username}
+                    <Link to="/edit-profile">
+                        &nbsp;<FaPencilAlt className={styles.editIcon} /> {/* Pencil icon with link */}
+                    </Link></h1>
                 <p className={styles.bio}>{userData.bio}</p>
             </div>
 
