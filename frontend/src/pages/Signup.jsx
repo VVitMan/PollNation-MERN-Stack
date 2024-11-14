@@ -1,17 +1,22 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../components/OAuth";
+import {signInStart, signInSuccess, signInFailure} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function SignUp() {
   /* Navigate */
   const navigate = useNavigate();
 
+  /* Dispatch */
+  const dispatch = useDispatch();
+
   /* Loading and Error State */
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
 
   /* Form Data State */
   const [formData, setFormData] = useState({});
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
@@ -20,8 +25,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      setError(false);
+      dispatch(signInStart());
       /* Fetch API */
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -31,24 +35,25 @@ export default function SignUp() {
         body: JSON.stringify(formData)
       });
       const data = await res.json();
-      setLoading(false);
       // fetch need to have it
       if (data.success === false) {
-        setError(true);
+        dispatch(signInFailure(data));
+        // console.log({ message: data.message }); // ex. data.message(user not found),ex.2 {message: 'Invalid Credentials'}
+        console.log(data);
         return;
       }
-      /* Navigate to the Home page */
-      navigate('/')
+      dispatch(signInSuccess(data));
+      // Navigate to the Home page
+      navigate("/");
     } catch (error) {
-        setLoading(false);
-        setError(true);
+        dispatch(signInFailure(error));
     }
   }
 
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
-      <form onSubmit={handleSubmit} action="" className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
           id="username"
@@ -92,7 +97,7 @@ export default function SignUp() {
         </Link>
       </div>
 
-      <p className="text-red-700 mt-5">{error && 'Something went wrong'}</p>
+      <p className="text-red-700 mt-5"> {error ? error.message || 'Something went wrong!' : ''}</p>
     </div>
   );
 }
