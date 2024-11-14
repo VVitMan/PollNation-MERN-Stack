@@ -7,23 +7,30 @@ import jwt from "jsonwebtoken";
 export const signup = async (req, res, next) => {
     try {
         const { username, email, password } = req.body;
-        // hashpassword before store in mongodb
-        const hashedPassword = bcryptjs.hashSync(password, 12);
-        const newUser = new User({username, email, password: hashedPassword});
-        await newUser.save();
-        res.status(201).json({ message: "User Created Successfully" });
-    } catch (error) {
-        /* do not need to write error multiple times */
-        next(error);
-
-        /* Custom Error */
-        // next(errorCustom(300, "test error"));
         
-        /* Write own */
-        // res.status(500).json({ message: "User Already Exists" });
+        // Hash password before storing in MongoDB
+        const hashedSignupPassword = bcryptjs.hashSync(password, 12);
+        const newUser = new User({ username, email, password: hashedSignupPassword });
+        
+        // Save new user to the database
+        await newUser.save();
+
+        // Create Token
+        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+
+        // Remove password from response
+        const { password: hashedPassword, ...rest } = newUser._doc;
+
+        // Set Token in Cookie with expiration
+        const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000); // Expire in 1 hour
+        res.cookie('access_token', token, { httpOnly: true, expires: expiresDate })
+           .status(201)
+           .json(rest);
+    } catch (error) {
+        next(error);
     }
-    
 };
+
 
 /* Sign In */
 export const signin = async (req, res, next) => {
@@ -47,7 +54,9 @@ export const signin = async (req, res, next) => {
         // sent back "user" information to use in frontend header when logged in
         /* Expire Cookie 1 hours */
         const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
-        res.cookie('access_token', token, { httpOnly: true, expires: expiresDate}).status(200).json(rest);
+        res.cookie('access_token', token, { httpOnly: true, expires: expiresDate})
+            .status(200)
+            .json(rest);
 
         // res.json({ message: "User Logged In Successfully" });
     } catch (error) {
