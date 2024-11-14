@@ -1,3 +1,4 @@
+// Vit
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import SignUp from "./pages/Signup";
@@ -7,9 +8,17 @@ import Community from "./pages/Community";
 import Header from "./components/Header";
 import Poll from "./Poll/Poll";
 import PrivateRoute from "./components/PrivateRoute";
+// Perth
+// import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+// import Navbar from './Navbar/Navbar.jsx';
+// import Poll from './Poll/Poll.jsx';
+// import ProfilePage from './ProfilePage/ProfilePage.jsx'; // Import the ProfilePage component
+// import EditProfile from './EditProfile/EditProfile.jsx';
+
 
 export default function App() {
   return (
+// Vit
     <BrowserRouter>
       {/* Header */}
       <Header/>
@@ -28,6 +37,18 @@ export default function App() {
           <Route path="/poll" element={<Poll />} />
         </Routes>
     </BrowserRouter>
+// Perth
+//     <Router>
+//       <div className="main-container">
+//       <Navbar />
+//       <Routes>
+//         <Route path="/" element={<Poll />} /> {/* Main Poll Page */}
+//         <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
+//         <Route path='/edit-profile' element={<EditProfile />}></Route> {/* Edit Profile Page */}
+//       </Routes>
+//       </div>
+//     </Router>
+
   );
 }
 

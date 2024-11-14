@@ -21,7 +21,7 @@ function EditProfile() {
     };
 
     const handleCancel = () => {
-        // Logic to reset or redirect if needed
+        // Reset or navigate back if needed
         setUsername('');
         setDescription('');
         setProfilePic(null);
@@ -34,7 +34,7 @@ function EditProfile() {
             <div className={styles.pictureSection}>
                 <div className={styles.profilePicContainer}>
                     <img 
-                        src={profilePic || '/default-avatar.png'} 
+                        src={profilePic || '/Unknown.png'} 
                         alt="Profile" 
                         className={styles.profilePic} 
                     />
@@ -46,7 +46,10 @@ function EditProfile() {
                     className={styles.uploadInput}
                 />
                 <button className={styles.uploadButton}>Upload</button>
-                <p>It's recommended that you use a picture that's at least 100x100 pixels and 4MB or less.</p>
+                <p className={styles.recommendationText}>
+                    It’s recommended that you use a picture that’s at least 100x100 pixels.<br />
+                    And 4MB or less.
+                </p>
             </div>
             
             <label className={styles.label}>Username</label>
