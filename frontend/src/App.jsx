@@ -3,6 +3,7 @@ import Navbar from './Navbar/Navbar.jsx';
 import Poll from './Poll/Poll.jsx';
 import ProfilePage from './ProfilePage/ProfilePage.jsx'; // Import the ProfilePage component
 import EditProfile from './EditProfile/EditProfile.jsx';
+import CreateEditPoll from './CreateEditPoll/CreateEditPoll.jsx';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Poll />} /> {/* Main Poll Page */}
         <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
         <Route path='/edit-profile' element={<EditProfile />}></Route> {/* Edit Profile Page */}
+        <Route path="/edit-poll/:pollId" element={<CreateEditPoll />} /> {/* Edit/Create Poll Page */}
       </Routes>
       </div>
     </Router>

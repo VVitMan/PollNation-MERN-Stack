@@ -1,0 +1,116 @@
+/* CreateEditPoll.module.css */
+
+.pollContainer {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.questionInput {
+    width: 94%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.typeToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.toggleButton {
+    padding: 5px 15px;
+    border: 1px solid #007bff;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.choiceContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.correctCheckbox {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.choiceInput {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.cancelButton {
+    background-color: #bbb;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.saveButton {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+
+.deleteButton {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.deleteButton:hover {
+    background-color: #c0392b;
+}
+
+/* Styles for checked (green) and unchecked (red) choices [UNUSED]*/
+.checked {
+    background-color: #d4edda; /* Light green */
+    border: 1px solid #28a745; /* Green border */
+}
+
+.unchecked {
+    background-color: #f8d7da; /* Light red */
+    border: 1px solid #dc3545; /* Red border */
+}

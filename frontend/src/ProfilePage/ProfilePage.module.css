@@ -94,17 +94,36 @@
     font-weight: bold;
 }
 
-.editIcon {
-    margin-left: auto;
+.editProfileIcon {
+    color: #333;
+    font-size: 1.2em;
     cursor: pointer;
+    transition: color 0.3s;
 }
 
-/* Poll Description and Vote Count */
-.pollDescription {
-    font-size: 0.9em;
-    color: #333;
-    margin-top: 5px;
+.editProfileIcon:hover {
+    color: #007bff; /* Change to blue on hover */
 }
+
+.editIcon {
+    color: #333;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: color 0.3s;
+    position: absolute; /* Position the icon absolutely */
+    right: 28px; /* Adjust the distance from the right edge */
+    top: 28px; /* Adjust the distance from the top */
+}
+
+.editIcon:hover {
+    color: #007bff; /* Change to blue on hover */
+}
+
+/* Add this to make sure the container is relatively positioned */
+.pollItem {
+    position: relative; /* Make this container the reference for absolute positioning */
+}
+
 
 .voteCount {
     font-size: 0.85em;
