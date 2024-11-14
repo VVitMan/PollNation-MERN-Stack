@@ -3,7 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
 import { useDispatch } from "react-redux";
-import { updateUserStart, updateUserFailure, updateUserSuccess } from "../redux/user/userSlice.js";
+import { updateUserStart, updateUserFailure, updateUserSuccess, deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../redux/user/userSlice.js";
 
 export default function Profile() {
   /* Current User Instance */
@@ -30,6 +30,7 @@ export default function Profile() {
     }
   }, [image]); // when image(state) is changed useEffect will be called
 
+  /* Handle file Picture upload *////////////////////////////////////////////////////////////////
   const handleFileUpload = async (image) => {
     // console.log(image); 
     const storage = getStorage(app);
@@ -59,13 +60,14 @@ export default function Profile() {
     );
   }
 
-  /* Handle Change input */
+  /* Handle Change input(username, email, password) *//////////////////////////////
   const handleChange = (e) => {
     // ใส่ข้อมูลจาก onChange ทั้งหมด ลงใน state 
     setFormData({...formData, [e.target.id]: e.target.value });
     console.log(formData);
   };
 
+  /* HandleSubmit data to API */ //////////////////////////////////////////////////
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -87,9 +89,25 @@ export default function Profile() {
     } catch (error) {
       dispatch(updateUserFailure(error));
     }
-
   };
 
+
+  const handleDeleteAccount = async (e) => {
+    try {
+      dispatch(deleteUserStart);
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: 'DELETE'
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data));
+        return;
+      }
+      dispatch(deleteUserSuccess());
+    } catch (error) {
+      dispatch(deleteUserFailure(error));
+    }
+  }
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -155,7 +173,7 @@ export default function Profile() {
 
       {/* Delete and Sign out */}    
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete</span>
+        <span onClick={handleDeleteAccount} className="text-red-700 cursor-pointer">Delete</span>
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
 
