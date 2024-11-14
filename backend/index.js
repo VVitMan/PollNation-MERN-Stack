@@ -3,13 +3,17 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
-
+/* Initial "app" from express */
 const app = express();
 
 /* allow json parsing from body request */
 app.use(express.json());
+
+/* Cookie Parser */
+app.use(cookieParser());
 
 const port = 3000;
 app.listen(port, () => {

@@ -47,10 +47,7 @@ export const signin = async (req, res, next) => {
         // sent back "user" information to use in frontend header when logged in
         /* Expire Cookie 1 hours */
         const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
-        res
-            .cookie('access_token', token, { httpOnly: true, expires: expiresDate})
-            .status(200)
-            .json(rest);
+        res.cookie('access_token', token, { httpOnly: true, expires: expiresDate}).status(200).json(rest);
 
         // res.json({ message: "User Logged In Successfully" });
     } catch (error) {
@@ -83,7 +80,7 @@ export const google = async (req, res, next) => {
                 password: hashedPassword,  
                 profilePicture: req.body.photo 
             });
-
+            
             await newUser.save();
             const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
             const { password: hashedPassword_newUser, ...rest } = newUser._doc;

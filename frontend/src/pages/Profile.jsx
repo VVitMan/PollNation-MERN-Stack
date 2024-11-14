@@ -23,7 +23,7 @@ export default function Profile() {
     if (image) {
       handleFileUpload(image);
     }
-  }, [image]);
+  }, [image]); // when image(state) is changed useEffect will be called
 
   const handleFileUpload = async (image) => {
     console.log(image); 
@@ -33,12 +33,6 @@ export default function Profile() {
     const uploadTask = uploadBytesResumable(storageRef, image);
     console.log(uploadTask);
 
-    // uploadTask.on('state_changed', (snapshot) => {
-    //   const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //   setImagePercent(Math.round(progress));
-    //   console.log("upload progress: " + imagePercent);
-      
-    // });
     uploadTask.on(
       'state_changed',
       (snapshot) => {
