@@ -34,6 +34,7 @@ function Navbar() {
 
     return (
         <nav className={styles.navbar}>
+            {/* PollNation Logo */}
             <div className={styles.logo} onClick={() => handleLinkClick('Home')}>
                 <Link to="/" className={styles.logoLink}><b>PollNation</b></Link>
             </div>
@@ -53,6 +54,8 @@ function Navbar() {
                 >
                     <Link to="/community">Community</Link>
                 </li>
+
+                {/* User Profile */}
                 {currentUser ? (
                     <li
                         key="My Profile"
