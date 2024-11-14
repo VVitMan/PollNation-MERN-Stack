@@ -2,10 +2,12 @@ import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
+import { useDispatch } from "react-redux";
+import { updateUserStart, updateUserFailure, updateUserSuccess } from "../redux/user/userSlice.js";
 
 export default function Profile() {
   /* Current User Instance */
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   /* UseRef */
   const inputRef = useRef();
   /* State Image */
@@ -16,7 +18,10 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   /* Form Data */
   const [formData, setFormData] = useState({});
-
+  /* Dispatch */
+  const dispatch = useDispatch();
+  /* Text update success state */
+  const [textUpdateSuccess, setTextUpdateSuccess] = useState(false);
 
   /* Effect Image */
   useEffect(() => {
@@ -26,12 +31,12 @@ export default function Profile() {
   }, [image]); // when image(state) is changed useEffect will be called
 
   const handleFileUpload = async (image) => {
-    console.log(image); 
+    // console.log(image); 
     const storage = getStorage(app);
     const fileName = new Date().getTime() + image.name;
     const storageRef = ref(storage, fileName);
     const uploadTask = uploadBytesResumable(storageRef, image);
-    console.log(uploadTask);
+    // console.log(uploadTask);
 
     uploadTask.on(
       'state_changed',
@@ -46,6 +51,7 @@ export default function Profile() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          // ใส่ข้อมูล picture เก็บลงใน state 
           setFormData({...formData, profilePicture: downloadURL});
         });
         // console.log("Upload successful");
@@ -53,12 +59,43 @@ export default function Profile() {
     );
   }
 
+  /* Handle Change input */
+  const handleChange = (e) => {
+    // ใส่ข้อมูลจาก onChange ทั้งหมด ลงใน state 
+    setFormData({...formData, [e.target.id]: e.target.value });
+    console.log(formData);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart);
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setTextUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFailure(error));
+    }
+
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
 
       {/* Form */}
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* File, image file only */}
         <input type="file" ref={inputRef} hidden accept="image/.*"
         onChange={(e) => setImage(e.target.files[0])}/>
@@ -92,6 +129,7 @@ export default function Profile() {
           id="username"
           placeholder="Username"
           className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChange}
         />
         <input
           type="text"
@@ -99,24 +137,32 @@ export default function Profile() {
           id="email"
           placeholder="Email"
           className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChange}
         />
         <input
           type="password"
           id="password"
           placeholder="Password"
           className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChange}
         />
 
-        {/* Update Button */}
+        {/* Update Button and Loading...*/}
         <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
-          update
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
 
+      {/* Delete and Sign out */}    
       <div className="flex justify-between mt-5">
         <span className="text-red-700 cursor-pointer">Delete</span>
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
+
+      {/* State Update(error&success) */}
+      <p className="text-red-700 mt-5">{error && 'Something went wrong'}</p>
+      <p className="text-green-700 mt-5">{textUpdateSuccess && 'User is Updated successfully'}</p>
+      
     </div>
   );
 }
