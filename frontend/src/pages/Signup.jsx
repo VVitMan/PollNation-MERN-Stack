@@ -39,7 +39,7 @@ export default function SignUp() {
       if (data.success === false) {
         dispatch(signInFailure(data));
         // console.log({ message: data.message }); // ex. data.message(user not found),ex.2 {message: 'Invalid Credentials'}
-        console.log(data);
+        // console.log(data);
         return;
       }
       dispatch(signInSuccess(data));
