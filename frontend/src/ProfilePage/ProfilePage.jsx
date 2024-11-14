@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import styles from './ProfilePage.module.css';
 import { Link } from 'react-router-dom';
+import styles from './ProfilePage.module.css';
 import { FaPencilAlt } from 'react-icons/fa'; // Import pencil icon from Font Awesome
 
 function ProfilePage() {
@@ -56,7 +56,7 @@ function ProfilePage() {
                 <img className={styles.profileImage} src={userData.profilePic} alt="Profile" />
                 <h1 className={styles.username}>{userData.username}
                     <Link to="/edit-profile">
-                        &nbsp;<FaPencilAlt className={styles.editIcon} /> {/* Pencil icon with link */}
+                        &nbsp;<FaPencilAlt className={styles.editProfileIcon} /> {/* Pencil icon with link */}
                     </Link></h1>
                 <p className={styles.bio}>{userData.bio}</p>
             </div>
@@ -90,7 +90,10 @@ function ProfilePage() {
                         <div className={styles.pollHeader}>
                             <img className={styles.pollProfileImage} src={poll.profilePic} alt="Profile" />
                             <h2 className={styles.pollUsername}>{poll.username}</h2>
-                            <span className={styles.editIcon}>✎</span>
+                            {/* <span className={styles.editIcon}>✎</span> */}
+                            <Link to={`/edit-poll/${poll.id}`}>
+                                <FaPencilAlt className={styles.editIcon} />
+                            </Link>
                         </div>
                         <p className={styles.pollDescription}>{poll.description}</p>
                         <p className={styles.voteCount}>{poll.votes} Votes</p>

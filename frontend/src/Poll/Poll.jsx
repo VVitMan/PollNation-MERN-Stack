@@ -196,8 +196,22 @@ function Poll() {
     };
 
     if (pollData.length === 0) {
-        return <p>Loading...</p>;
+        return (
+            <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                /*alignItems: 'center', (Vertical)*/
+                height: '100vh',
+                textAlign: 'center',
+                fontSize: '1.5em',
+                color: '#333'
+            }}>
+                <p>Loading...</p>
+            </div>
+        );
     }
+    
 
     return (
         <>
