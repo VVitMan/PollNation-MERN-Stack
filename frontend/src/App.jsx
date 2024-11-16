@@ -7,6 +7,7 @@ import Community from "./pages/Community";
 import Header from "./components/Header";
 import Poll from "./Poll/Poll";
 import PrivateRoute from "./components/PrivateRoute";
+import PollPage from "./pages/PollPage";
 
 export default function App() {
   return (
@@ -25,7 +26,8 @@ export default function App() {
           
           <Route path="/community" element={<Community />} />
           {/* Poll */}
-          <Route path="/poll" element={<Poll />} />
+          <Route path="/poll" element={<PollPage />} /> 
+          {/* test PollPage */}
         </Routes>
     </BrowserRouter>
   );
