@@ -90,3 +90,61 @@ export const submitPollVote = async (req, res) => {
       res.status(500).json({ message: error.message });
   }
 };
+
+
+// Edit a poll
+export const editPoll = async (req, res) => {
+  try {
+      const { poll_id } = req.params; // Poll ID
+      const { question, options } = req.body; // Updated question and options
+      const userId = req.user.id; // User ID from token
+
+      // Check if the poll exists
+      const poll = await Poll.findById(poll_id);
+      if (!poll) return res.status(404).json({ message: "Poll not found" });
+
+      // Check if the user is the owner of the poll
+      if (poll.userId.toString() !== userId) {
+          return res.status(403).json({ message: "You are not authorized to edit this poll." });
+      }
+
+      // Update the poll's fields
+      if (question) poll.question = question;
+      if (options) {
+          const formattedOptions = options.map((option) =>
+              typeof option === 'string' ? { text: option, votes: 0 } : option
+          );
+          poll.options = formattedOptions;
+      }
+
+      await poll.save();
+      res.status(200).json(poll);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+// Delete a poll
+export const deletePoll = async (req, res) => {
+  try {
+      const { poll_id } = req.params; // Poll ID
+      const userId = req.user.id; // User ID from token
+
+      // Check if the poll exists
+      const poll = await Poll.findById(poll_id);
+      if (!poll) return res.status(404).json({ message: "Poll not found" });
+
+      // Check if the user is the owner of the poll
+      if (poll.userId.toString() !== userId) {
+          return res.status(403).json({ message: "You are not authorized to delete this poll." });
+      }
+
+      // Delete the poll and any associated votes
+      await Poll.findByIdAndDelete(poll_id);
+      await Vote.deleteMany({ pollId: poll_id });
+
+      res.status(200).json({ message: "Poll deleted successfully." });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
