@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInStart, signInSuccess, signInFailure } from "../src/redux/user/userSlice";
+import OAuth from "../components/OAuth";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
-import OAuth from "../src/components/OAuth";
-import styles from "./SignIn.module.css"; // Import the CSS module
+import styles from "./SignUp.module.css"; // Import the CSS module
 
-export default function SignIn() {
+export default function SignUp() {
   /* Navigate */
   const navigate = useNavigate();
 
@@ -13,9 +13,6 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   /* Loading and Error State */
-  // Use Redux state for loading and error tracking
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(false);
   const { loading, error } = useSelector((state) => state.user);
 
   /* Form Data State */
@@ -30,7 +27,7 @@ export default function SignIn() {
     e.preventDefault();
     try {
       dispatch(signInStart()); // Start the loading state
-      const res = await fetch("/api/auth/signin", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,10 +51,18 @@ export default function SignIn() {
   };
 
   return (
-    <div className={styles.signinContainer}>
-      <h1 className={styles.title}>Sign In</h1>
+    <div className={styles.signupContainer}>
+      <h1 className={styles.title}>Sign Up</h1>
       {/* Form Section */}
       <form onSubmit={handleSubmit} className={styles.form}>
+        {/* Username Input */}
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          className={styles.input}
+          onChange={handleChange}
+        />
         {/* Email Input */}
         <input
           type="text"
@@ -81,18 +86,18 @@ export default function SignIn() {
           disabled={loading}
         >
           {/* Display "Loading..." during API call */}
-          {loading ? "Loading..." : "Sign in"}
+          {loading ? "Loading..." : "Sign up"}
         </button>
         {/* Google OAuth Button */}
         <OAuth />
       </form>
 
-      {/* Sign Up Link */}
+      {/* Sign In Link */}
       <div className={styles.additionalSpacing}>
         <p>
-          Don’t have an account?{" "}
-          <Link to="/sign-up" className={styles.link}>
-            Sign up
+          Have an account?{" "}
+          <Link to="/sign-in" className={styles.link}>
+            Sign in
           </Link>
         </p>
       </div>

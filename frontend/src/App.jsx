@@ -7,8 +7,8 @@ import CreateEditPoll from './CreateEditPoll/CreateEditPoll.jsx';
 
 // Vit
 import Home from "./pages/Home";
-import SignUp from "../SignUp/SignUp.jsx";
-import SignIn from "../SignIn/SignIn.jsx";
+import SignIn from "./SignIn/SignIn.jsx";
+import SignUp from './SignUp/SignUp.jsx';
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import Header from "./components/Header";
