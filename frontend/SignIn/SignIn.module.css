@@ -1,0 +1,97 @@
+/* SignIn.module.css */
+
+/* Container for Sign-In Page */
+.signinContainer {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Page Title */
+.title {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Form Styling */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Input Fields */
+.input {
+    background-color: #f1f5f9;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Submit Button */
+.submitButton {
+    background-color: #4285F4;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+    background-color: #3367D6;
+}
+
+.submitButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Google OAuth Button (Inherited in OAuth Component) */
+.oauthButton {
+    background-color: #f5f5f5;
+    color: #666;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.oauthButton:hover {
+    background-color: #e0e0e0;
+}
+
+/* Additional Spacing */
+.additionalSpacing {
+    margin-top: 20px;
+}
+
+/* Link Styling */
+.link {
+    color: #4285F4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* Error Message */
+.errorMessage {
+    color: #e74c3c;
+    margin-top: 15px;
+    font-size: 0.9em;
+}

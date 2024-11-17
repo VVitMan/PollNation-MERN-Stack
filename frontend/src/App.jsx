@@ -8,7 +8,7 @@ import CreateEditPoll from './CreateEditPoll/CreateEditPoll.jsx';
 // Vit
 import Home from "./pages/Home";
 import SignUp from "./pages/Signup";
-import SignIn from "./pages/SignIn";
+import SignIn from "../SignIn/SignIn.jsx";
 import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import Header from "./components/Header";
@@ -18,7 +18,9 @@ export default function App() {
   return (
     <Router>
       <div className="main-container">
-        {/* Header Component */}
+
+        
+        {/* Vit Navbar Component */}
         <Header />
 
         {/* Navbar Component */}
@@ -26,7 +28,7 @@ export default function App() {
 
         <Routes>
           {/* Main Routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Poll />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
 
@@ -38,7 +40,6 @@ export default function App() {
           <Route path="/community" element={<Community />} />
 
           {/* Poll Routes */}
-          <Route path="/poll" element={<Poll />} />
           <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
           <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
           <Route path="/edit-poll/:pollId" element={<CreateEditPoll />} /> {/* Edit/Create Poll Page */}

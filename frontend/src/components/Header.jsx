@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useSelector } from "react-redux"
 
-
+// Vit Navbar
 export default function Header() {
     /* ดึงข้อมูลจาก state ที่เก็บข้อมูล user */
     const { currentUser } = useSelector(state => state.user)
