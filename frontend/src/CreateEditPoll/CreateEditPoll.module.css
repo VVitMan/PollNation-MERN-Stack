@@ -2,13 +2,21 @@
 
 .pollContainer {
     max-width: 500px;
-    margin: 50px auto;
+    margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
     background-color: #f9f9f9;
     text-align: center;
     font-family: Arial, sans-serif;
+    border: 1px solid hsl(0, 0%, 80%);
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
+    padding: 20px;
+    margin-left: 50%;
+    margin-top: 1rem;
+    width: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
 }
 
 h2 {

@@ -13,8 +13,8 @@ function Navbar() {
             // Simulate a delay to mock an API call
             setTimeout(() => {
                 const mockUserData = {
-                    username: "Mary",
-                    profilePic: "/Mary.jfif" // Ensure this image is available in your public folder
+                    username: "Unknown",
+                    profilePic: "/Unknown.png" // Ensure this image is available in your public folder
                 };
                 setCurrentUser(mockUserData);
             }, 1000); // 1-second delay
@@ -58,11 +58,11 @@ function Navbar() {
                 {/* User Profile */}
                 {currentUser ? (
                     <li
-                        key="My Profile"
-                        onClick={() => handleLinkClick("My Profile")}
-                        className={active === "My Profile" ? styles.active : ''}
+                        key="Profile"
+                        onClick={() => handleLinkClick("rofile")}
+                        className={active === "Profile" ? styles.active : ''}
                     >
-                        <Link to={`/profile/${currentUser.username}`}>
+                        <Link to={`/profile`}>
                             My Profile ({currentUser.username})
                         </Link>
                         {currentUser.profilePic && (
