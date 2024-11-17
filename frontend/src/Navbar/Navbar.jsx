@@ -47,13 +47,6 @@ function Navbar() {
                 >
                     <Link to="/">Home</Link>
                 </li>
-                <li
-                    key="Community"
-                    onClick={() => handleLinkClick("Community")}
-                    className={active === "Community" ? styles.active : ''}
-                >
-                    <Link to="/community">Community</Link>
-                </li>
 
                 {/* User Profile */}
                 {currentUser ? (
