@@ -3,10 +3,10 @@
     border-radius: 10px;
     box-shadow: 5px 5px 5px hsla(0, 0%, 0%, 0.1);
     padding: 20px;
-    margin-left: 20%;
-    margin-right: 20%;
+    margin-left: 50%;
     margin-top: 1rem;
-    width: 60%;
+    width: 50%;
+    transform: translateX(-50%); /* Center it horizontally */
 }
 
 .cardHeader {

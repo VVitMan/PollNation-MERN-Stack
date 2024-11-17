@@ -1,31 +1,35 @@
 /* Basic styling */
 .navbar {
+    position: sticky;
+    top: 10px; /* Adds 10px space from the top when sticky */
+    margin: 0 auto; /* Centers the navbar horizontally */
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
     background-color: #333;
     color: #fff;
-    border-radius: 15px; /* Add rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a subtle shadow */
-    margin-left: 19.5%;
-    margin-right: 20%;
-    margin-bottom: 2rem;
-    margin-top: 1rem;
-    width: 60%;
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    width: 55%; /* Fixed width for the navbar */
+    z-index: 1000; /* Ensure it stays above other content */
 }
 
+
+
+/* Logo styling */
 .logo {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #fff; /* Set color to white */
+    color: #fff;
 }
 
 .logoLink {
-    color: #fff; /* Ensures the link color is white */
-    text-decoration: none; /* Remove underline */
+    color: #fff;
+    text-decoration: none;
 }
 
+/* Navigation Links */
 .navLinks {
     list-style: none;
     display: flex;
@@ -44,6 +48,11 @@
     border-bottom: 2px solid #4caf50;
 }
 
+/* Hover effect for links */
+a:hover {
+    color: #eeeeee;
+}
+
 /* Hamburger menu (for mobile) */
 .hamburger {
     display: none;
@@ -58,6 +67,7 @@
     transition: 0.3s;
 }
 
+/* Profile Picture */
 .profilePic {
     width: 30px;
     height: 30px;
@@ -67,26 +77,26 @@
     vertical-align: middle;
 }
 
-a:hover {
-    color: #eeeeee;
-}
-  
 /* Responsive styling */
 @media (max-width: 768px) {
+    .navbar {
+        width: 90%; /* Make the navbar narrower on smaller screens */
+    }
+
     .navLinks {
         display: none;
         flex-direction: column;
         position: absolute;
         top: 70px;
-        left: 0;
-        width: 90%; /* Make it slightly narrower for better mobile view */
+        left: 50%; /* Center the menu horizontally */
+        transform: translateX(-50%);
+        width: 90%; /* Slightly narrower for better mobile view */
         background-color: #333;
         text-align: center;
         gap: 1rem;
         padding: 1rem 0;
         transition: all 0.3s ease;
-        border-radius: 15px; /* Rounded corners for the mobile menu as well */
-        margin: 0 auto; /* Center the mobile menu */
+        border-radius: 15px; /* Rounded corners for the mobile menu */
     }
 
     .navLinks.open {

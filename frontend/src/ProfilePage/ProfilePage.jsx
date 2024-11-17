@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styles from './ProfilePage.module.css';
-import { FaPencilAlt } from 'react-icons/fa'; // Import pencil icon from Font Awesome
+import { FaPencilAlt, FaPlus } from 'react-icons/fa'; // Import pencil and plus icons
 
 function ProfilePage() {
     const { username } = useParams();
@@ -90,7 +89,6 @@ function ProfilePage() {
                         <div className={styles.pollHeader}>
                             <img className={styles.pollProfileImage} src={poll.profilePic} alt="Profile" />
                             <h2 className={styles.pollUsername}>{poll.username}</h2>
-                            {/* <span className={styles.editIcon}>✎</span> */}
                             <Link to={`/edit-poll/${poll.id}`}>
                                 <FaPencilAlt className={styles.editIcon} />
                             </Link>
@@ -110,6 +108,11 @@ function ProfilePage() {
                     </div>
                 ))}
             </div>
+
+            {/* Floating '+' Button */}
+            <Link to="/edit-poll/new" className={styles.floatingButton}>
+                <FaPlus />
+            </Link>
         </div>
     );
 }
