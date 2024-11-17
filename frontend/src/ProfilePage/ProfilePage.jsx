@@ -12,7 +12,7 @@ function ProfilePage() {
     };
 
     const userData = {
-        profilePic: "/Mary.jfif",
+        profilePic: "/Unknown.png",
         username: username,
         bio: "This is a short user bio or description.",
     };
