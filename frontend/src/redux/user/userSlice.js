@@ -55,7 +55,7 @@ const userSlice = createSlice({
     }
 });
 
-export const { 
+export const {
     signInStart, signInSuccess, signInFailure, 
     updateUserStart, updateUserSuccess, updateUserFailure,
     deleteUserStart, deleteUserSuccess, deleteUserFailure,

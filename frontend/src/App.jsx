@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Community from "./pages/Community";
 import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
+import PollPage from "./pages/PollPage";
 
 export default function App() {
   return (
