@@ -11,10 +11,8 @@ function Navbar() {
 
   // Simulate loading user data => loading
   useEffect(() => {
-    // Simulating a delay for loading user data
-    if (currentUser) {
-      setLoading(false);
-    }
+    // Set loading to false when currentUser is checked, regardless of value
+    setLoading(false);
   }, [currentUser]);
 
   const toggleMenu = () => {
@@ -63,7 +61,13 @@ function Navbar() {
             )}
           </li>
         ) : (
-          <li className={styles.signIn}>Sign In</li>
+          <li
+            key="SignIn"
+            onClick={() => handleLinkClick("Sign In")}
+            className={styles.signIn}
+          >
+            <Link to="/sign-in">Sign In</Link>
+          </li>
         )}
       </ul>
       <div className={styles.hamburger} onClick={toggleMenu}>
