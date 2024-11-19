@@ -76,7 +76,7 @@ function ProfilePage() {
                         </Link>
                     )}
                 </h1>
-                <p className={styles.bio}>{userData?.bio || "This user has no bio yet."}</p>
+                <p className={styles.bio}>{userData?.description || "This user has no bio yet."}</p>
             </div>
 
             {/* Filter Tabs */}
@@ -113,7 +113,7 @@ function ProfilePage() {
                             />
                             <h2 className={styles.pollUsername}>{userData?.username}</h2>
                             {currentUser?.username === username && (
-                                <Link to={`/edit-${item.type.toLowerCase()}/${item._id}`}>
+                                <Link to={`/edit/poll-and-quiz/${item._id}`}>
                                     <FaPencilAlt className={styles.editIcon} />
                                 </Link>
                             )}

@@ -43,7 +43,7 @@ export default function App() {
           {/* Poll Routes */}
           <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
           <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
-          <Route path="/edit-poll/:pollId" element={<CreateEditPoll />} /> {/* Edit/Create Poll Page */}
+          <Route path="/edit/poll-and-quiz/:id" element={<CreateEditPoll />} /> {/* Edit/Create Poll Page */}
         </Routes>
       </div>
     </Router>

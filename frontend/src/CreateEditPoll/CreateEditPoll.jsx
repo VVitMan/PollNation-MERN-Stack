@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './CreateEditPoll.module.css';
-import { FaTrashAlt } from 'react-icons/fa';
+// import { FaTrashAlt } from 'react-icons/fa';
 
 function CreateEditPoll() {
     const { id } = useParams(); // Get poll/quiz ID from the URL for editing
