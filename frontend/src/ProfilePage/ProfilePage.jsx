@@ -44,12 +44,14 @@ function ProfilePage() {
         fetchData();
     }, [username]);
 
+    /* Effect loading Text */
     if (loading) {
         return <div className={styles.loading}>Loading...</div>;
     }
 
+    /* Error message */
     if (error) {
-        return <div className={styles.error}>{error}</div>;
+        return <div className={styles.error}>Some Went Wrong</div>;
     }
 
     const filteredData = activeTab === "All"
