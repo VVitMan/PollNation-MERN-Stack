@@ -23,8 +23,8 @@ export const getAllPollsAndQuizzes = async (req, res) => {
 /* Get Poll and Quizz from user @username */
 export const getPollsAndQuizzesByUser = async (req, res) => {
     try {
-        // Find the user by username
-        const user = await User.findOne({ username: req.params.username });
+        // Find the user by username and remove password
+        const user = await User.findOne({ username: req.params.username }).select('-password');
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }

@@ -56,6 +56,7 @@ function ProfilePage() {
         ? data
         : data.filter(item => item.type === activeTab);
 
+    console.log("Filtered",filteredData)
     return (
         <div className={styles.profilePage}>
             {/* Profile Header */}
