@@ -90,19 +90,19 @@ export const submitPollVote = async (req, res) => {
 
     // Check if the poll exists
     const poll = await Poll.findById(poll_id);
-    if (!poll) return res.status(404).json({ message: "Poll not found" });
+    if (!poll) return res.status(404).json({ message: 'Poll not found' });
 
     // Check if the user has already voted for this poll
     const existingVote = await Vote.findOne({ userId, pollId: poll_id });
     if (existingVote) {
       return res
         .status(403)
-        .json({ message: "You have already voted in this poll." });
+        .json({ message: 'You have already voted in this poll.' });
     }
 
     // Validate that the optionIndex is within bounds
     if (optionIndex < 0 || optionIndex >= poll.options.length) {
-      return res.status(400).json({ message: "Invalid option index" });
+      return res.status(400).json({ message: 'Invalid option index' });
     }
 
     // Increment the vote count for the selected option in the poll
@@ -114,6 +114,7 @@ export const submitPollVote = async (req, res) => {
       userId,
       pollId: poll_id,
       optionIndex,
+      type: 'Poll', // Add vote type
     });
     await vote.save();
 

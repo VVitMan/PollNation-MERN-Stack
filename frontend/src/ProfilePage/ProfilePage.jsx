@@ -5,34 +5,34 @@ import styles from './ProfilePage.module.css';
 import { FaPencilAlt, FaPlus } from 'react-icons/fa';
 
 function ProfilePage() {
-    const { username } = useParams(); // Get username from the URL
-    const { currentUser } = useSelector((state) => state.user); // Get logged-in user
+    const { username } = useParams(); // Get username from URL
+    const { currentUser } = useSelector((state) => state.user); // Logged-in user
     const [userData, setUserData] = useState(null);
-    const [polls, setPolls] = useState([]);
+    const [data, setData] = useState([]); // Combined polls and quizzes
+    const [activeTab, setActiveTab] = useState("All");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState("All");
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
 
     useEffect(() => {
-        const fetchProfileData = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/poll/profile/${username}`, {
+                const response = await fetch(`/api/poll-and-quiz/${username}`, {
                     method: 'GET',
-                    credentials: 'include', // Include cookies for authorization
+                    credentials: 'include', // Include cookies for authentication
                 });
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
 
-                const data = await response.json();
-                setUserData(data.user);
-                setPolls(data.polls);
+                const result = await response.json();
+                setUserData(result.user);
+                setData(result.data); // Set polls and quizzes
             } catch (error) {
                 setError('Failed to load profile data.');
                 console.error('Error fetching profile data:', error);
@@ -41,7 +41,7 @@ function ProfilePage() {
             }
         };
 
-        fetchProfileData();
+        fetchData();
     }, [username]);
 
     if (loading) {
@@ -51,6 +51,10 @@ function ProfilePage() {
     if (error) {
         return <div className={styles.error}>{error}</div>;
     }
+
+    const filteredData = activeTab === "All"
+        ? data
+        : data.filter(item => item.type === activeTab);
 
     return (
         <div className={styles.profilePage}>
@@ -94,10 +98,10 @@ function ProfilePage() {
                 </span>
             </div>
 
-            {/* Polls List */}
+            {/* Polls and Quizzes List */}
             <div className={styles.pollsList}>
-                {polls.map((poll) => (
-                    <div key={poll._id} className={styles.pollCard}>
+                {filteredData.map((item) => (
+                    <div key={item._id} className={styles.pollCard}>
                         <div className={styles.pollHeader}>
                             <img
                                 className={styles.pollProfileImage}
@@ -106,17 +110,21 @@ function ProfilePage() {
                             />
                             <h2 className={styles.pollUsername}>{userData?.username}</h2>
                             {currentUser?.username === username && (
-                                <Link to={`/edit-poll/${poll._id}`}>
+                                <Link to={`/edit-${item.type.toLowerCase()}/${item._id}`}>
                                     <FaPencilAlt className={styles.editIcon} />
                                 </Link>
                             )}
                         </div>
-                        <p className={styles.pollDescription}>{poll.question}</p>
-                        <p className={styles.voteCount}>
-                            {poll.options.reduce((total, option) => total + option.votes, 0)} Votes
-                        </p>
+                        <p className={styles.pollDescription}>{item.question}</p>
+                        {item.type === 'Poll' ? (
+                            <p className={styles.voteCount}>
+                                {item.options.reduce((total, option) => total + option.votes, 0)} Votes
+                            </p>
+                        ) : (
+                            <p className={styles.voteCount}>Quiz</p>
+                        )}
                         <div className={styles.options}>
-                            {poll.options.map((option) => (
+                            {item.options.map((option) => (
                                 <div key={option._id} className={styles.option}>
                                     <label>{option.text}</label>
                                 </div>
@@ -128,7 +136,7 @@ function ProfilePage() {
 
             {/* Floating '+' Button */}
             {currentUser?.username === username && (
-                <Link to="/edit-poll/new" className={styles.floatingButton}>
+                <Link to="/edit-poll-or-quiz/new" className={styles.floatingButton}>
                     <FaPlus />
                 </Link>
             )}
