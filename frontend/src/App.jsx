@@ -35,7 +35,7 @@ export default function App() {
 
           {/* Private Routes */}
           <Route element={<PrivateRoute />}>
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
           </Route>
 
           <Route path="/community" element={<Community />} />

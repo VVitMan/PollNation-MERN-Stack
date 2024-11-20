@@ -126,6 +126,7 @@ function ProfilePage() {
                         ) : (
                             <p className={styles.voteCount}>Quiz</p>
                         )}
+                        {/* Option */}
                         <div className={styles.options}>
                             {item.options.map((option) => (
                                 <div key={option._id} className={styles.option}>
