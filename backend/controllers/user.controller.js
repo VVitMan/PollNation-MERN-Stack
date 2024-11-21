@@ -27,6 +27,7 @@ export const updateUser = async (req, res, next) => {
                     username: req.body.username,                
                     email: req.body.email,
                     password: req.body.password,
+                    description: req.body.description,
                     profilePicture: req.body.profilePicture,
                 }
             }, { new: true }
@@ -34,6 +35,7 @@ export const updateUser = async (req, res, next) => {
         /* remove password before sent to client side */
         const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
+        console.log(rest);
 
     } catch (error) {
         next(error);

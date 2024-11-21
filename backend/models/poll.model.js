@@ -1,11 +1,7 @@
 import mongoose from 'mongoose';
 
 const PollSchema = new mongoose.Schema({
-    userId: 
-    { type: mongoose.Schema.Types.ObjectId, 
-      ref: 'User', 
-      required: true 
-    }, // Reference to the User model
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the User model
     question: { type: String, required: true },
     options: [
         {

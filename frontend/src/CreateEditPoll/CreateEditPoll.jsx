@@ -1,12 +1,53 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './CreateEditPoll.module.css';
-import { FaTrashAlt } from 'react-icons/fa';
 
-function CreateEditPoll() {
+function EditPollQuiz() {
+    const { id } = useParams(); // Get the ID of the poll/quiz to edit
+    const navigate = useNavigate();
+
+    // State for poll/quiz type, question, and choices
+    const [type, setType] = useState('');
     const [question, setQuestion] = useState('');
-    const [pollType, setPollType] = useState('Poll');
-    const [choices, setChoices] = useState([{ text: '', correct: false }, { text: '', correct: false }, { text: '', correct: false }, { text: '', correct: false }]);
+    const [choices, setChoices] = useState([]);
+    const [loading, setLoading] = useState(true); // To handle loading state
+    const [error, setError] = useState(null); // To handle errors
 
+    // Fetch data when editing
+    useEffect(() => {
+        if (!id) {
+            setError('No ID provided for editing.');
+            setLoading(false);
+            return;
+        }
+
+        const fetchData = async () => {
+            try {
+                const endpoint = `/api/poll-and-quiz/find/${id}`;
+                const response = await fetch(endpoint, { method: 'GET', credentials: 'include' });
+                if (!response.ok) throw new Error(`Error fetching data: ${response.status}`);
+                const data = await response.json();
+
+                setType(data.type);
+                setQuestion(data.question);
+                setChoices(
+                    data.options.map(option => ({
+                        text: option.text,
+                        correct: option.correct || false,
+                    }))
+                );
+                setLoading(false); // Data is loaded
+            } catch (error) {
+                console.error('Error fetching poll/quiz:', error);
+                setError('Failed to fetch poll/quiz data. Please try again.');
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    // Handle changes
     const handleChoiceChange = (index, event) => {
         const newChoices = [...choices];
         newChoices[index].text = event.target.value;
@@ -14,7 +55,7 @@ function CreateEditPoll() {
     };
 
     const handleCorrectAnswerChange = (index) => {
-        if (pollType === 'Quiz') {
+        if (type === 'Quiz') {
             const newChoices = choices.map((choice, i) => ({
                 ...choice,
                 correct: i === index ? !choice.correct : choice.correct,
@@ -23,33 +64,52 @@ function CreateEditPoll() {
         }
     };
 
-    const handlePollTypeChange = () => {
-        setPollType(pollType === 'Poll' ? 'Quiz' : 'Poll');
-    };
+    const handleSave = async () => {
+        try {
+            const endpoint = `/api/${type.toLowerCase()}/${id}`;
+            const method = 'PUT';
 
-    const handleSave = () => {
-        console.log('Poll saved:', { question, pollType, choices });
-        // Logic to save or create poll
-    };
+            const payload = { question, options: choices };
+            const response = await fetch(endpoint, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(payload),
+            });
 
-    const handleCancel = () => {
-        // Logic to cancel or reset form
-        setQuestion('');
-        setChoices([{ text: '', correct: false }, { text: '', correct: false }, { text: '', correct: false }, { text: '', correct: false }]);
-    };
+            if (!response.ok) throw new Error(`Error saving data: ${response.status}`);
 
-    const handleDelete = () => {
-        const confirmed = window.confirm("Are you sure you want to delete this poll?");
-        if (confirmed) {
-            // Perform delete operation here (e.g., API request)
-            alert("Poll deleted successfully.");
-            navigate("/profile/:username"); // Redirect to the profile page or another appropriate page
+            const data = await response.json();
+            console.log('Updated successfully:', data);
+
+            // Redirect after saving
+            navigate(`/profile`);
+        } catch (error) {
+            console.error('Error updating poll/quiz:', error);
         }
     };
-    
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this poll/quiz?')) {
+            try {
+                const endpoint = `/api/${type.toLowerCase()}/${id}`;
+                const response = await fetch(endpoint, { method: 'DELETE', credentials: 'include' });
+                if (!response.ok) throw new Error(`Error deleting data: ${response.status}`);
+
+                alert('Deleted successfully');
+                navigate('/profile');
+            } catch (error) {
+                console.error('Error deleting poll/quiz:', error);
+            }
+        }
+    };
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+
     return (
         <div className={styles.pollContainer}>
-            <h2>Create/Edit</h2>
+            <h2>Edit {type}</h2>
             <input
                 type="text"
                 placeholder="Question..."
@@ -57,16 +117,9 @@ function CreateEditPoll() {
                 onChange={(e) => setQuestion(e.target.value)}
                 className={styles.questionInput}
             />
-            <div className={styles.typeToggle}>
-                <span>Type</span>
-                <button onClick={handlePollTypeChange} className={styles.toggleButton}>
-                    {pollType === 'Poll' ? 'Poll' : 'Quiz'}
-                </button>
-            </div>
-
             {choices.map((choice, index) => (
                 <div key={index} className={styles.choiceContainer}>
-                    {pollType === 'Quiz' && (
+                    {type === 'Quiz' && (
                         <input
                             type="checkbox"
                             checked={choice.correct}
@@ -76,21 +129,26 @@ function CreateEditPoll() {
                     )}
                     <input
                         type="text"
-                        placeholder={`Choice ${index + 1}...`}
+                        placeholder={`Choice ${index + 1}`}
                         value={choice.text}
                         onChange={(e) => handleChoiceChange(index, e)}
                         className={styles.choiceInput}
                     />
                 </div>
             ))}
-
             <div className={styles.buttonGroup}>
-                <button onClick={handleCancel} className={styles.cancelButton}>Cancel</button>
-                <button className={styles.deleteButton} onClick={handleDelete}>🗑 Delete</button>
-                <button onClick={handleSave} className={styles.saveButton}>Save</button>
+                <button onClick={() => navigate('/profile')} className={styles.cancelButton}>
+                    Cancel
+                </button>
+                <button onClick={handleDelete} className={styles.deleteButton}>
+                    Delete
+                </button>
+                <button onClick={handleSave} className={styles.saveButton}>
+                    Save
+                </button>
             </div>
         </div>
     );
 }
 
-export default CreateEditPoll;
+export default EditPollQuiz;

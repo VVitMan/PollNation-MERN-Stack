@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 import pollRoutes from "./routes/poll.route.js";
+import quizRoutes from "./routes/quiz.route.js";
+import pollAndQuizRoutes from "./routes/poll_and_quiz.route.js";
 import cookieParser from 'cookie-parser';
 dotenv.config();
 
@@ -35,6 +37,8 @@ mongoose.connect(process.env.MONGO_URL)
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/poll", pollRoutes);
+app.use("/api/quiz", quizRoutes);
+app.use("/api/poll-and-quiz", pollAndQuizRoutes);
 
 /* Error Middleware */
 app.use((err, req, res, next) => {

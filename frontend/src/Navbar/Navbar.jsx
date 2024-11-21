@@ -51,7 +51,7 @@ function Navbar() {
             onClick={() => handleLinkClick("Profile")}
             className={active === "Profile" ? styles.active : ""}
           >
-            <Link to={`/profile`}>{currentUser.username}</Link>
+            <Link to={`/profile/${currentUser.username}`}>{currentUser.username}</Link>
             {currentUser.profilePicture && (
               <img
                 src={currentUser.profilePicture}
