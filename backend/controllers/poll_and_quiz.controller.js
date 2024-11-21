@@ -70,3 +70,78 @@ export const createPollAndQuiz = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Fetch poll or quiz by ID
+export const getPollsAndQuizzesById = async (req, res) => {
+    try {
+        // Assume you send a `type` query parameter to indicate Poll or Quiz
+        const { type } = req.query;
+
+        let data;
+        if (type === 'Poll') {
+            data = await Poll.findById(req.params.id);
+        } else if (type === 'Quiz') {
+            data = await Quiz.findById(req.params.id);
+        } else {
+            return res.status(400).json({ message: 'Invalid type specified' });
+        }
+
+        if (!data) {
+            return res.status(404).json({ message: `${type} not found` });
+        }
+
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching data', error });
+    }
+}
+
+
+export const updatePollAndQuiz = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { question, type, options } = req.body;
+
+        if (!question || !type || !options) {
+            return res.status(400).json({ message: "Invalid request body" });
+        }
+
+        // Update Poll
+        if (type === "Poll") {
+            const updatedPoll = await Poll.findByIdAndUpdate(
+                id,
+                { question, options },
+                { new: true }
+            );
+
+            if (updatedPoll) {
+                return res.status(200).json({
+                    message: "Poll updated successfully",
+                    poll: updatedPoll,
+                });
+            }
+        }
+
+        // Update Quiz
+        if (type === "Quiz") {
+            const updatedQuiz = await Quiz.findByIdAndUpdate(
+                id,
+                { question, options },
+                { new: true }
+            );
+
+            if (updatedQuiz) {
+                return res.status(200).json({
+                    message: "Quiz updated successfully",
+                    quiz: updatedQuiz,
+                });
+            }
+        }
+
+        // If no poll or quiz is found
+        return res.status(404).json({ message: "Poll/Quiz not found" });
+    } catch (error) {
+        console.error("Error updating poll/quiz:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};

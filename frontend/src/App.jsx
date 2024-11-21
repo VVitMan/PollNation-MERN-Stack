@@ -3,7 +3,7 @@ import Navbar from './Navbar/Navbar.jsx';
 // import Poll from './Poll/Poll.jsx';
 import ProfilePage from './ProfilePage/ProfilePage.jsx'; // Import the ProfilePage component
 import EditProfile from './EditProfile/EditProfile.jsx';
-import CreateEditPoll from './CreateEditPoll/CreateEditPoll.jsx';
+// import CreateEditPoll from './CreateEditPoll/CreateEditPoll.jsx';
 import PollAll from './components/PollComponents/PollAll.jsx';
 
 // Vit
@@ -12,6 +12,7 @@ import SignUp from './SignUp/SignUp.jsx';
 import Profile from "./Profile/Profile.jsx";
 import Community from "./pages/Community";
 import PrivateRoute from "./components/PrivateRoute";
+import EditPollQuiz from './CreateEditPoll/CreateEditPoll.jsx';
 
 export default function App() {
   return (
@@ -43,7 +44,7 @@ export default function App() {
           {/* Poll Routes */}
           <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
           <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
-          <Route path="/edit/poll-and-quiz/:id" element={<CreateEditPoll />} /> {/* Edit/Create Poll Page */}
+          <Route path="/edit/poll-and-quiz/:poll_or_quiz_id" element={<EditPollQuiz />} /> {/* Edit/Create Poll Page */}
         </Routes>
       </div>
     </Router>
