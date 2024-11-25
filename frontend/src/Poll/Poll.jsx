@@ -29,11 +29,11 @@ function Poll() {
                         {
                             username: "Perth",
                             profilePic: "/Portrait-Tarnakij.png",
-                            description: "This is Perth's poll description test. Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus perspiciatis aut quisquam, ipsam quidem quis asperiores, natus cumque illo ut sunt accusamus dignissimos iste ratione. Perspiciatis eum voluptatem eius incidunt.",
+                            description: "In Python, a function must always include a return statement to avoid an error. True of False?",
                             questionType: "Quiz",
                             votes: 530,
                             correctAnswer: 2, // The correct answer ID
-                            explanation: "The capital of France is Paris.",
+                            explanation: "In Python, a function does not require a return statement. If there is no return statement, the function automatically returns None.",
                             options: [
                                 { id: 1, text: "True" },
                                 { id: 2, text: "False" },
