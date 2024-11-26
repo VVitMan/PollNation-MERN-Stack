@@ -1,19 +1,21 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styles from './Poll.module.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styles from "./Poll.module.css";
 
 function PollAll() {
     const [pollQuizData, setPollQuizData] = useState([]); // Data for both polls and quizzes
     const [selectedOptions, setSelectedOptions] = useState({});
+    const [isCommentsOpen, setIsCommentsOpen] = useState(false); // Controls comment overlay visibility
+    const [currentComments, setCurrentComments] = useState([]); // Holds the comments for the selected poll
+    const [newComment, setNewComment] = useState(""); // Holds the value of the new comment input
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                console.log('Fetching poll and quiz data...');
-                const response = await fetch('/api/poll-and-quiz/all', { // Unified route for polls and quizzes
-                    method: 'GET',
-                    credentials: 'include', // Include cookies for authentication
+                const response = await fetch("/api/poll-and-quiz/all", {
+                    method: "GET",
+                    credentials: "include",
                 });
 
                 if (!response.ok) {
@@ -21,28 +23,28 @@ function PollAll() {
                 }
 
                 const data = await response.json();
-                console.log('Poll and Quiz Data:', data);
-
-                // Format data to match frontend structure
-                const formattedData = data.map(item => ({
-                    username: item.userId?.username || "Unknown User", // Fallback for missing username
-                    profilePic: item.userId?.profilePicture || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg',
-                    description: item.question, // Question
-                    questionType: item.type, // 'Poll' or 'Quiz'
-                    votes: item.type === 'Poll'
-                        ? item.options.reduce((total, option) => total + option.votes, 0) // Total votes for polls
-                        : null, // No votes needed for quizzes
-                    options: item.options.map(option => ({
+                const formattedData = data.map((item) => ({
+                    username: item.userId?.username || "Unknown User",
+                    profilePic:
+                        item.userId?.profilePicture ||
+                        "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg",
+                    description: item.question,
+                    questionType: item.type,
+                    votes: item.type === "Poll"
+                        ? item.options.reduce((total, option) => total + option.votes, 0)
+                        : null,
+                    options: item.options.map((option) => ({
                         id: option._id,
                         text: option.text,
-                        correct: option.correct || false, // Include `correct` for quizzes
+                        correct: option.correct || false,
                     })),
-                    correctAnswer: item.type === 'Quiz' ? item.correctAnswer : null, // Add correct answer for quizzes
+                    correctAnswer: item.type === "Quiz" ? item.correctAnswer : null,
+                    comments: item.comments || [], // Include comments for each poll/quiz
                 }));
 
                 setPollQuizData(formattedData);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
             }
         };
 
@@ -50,24 +52,61 @@ function PollAll() {
     }, []);
 
     const handleProfileClick = (username) => {
-        console.log(`Navigating to profile of: ${username}`);
         navigate(`/profile/${username}`);
     };
 
     const handleOptionSelect = (index, optionId) => {
-        console.log(`Selected option ${optionId} for index ${index}`);
-        setSelectedOptions(prev => ({
+        setSelectedOptions((prev) => ({
             ...prev,
-            [index]: prev[index] === optionId ? null : optionId, // Toggle selection
+            [index]: prev[index] === optionId ? null : optionId,
         }));
     };
 
-    const handleQuizSubmit = (index) => {
-        const selectedOptionId = selectedOptions[index];
-        const selectedOption = pollQuizData[index].options.find(option => option.id === selectedOptionId);
-        const isCorrect = selectedOption?.correct || false;
+    const handleViewComments = (comments) => {
+        setCurrentComments(comments); // Load the comments for the selected poll
+        setIsCommentsOpen(true); // Show the overlay
+    };
 
-        alert(isCorrect ? "Correct Answer!" : "Wrong Answer. Try again!");
+    const handleAddComment = () => {
+        if (newComment.trim() === "") return;
+        setCurrentComments((prev) => [...prev, { username: "You", text: newComment }]); // Add new comment
+        setNewComment(""); // Clear input
+    };
+
+    const handleCloseComments = () => {
+        setIsCommentsOpen(false); // Close the overlay
+    };
+
+    const handleCommentSubmit = async (e) => {
+        e.preventDefault();
+        if (!commentInput.trim()) return;
+
+        try {
+            const response = await fetch(`/api/poll/${currentPollId}/comments`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: currentUser.username,
+                    text: commentInput,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const updatedPoll = await response.json();
+            setPollQuizData((prev) =>
+                prev.map((poll) =>
+                    poll._id === updatedPoll._id ? updatedPoll : poll
+                )
+            );
+            setCommentInput(""); // Clear the input field
+        } catch (error) {
+            console.error("Error adding comment:", error);
+        }
     };
 
     return (
@@ -81,7 +120,6 @@ function PollAll() {
                             alt="Profile"
                             onClick={() => handleProfileClick(item.username)}
                         />
-                        {/* Display username */}
                         <h2
                             className={styles.cardTitle}
                             onClick={() => handleProfileClick(item.username)}
@@ -91,18 +129,17 @@ function PollAll() {
                     </div>
                     <p className={styles.cardDescription}>{item.description}</p>
                     <div className={styles.voteInfo}>
-                        {item.questionType === 'Poll' ? (
+                        {item.questionType === "Poll" ? (
                             <>
-                                {/* Display votes for polls */}
                                 <p className={styles.voteCount}>{item.votes} Votes</p>
                                 <div className={styles.pollOptions}>
-                                    {item.options.map(option => (
+                                    {item.options.map((option) => (
                                         <div
                                             key={option.id}
                                             className={`${styles.option} ${
                                                 selectedOptions[index] === option.id
                                                     ? styles.selected
-                                                    : ''
+                                                    : ""
                                             }`}
                                             onClick={() => handleOptionSelect(index, option.id)}
                                         >
@@ -120,15 +157,14 @@ function PollAll() {
                             </>
                         ) : (
                             <>
-                                {/* Display quiz options */}
                                 <div className={styles.pollOptions}>
-                                    {item.options.map(option => (
+                                    {item.options.map((option) => (
                                         <div
                                             key={option.id}
                                             className={`${styles.option} ${
                                                 selectedOptions[index] === option.id
                                                     ? styles.selected
-                                                    : ''
+                                                    : ""
                                             }`}
                                             onClick={() => handleOptionSelect(index, option.id)}
                                         >
@@ -145,20 +181,75 @@ function PollAll() {
                                 </div>
                                 <button
                                     className={styles.submitQuizButton}
-                                    onClick={() => handleQuizSubmit(index)}
+                                    onClick={() => alert("Submit functionality not implemented!")}
                                 >
                                     Submit
                                 </button>
                             </>
                         )}
                     </div>
+                    <button
+                        className={styles.viewCommentsButton}
+                        onClick={() => handleViewComments(item.comments)}
+                    >
+                        View Comments
+                    </button>
                 </div>
             ))}
+
+            {isCommentsOpen && currentPollId && (
+                <div className={styles.commentsOverlay}>
+                    <div className={styles.commentsContainer}>
+                        <button
+                            className={styles.closeButton}
+                            onClick={handleCloseComments}
+                        >
+                            Close
+                        </button>
+                        <h3>Comments</h3>
+                        {/* Safely find the current poll and map over its comments */}
+                        {pollQuizData
+                            .find((poll) => poll._id === currentPollId)
+                            ?.comments?.map((comment, index) => (
+                                <div key={index} className={styles.commentItem}>
+                                    <strong>{comment.username}: </strong>
+                                    <span>{comment.text}</span>
+                                </div>
+                            )) || (
+                                <p className={styles.noComments}>
+                                    No comments yet. Be the first to comment!
+                                </p>
+                            )}
+                        <form
+                            className={styles.commentForm}
+                            onSubmit={handleCommentSubmit}
+                        >
+                            <input
+                                type="text"
+                                value={commentInput}
+                                onChange={(e) => setCommentInput(e.target.value)}
+                                placeholder="Add a comment..."
+                                className={styles.commentInput}
+                                required
+                            />
+                            <button
+                                type="submit"
+                                className={styles.commentSubmitButton}
+                            >
+                                Submit
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
         </>
     );
 }
 
 export default PollAll;
+
+
 
 // import { useEffect, useState } from 'react';
 // import { useNavigate } from 'react-router-dom';

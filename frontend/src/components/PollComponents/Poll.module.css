@@ -153,3 +153,120 @@ input[type="radio"] {
 .submitButton:hover {
     background-color: #45a049;
 }
+/* Comments Overlay */
+.commentsOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2); /* Softer, semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it stays above other content */
+}
+
+/* Comments Container */
+.commentsContainer {
+    background-color: #f9f9f9; /* Light gray background */
+    width: 50%;
+    max-height: 70%;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Softer shadow */
+    overflow-y: auto; /* Allows scrolling for long comments */
+    position: relative;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Close Button */
+.closeButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: transparent;
+    color: #666;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0;
+}
+
+.closeButton:hover {
+    color: #333;
+}
+
+/* Comments List */
+.commentsList {
+    margin-bottom: 16px;
+}
+
+.comment {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #fff; /* Subtle white box for individual comments */
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 13px;
+    color: #444;
+}
+
+.comment strong {
+    font-weight: bold;
+    color: #555; /* Slightly darker for better readability */
+    margin-right: 5px;
+}
+
+/* Add Comment Section */
+.addComment {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.addComment input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd; /* Lighter border */
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.addComment input:focus {
+    outline: none;
+    border-color: #aaa; /* Subtle focus border */
+}
+
+.addComment button {
+    padding: 6px 12px;
+    background-color: #e0e0e0;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.addComment button:hover {
+    background-color: #d6d6d6;
+}
+
+/* View Comments Button */
+.viewCommentsButton {
+    margin-top: 8px;
+    padding: 6px 12px;
+    background-color: #e8e8e8; /* Very subtle button */
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.viewCommentsButton:hover {
+    background-color: #dcdcdc;
+}
