@@ -9,7 +9,7 @@ import PollAll from './components/PollComponents/PollAll.jsx';
 // Vit
 import SignIn from "./SignIn/SignIn.jsx";
 import SignUp from './SignUp/SignUp.jsx';
-import Profile from "./Profile/Profile.jsx";
+import Profile from "./Profile [unuse]/Profile.jsx";
 import Community from "./pages/Community";
 import PrivateRoute from "./components/PrivateRoute";
 import EditPollQuiz from './CreateEditPoll/CreateEditPoll.jsx';
