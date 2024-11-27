@@ -65,7 +65,7 @@ function ProfilePage() {
             <div className={styles.profileHeader}>
                 <img
                     className={styles.profileImage}
-                    src={userData?.profilePicture || '/default-profile.png'}
+                    src={userData?.profilePicture || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1731505734~exp=1731509334~hmac=9bea33c021abe0f8cd8cef8a3b9ff9af22f3ca8c201701e289c588f4c559d20e&w=1060'}
                     alt="Profile"
                 />
                 <h1 className={styles.username}>
