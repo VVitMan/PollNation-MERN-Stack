@@ -23,8 +23,11 @@ function PollAll() {
                 const data = await response.json();
                 console.log('Poll and Quiz Data:', data);
 
+                // Sort data to show the latest created poll or quiz at the top
+                const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
                 // Format data to match frontend structure
-                const formattedData = data.map(item => ({
+                const formattedData = sortedData.map(item => ({
                     username: item.userId?.username || "Unknown User", // Fallback for missing username
                     profilePic: item.userId?.profilePicture || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg',
                     description: item.question, // Question
@@ -39,7 +42,7 @@ function PollAll() {
                     })),
                     correctAnswer: item.type === 'Quiz' ? item.correctAnswer : null, // Add correct answer for quizzes
                 }));
-
+                // Update state with fetched data
                 setPollQuizData(formattedData);
             } catch (error) {
                 console.error('Error fetching data:', error);
