@@ -13,6 +13,7 @@ import Profile from "./Profile [unuse]/Profile.jsx";
 import Community from "./pages/Community";
 import PrivateRoute from "./components/PrivateRoute";
 import EditPollQuiz from './CreateEditPoll/CreateEditPoll.jsx';
+import CreatePollAndQuiz from './CreatePollQuiz/CreatePollQuiz.jsx';
 
 export default function App() {
   return (
@@ -45,6 +46,7 @@ export default function App() {
           <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
           <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
           <Route path="/edit/poll-and-quiz/:poll_or_quiz_id" element={<EditPollQuiz />} /> {/* Edit/Poll Quiz Page */}
+          <Route path="/create/poll-and-quiz" element={<CreatePollAndQuiz />} />
         </Routes>
       </div>
     </Router>

@@ -98,7 +98,7 @@ function EditProfile() {
       },
       (error) => {
         setImageError(true);
-        // console.error("Upload failed:", error);
+        console.error("Upload failed:", error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
