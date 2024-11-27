@@ -35,7 +35,7 @@ function PollAll() {
 
     const fetchComments = async (postId) => {
         try {
-            const response = await fetch(`/api/comments/posts/${postId}`, {
+            const response = await fetch(`/api/comments/posts/${postId}/comments`, {
                 method: "GET",
                 credentials: "include",
             });
@@ -94,109 +94,112 @@ function PollAll() {
     return (
         <>
             {pollQuizData.map((item, index) => (
-                <div key={item._id} className={styles.card}>
-                    <div className={styles.cardHeader}>
-                        <img
-                            className={styles.cardImage}
-                            src={item.userId.profilePicture || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"}
-                            alt="Profile"
-                            onClick={() => navigate(`/profile/${item.userId.username}`)}
-                        />
-                        <h2 className={styles.cardTitle}>{item.userId.username}</h2>
+    <div key={item._id} className={styles.card}>
+        <div className={styles.cardHeader}>
+            <img
+                className={styles.cardImage}
+                src={item.userId.profilePicture || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"}
+                alt="Profile"
+                onClick={() => navigate(`/profile/${item.userId.username}`)}
+            />
+            <h2 className={styles.cardTitle}>{item.userId.username}</h2>
+        </div>
+        <p className={styles.cardDescription}>{item.question}</p>
+        <div className={styles.voteInfo}>
+            {item.type === "Poll" ? (
+                <>
+                    <p className={styles.voteCount}>{item.options.reduce((total, option) => total + option.votes, 0)} Votes</p>
+                    <div className={styles.pollOptions}>
+                        {item.options.map((option) => (
+                            <div
+                                key={option._id}
+                                className={`${styles.option} ${selectedOptions[index] === option._id ? styles.selected : ""}`}
+                                onClick={() => handleOptionSelect(index, option._id)}
+                            >
+                                <input
+                                    type="radio"
+                                    name={`poll-${index}`}
+                                    value={option._id}
+                                    checked={selectedOptions[index] === option._id}
+                                    onChange={() => handleOptionSelect(index, option._id)}
+                                />
+                                <label>{option.text}</label>
+                            </div>
+                        ))}
                     </div>
-                    <p className={styles.cardDescription}>{item.question}</p>
-                    <div className={styles.voteInfo}>
-                        {item.type === "Poll" ? (
-                            <>
-                                <p className={styles.voteCount}>{item.options.reduce((total, option) => total + option.votes, 0)} Votes</p>
-                                <div className={styles.pollOptions}>
-                                    {item.options.map((option) => (
-                                        <div
-                                            key={option._id}
-                                            className={`${styles.option} ${selectedOptions[index] === option._id ? styles.selected : ""}`}
-                                            onClick={() => handleOptionSelect(index, option._id)}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name={`poll-${index}`}
-                                                value={option._id}
-                                                checked={selectedOptions[index] === option._id}
-                                                onChange={() => handleOptionSelect(index, option._id)}
-                                            />
-                                            <label>{option.text}</label>
-                                        </div>
-                                    ))}
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className={styles.pollOptions}>
-                                    {item.options.map((option) => (
-                                        <div
-                                            key={option._id}
-                                            className={`${styles.option} ${selectedOptions[index] === option._id ? styles.selected : ""}`}
-                                            onClick={() => handleOptionSelect(index, option._id)}
-                                        >
-                                            <input
-                                                type="radio"
-                                                name={`quiz-${index}`}
-                                                value={option._id}
-                                                checked={selectedOptions[index] === option._id}
-                                                onChange={() => handleOptionSelect(index, option._id)}
-                                            />
-                                            <label>{option.text}</label>
-                                        </div>
-                                    ))}
-                                </div>
-                                <button
-                                    className={styles.submitQuizButton}
-                                    onClick={() => alert("Submit functionality not implemented!")}
-                                >
-                                    Submit
-                                </button>
-                            </>
-                        )}
+                </>
+            ) : (
+                <>
+                    <div className={styles.pollOptions}>
+                        {item.options.map((option) => (
+                            <div
+                                key={option._id}
+                                className={`${styles.option} ${selectedOptions[index] === option._id ? styles.selected : ""}`}
+                                onClick={() => handleOptionSelect(index, option._id)}
+                            >
+                                <input
+                                    type="radio"
+                                    name={`quiz-${index}`}
+                                    value={option._id}
+                                    checked={selectedOptions[index] === option._id}
+                                    onChange={() => handleOptionSelect(index, option._id)}
+                                />
+                                <label>{option.text}</label>
+                            </div>
+                        ))}
                     </div>
                     <button
-                        className={styles.viewCommentsButton}
-                        onClick={() => fetchComments(item._id)}
+                        className={styles.submitQuizButton}
+                        onClick={() => alert("Submit functionality not implemented!")}
                     >
-                        View Comments
+                        Submit
                     </button>
+                </>
+            )}
+        </div>
+        <button
+            className={styles.viewCommentsButton}
+            onClick={() => fetchComments(item._id)} // Fetch comments dynamically for this poll/quiz
+        >
+            View Comments
+        </button>
 
-                    {/* Comments Section */}
-                    {comments[item._id] && (
-                        <div className={styles.commentsContainer}>
-                            <h3>Comments</h3>
-                            {comments[item._id].length === 0 ? (
-                                <p>No comments yet. Be the first to comment!</p>
-                            ) : (
-                                comments[item._id].map((comment) => (
-                                    <div key={comment._id} className={styles.commentItem}>
-                                        <strong>{comment.userId.username}: </strong>
-                                        <span>{comment.content}</span>
-                                    </div>
-                                ))
-                            )}
-                            <div className={styles.commentForm}>
-                                <input
-                                    type="text"
-                                    value={commentInputs[item._id] || ""}
-                                    onChange={(e) => handleInputChange(item._id, e.target.value)}
-                                    placeholder="Add a comment..."
-                                    className={styles.commentInput}
-                                />
-                                <button
-                                    onClick={() => handleAddComment(item._id)}
-                                    className={styles.commentSubmitButton}
-                                >
-                                    Submit
-                                </button>
-                            </div>
+        {/* Comments Section */}
+        {comments[item._id] === undefined ? (
+            <p>Click "View Comments" to see comments for this post.</p>
+        ) : (
+            <div className={styles.commentsContainer}>
+                <h3>Comments</h3>
+                {comments[item._id].length === 0 ? (
+                    <p>Be the first one to comment!</p>
+                ) : (
+                    comments[item._id].map((comment) => (
+                        <div key={comment._id} className={styles.commentItem}>
+                            <strong>{comment.userId.username}: </strong>
+                            <span>{comment.content}</span>
                         </div>
-                    )}
+                    ))
+                )}
+                <div className={styles.commentForm}>
+                    <input
+                        type="text"
+                        value={commentInputs[item._id] || ""}
+                        onChange={(e) => handleInputChange(item._id, e.target.value)}
+                        placeholder="Add a comment..."
+                        className={styles.commentInput}
+                    />
+                    <button
+                        onClick={() => handleAddComment(item._id)}
+                        className={styles.commentSubmitButton}
+                    >
+                        Submit
+                    </button>
                 </div>
-            ))}
+            </div>
+        )}
+    </div>
+))}
+
         </>
     );
 }
