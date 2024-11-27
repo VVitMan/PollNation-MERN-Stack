@@ -1,11 +1,15 @@
 import { useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import styles from './CreatePollQuiz.module.css';
+import { useSelector } from 'react-redux';
 
 function CreatePollQuiz() {
   const [type, setType] = useState('Poll'); // Default type is 'Poll'
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false, explanation: '' }]);
   const [message, setMessage] = useState('');
+  const { currentUser } = useSelector((state) => state.user); // Logged-in user
+  const navigate = useNavigate();
 
   const handleOptionChange = (index, value) => {
     const updatedOptions = [...options];
@@ -61,6 +65,7 @@ function CreatePollQuiz() {
         // Reset form fields after successful submission
         setQuestion('');
         setOptions([{ text: '', correct: false, explanation: '' }]);
+        navigate(`/profile/${currentUser.username}`)
       } else {
         setMessage(`Error: ${data.message}`);
       }
@@ -70,21 +75,26 @@ function CreatePollQuiz() {
   };
 
   return (
-    <div className="create-poll-quiz-form">
-      <h2>Create a Poll or Quiz</h2>
-      {message && <p>{message}</p>}
+    <div className={styles.createPollQuizForm}>
+      <h2 className={styles.header}>Create a Poll or Quiz</h2>
+      {message && <p className={styles.message}>{message}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Type:</label>
-          <select value={type} onChange={handleTypeChange}>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Type:</label>
+          <select
+            className={styles.select}
+            value={type}
+            onChange={handleTypeChange}
+          >
             <option value="Poll">Poll</option>
             <option value="Quiz">Quiz</option>
           </select>
         </div>
 
-        <div>
-          <label>Question:</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Question:</label>
           <input
+            className={styles.input}
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
@@ -92,11 +102,12 @@ function CreatePollQuiz() {
           />
         </div>
 
-        <div>
-          <label>Options:</label>
+        <div className={styles.formGroup}>
+          <label className={styles.label}>Options:</label>
           {options.map((option, index) => (
-            <div key={index}>
+            <div className={styles.option} key={index}>
               <input
+                className={styles.optionInput}
                 type="text"
                 value={option.text}
                 onChange={(e) => handleOptionChange(index, e.target.value)}
@@ -104,7 +115,7 @@ function CreatePollQuiz() {
               />
               {type === 'Quiz' && (
                 <>
-                  <label>
+                  <label className={styles.correctCheckbox}>
                     <input
                       type="checkbox"
                       checked={option.correct}
@@ -113,6 +124,7 @@ function CreatePollQuiz() {
                     Correct Answer
                   </label>
                   <input
+                    className={styles.explanationInput}
                     type="text"
                     value={option.explanation}
                     placeholder="Explanation (optional)"
@@ -121,14 +133,28 @@ function CreatePollQuiz() {
                 </>
               )}
               {options.length > 1 && (
-                <button type="button" onClick={() => removeOption(index)}>Remove</button>
+                <button
+                  className={styles.removeButton}
+                  type="button"
+                  onClick={() => removeOption(index)}
+                >
+                  Remove
+                </button>
               )}
             </div>
           ))}
-          <button type="button" onClick={addOption}>Add Option</button>
+          <button
+            className={styles.addOptionButton}
+            type="button"
+            onClick={addOption}
+          >
+            Add Option
+          </button>
         </div>
 
-        <button type="submit">Create {type}</button>
+        <button className={styles.submitButton} type="submit">
+          Create {type}
+        </button>
       </form>
     </div>
   );
