@@ -1,3 +1,4 @@
+// ProfilePage component modification to correctly link to EditPollQuiz component for editing polls or quizzes
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -58,7 +59,7 @@ function ProfilePage() {
         ? data
         : data.filter(item => item.type === activeTab);
 
-    console.log("Filtered",filteredData)
+    console.log("Filtered", filteredData);
     return (
         <div className={styles.profilePage}>
             {/* Profile Header */}
@@ -114,7 +115,7 @@ function ProfilePage() {
                             <h2 className={styles.pollUsername}>{userData?.username}</h2>
                             {currentUser?.username === username && (
                                 /* Update Poll or Quiz */
-                                <Link to={`/update/poll-and-quiz/${item._id}`}>
+                                <Link to={`/update/poll-and-quiz/${item._id}?type=${item.type}`}>
                                     <FaPencilAlt className={styles.editIcon} />
                                 </Link>
                             )}

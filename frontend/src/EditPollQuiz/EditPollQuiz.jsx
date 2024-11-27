@@ -1,25 +1,34 @@
 // Frontend Component for Editing Poll/Quiz (EditPollQuiz.jsx)
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styles from './CreatePollQuiz.module.css';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import styles from "./EditPollQuiz.module.css";
 
 function EditPollQuiz() {
   const { id } = useParams();
-  const [type, setType] = useState('Poll');
-  const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState([{ text: '', correct: false, explanation: '' }]);
-  const [message, setMessage] = useState('');
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const type = queryParams.get("type");
+
+  const [question, setQuestion] = useState("");
+  const [options, setOptions] = useState([
+    { text: "", correct: false, explanation: "" },
+  ]);
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch the existing poll or quiz data
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/poll-and-quiz/${id}`);
+        const response = await fetch(`/api/poll-and-quiz/find/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Include credentials to send cookies
+        });
         const data = await response.json();
 
         if (response.ok) {
-          setType(data.type);
           setQuestion(data.question);
           setOptions(data.options);
         } else {
@@ -52,7 +61,7 @@ function EditPollQuiz() {
   };
 
   const addOption = () => {
-    setOptions([...options, { text: '', correct: false, explanation: '' }]);
+    setOptions([...options, { text: "", correct: false, explanation: "" }]);
   };
 
   const removeOption = (index) => {
@@ -64,19 +73,19 @@ function EditPollQuiz() {
 
     try {
       const response = await fetch(`/api/poll-and-quiz/update/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ question, type, options }),
-        credentials: 'include',
+        credentials: "include",
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage('Poll/Quiz updated successfully!');
-        navigate('/'); // Redirect to home after successful update
+        setMessage("Poll/Quiz updated successfully!");
+        navigate("/"); // Redirect to home after successful update
       } else {
         setMessage(`Error: ${data.message}`);
       }
@@ -112,13 +121,15 @@ function EditPollQuiz() {
                 onChange={(e) => handleOptionChange(index, e.target.value)}
                 required
               />
-              {type === 'Quiz' && (
+              {type === "Quiz" && (
                 <>
                   <label className={styles.correctCheckbox}>
                     <input
                       type="checkbox"
                       checked={option.correct}
-                      onChange={(e) => handleCorrectChange(index, e.target.checked)}
+                      onChange={(e) =>
+                        handleCorrectChange(index, e.target.checked)
+                      }
                     />
                     Correct Answer
                   </label>
@@ -127,7 +138,9 @@ function EditPollQuiz() {
                     type="text"
                     value={option.explanation}
                     placeholder="Explanation (optional)"
-                    onChange={(e) => handleExplanationChange(index, e.target.value)}
+                    onChange={(e) =>
+                      handleExplanationChange(index, e.target.value)
+                    }
                   />
                 </>
               )}
