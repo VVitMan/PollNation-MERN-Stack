@@ -6,7 +6,7 @@ import Quiz from '../models/quiz.model.js';
  * Add a new comment
  */
 export const addComment = async (req, res) => {
-    const { postId, content, parentCommentId } = req.body;
+    const { postId, content } = req.body; // Extract postId from the body
 
     if (!postId || !content) {
         return res.status(400).json({ error: 'postId and content are required.' });
@@ -24,17 +24,20 @@ export const addComment = async (req, res) => {
         }
 
         // Create and save the comment
-        const newComment = new Comment({ postId, userId, content, parentCommentId });
+        const newComment = new Comment({ postId, userId, content });
         await newComment.save();
 
         // Populate user details for the response
         const populatedComment = await newComment.populate('userId', 'username profilePicture');
+
         res.status(201).json(populatedComment);
     } catch (error) {
         console.error('Error adding comment:', error);
         res.status(500).json({ error: 'Failed to add comment.' });
     }
 };
+
+
 
 /**
  * Get all comments for a specific post

@@ -270,3 +270,147 @@ input[type="radio"] {
 .viewCommentsButton:hover {
     background-color: #dcdcdc;
 }
+
+
+/* No Comments Prompt */
+.noCommentsPrompt {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Comments Title */
+.commentsTitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+/* No Comments Message */
+.noCommentsMessage {
+    font-size: 14px;
+    color: #999;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Individual Comment Item */
+.commentItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Comment Profile Image */
+.commentProfileImage {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd; /* Add a subtle border */
+}
+
+/* Comment Content */
+.commentContent {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 14px;
+    color: #444;
+    width: 100%;
+    word-wrap: break-word; /* Ensure long text breaks gracefully */
+}
+
+/* Comment Author Name */
+.commentAuthor {
+    font-weight: bold;
+    font-size: 14px;
+    color: #0077ff; /* Highlight the username in blue */
+}
+
+/* Add Comment Section */
+.addComment {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    align-items: center;
+}
+
+/* Comment Input Field */
+.commentInput {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #333;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Slight inner shadow */
+}
+
+.commentInput:focus {
+    outline: none;
+    border-color: #0077ff;
+    box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
+}
+
+/* Comment Submit Button */
+.commentSubmitButton {
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.commentSubmitButton:hover {
+    background-color: #45a049;
+}
+
+.commentSubmitButton:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .commentsContainer {
+        width: 90%; /* Adjust width for smaller screens */
+        padding: 10px;
+    }
+
+    .commentItem {
+        flex-direction: column; /* Stack profile image and content vertically */
+        align-items: flex-start;
+    }
+
+    .commentProfileImage {
+        width: 50px; /* Larger size for smaller screens */
+        height: 50px;
+    }
+
+    .addComment {
+        flex-direction: column; /* Stack input and button */
+    }
+
+    .commentInput {
+        width: 100%; /* Full-width input field */
+    }
+
+    .commentSubmitButton {
+        width: 100%; /* Full-width button */
+        margin-top: 10px;
+    }
+}
