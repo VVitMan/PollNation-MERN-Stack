@@ -141,7 +141,7 @@ function ProfilePage() {
 
             {/* Floating '+' Button */}
             {currentUser?.username === username && (
-                <Link to="/edit-poll-or-quiz/new" className={styles.floatingButton}>
+                <Link to="/create/poll-and-quiz" className={styles.floatingButton}>
                     <FaPlus />
                 </Link>
             )}
