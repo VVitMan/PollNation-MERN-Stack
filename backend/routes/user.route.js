@@ -7,12 +7,12 @@ import {
     promoteToAdmin,
     adminDeleteUser,
     toggleBanUser,
+    submitReport, // Import the report submission handler
     getId,
 } from "../controllers/user.controller.js";
+import { getReportedUsers } from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 import { verifyAdmin  } from "../utils/verifyAdmin.js";
-import { submitReport } from "../controllers/user.controller.js";
-import { getReportedUsers } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
@@ -30,6 +30,6 @@ router.delete("/admin/delete/:userId", verifyToken, verifyAdmin, adminDeleteUser
 router.post("/admin/toggle-ban", verifyToken, verifyAdmin, toggleBanUser); // Admin bans/unbans a user
 
 // Define the POST route for `/reports`
-router.post("/reports", verifyToken, submitReport);
+router.post("/reports", verifyToken, submitReport); // Submit report against a user
 
 export default router;
