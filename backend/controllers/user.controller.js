@@ -56,3 +56,92 @@ export const deleteUser = async (req, res, next) => {
     }
 };
 
+
+/* V -------------- Admin System -------------- V */
+/* Admin-Specific: Fetch User Details */
+export const getUserDetails = async (req, res, next) => {
+    try {
+        if (!req.user.isAdmin) {
+            return next(errorCustom(403, "Access denied"));
+        }
+
+        const { userId } = req.params;
+        const user = await User.findById(userId).select("-password");
+
+        if (!user) {
+            return next(errorCustom(404, "User not found"));
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* Admin-Specific: Promote User to Admin */
+export const promoteToAdmin = async (req, res, next) => {
+    try {
+        if (!req.user.isAdmin) {
+            return next(errorCustom(403, "Access denied"));
+        }
+
+        const { userId } = req.body;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return next(errorCustom(404, "User not found"));
+        }
+
+        user.isAdmin = true;
+        await user.save();
+
+        res.status(200).json({ message: "User has been promoted to admin" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* Admin-Specific: Delete User */
+export const adminDeleteUser = async (req, res, next) => {
+    try {
+        if (!req.user.isAdmin) {
+            return next(errorCustom(403, "Access denied"));
+        }
+
+        const { userId } = req.params;
+        const user = await User.findByIdAndDelete(userId);
+
+        if (!user) {
+            return next(errorCustom(404, "User not found"));
+        }
+
+        res.status(200).json({ message: "User has been deleted successfully" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/* Admin-Specific: Toggle User Ban */
+export const toggleBanUser = async (req, res, next) => {
+    try {
+        if (!req.user.isAdmin) {
+            return next(errorCustom(403, "Access denied"));
+        }
+
+        const { userId } = req.body;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return next(errorCustom(404, "User not found"));
+        }
+
+        user.isBanned = !user.isBanned;
+        await user.save();
+
+        res.status(200).json({
+            message: `User has been ${user.isBanned ? "banned" : "unbanned"} successfully`,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
