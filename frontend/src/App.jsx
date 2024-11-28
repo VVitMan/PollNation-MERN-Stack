@@ -24,9 +24,7 @@ export default function App() {
         <br />
         
         {/* Navbar Component */}
-        <Navbar />
-
-        
+        <Navbar />        
         <br />
         <br />
         <Routes>
@@ -35,18 +33,16 @@ export default function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
 
-          {/* Private Routes */}
+          {/* Private Routes => ทำให้้ถ้าไม่ได้ login จะเด้งเข้าหน้า signin ทันที*/}
           <Route element={<PrivateRoute />}>
             <Route path="/profile/:username" element={<ProfilePage />} />
+            {/* Poll Routes */}
+            <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}  
+            <Route path="/update/poll-and-quiz/:postId" element={<EditPollQuiz />} /> {/* Edit/Poll Quiz Page */}
+            <Route path="/create/poll-and-quiz" element={<CreatePollAndQuiz />} />
           </Route>
 
-          <Route path="/community" element={<Community />} />
 
-          {/* Poll Routes */}
-          <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
-          <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
-          <Route path="/update/poll-and-quiz/:postId" element={<EditPollQuiz />} /> {/* Edit/Poll Quiz Page */}
-          <Route path="/create/poll-and-quiz" element={<CreatePollAndQuiz />} />
         </Routes>
       </div>
     </Router>
