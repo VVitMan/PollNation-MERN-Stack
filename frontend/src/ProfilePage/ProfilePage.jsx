@@ -114,7 +114,7 @@ function ProfilePage() {
                             <h2 className={styles.pollUsername}>{userData?.username}</h2>
                             {currentUser?.username === username && (
                                 /* Edit Poll or Quiz */
-                                <Link to={`/edit/poll-and-quiz/${item._id}`}>
+                                <Link to={`/update/poll-and-quiz/${item._id}`}>
                                     <FaPencilAlt className={styles.editIcon} />
                                 </Link>
                             )}
