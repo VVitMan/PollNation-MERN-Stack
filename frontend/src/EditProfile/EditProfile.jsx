@@ -12,7 +12,11 @@ import {
   updateUserStart,
   updateUserFailure,
   updateUserSuccess,
-} from "../redux/user/userSlice.js";
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+} from "../redux/user/userSlice.js"; // Ensure delete actions are imported
+
 
 function EditProfile() {
   const [formData, setFormData] = useState({
@@ -154,6 +158,30 @@ function EditProfile() {
   console.log("formData: ", formData);
   console.log("error state: ", error);
 
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      try {
+        dispatch(deleteUserStart());
+        const response = await fetch(`/api/user/delete/${currentUser._id}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to delete user");
+        }
+  
+        dispatch(deleteUserSuccess());
+        alert("Account deleted successfully.");
+        window.location.href = "/"; // Redirect to homepage after deletion
+      } catch (error) {
+        console.error("Delete Error: ", error.message);
+        dispatch(deleteUserFailure(error.message));
+      }
+    }
+  };
+
   return (
     <div className={styles.editProfile}>
       <h1>Edit Profile</h1>
@@ -249,6 +277,9 @@ function EditProfile() {
         <div className={styles.buttonGroup}>
           <button onClick={handleCancel} className={styles.cancelButton}>
             Cancel
+          </button>
+          <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
+            Delete Account
           </button>
           <button type="submit" className={styles.saveButton}>
             {loading ? "Loading..." : "Save"}

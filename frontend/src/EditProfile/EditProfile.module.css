@@ -163,3 +163,23 @@ h1 {
 .success_text {
     color: #047857; /* Tailwind's text-green-700 equivalent */
 }
+
+.deleteAccountSection {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .deleteAccountButton {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .deleteAccountButton:hover {
+    background-color: #e60000;
+  }
+  

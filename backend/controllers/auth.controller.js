@@ -106,3 +106,26 @@ export const google = async (req, res, next) => {
 export const signout = (req, res) => {
     res.clearCookie('access_token').status(200).json("User Logged Out Successfully");
 }
+
+/* Delete User */
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Find and delete the user
+        const user = await User.findByIdAndDelete(id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Clear authentication cookie if required
+        res.clearCookie('access_token');
+
+        // Respond with success
+        res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        next(error); // Pass error to the error handler
+    }
+};
+
