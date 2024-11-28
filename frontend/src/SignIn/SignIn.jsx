@@ -38,6 +38,7 @@ export default function SignIn() {
         body: JSON.stringify(formData), // Send form data
       });
       const data = await res.json();
+      // console.log("data:",data)
 
       // Check if the response indicates a failure
       if (data.success === false) {
@@ -53,6 +54,7 @@ export default function SignIn() {
     }
   };
 
+  console.log(error); // Log
   return (
     <div className={styles.signinContainer}>
       <h1 className={styles.title}>Sign In</h1>
@@ -98,7 +100,7 @@ export default function SignIn() {
       </div>
 
       {/* Error Message Display */}
-      {error && <p className={styles.errorMessage}>{error.message || "Something went wrong!"}</p>}
+      {error && <p className={styles.errorMessage}>{error.message || "Something went wrong"}</p>}
     </div>
   );
 }

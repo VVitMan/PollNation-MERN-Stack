@@ -112,13 +112,13 @@ function PollAll() {
             <img
               className={styles.cardImage}
               src={
-                item.userId.profilePicture ||
+                item.userId?.profilePicture ||
                 "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
               }
               alt="Profile"
-              onClick={() => navigate(`/profile/${item.userId.username}`)}
+              onClick={() => navigate(`/profile/${item.userId?.username}`)}
             />
-            <h2 className={styles.cardTitle}>{item.userId.username}</h2>
+            <h2 className={styles.cardTitle}>{item.userId?.username}</h2>
           </div>
           <p className={styles.cardDescription}>{item.question}</p>
           <div className={styles.voteInfo}>

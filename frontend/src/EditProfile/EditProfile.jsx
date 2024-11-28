@@ -16,9 +16,11 @@ import {
   deleteUserSuccess,
   deleteUserFailure,
 } from "../redux/user/userSlice.js"; // Ensure delete actions are imported
+import { useNavigate } from "react-router-dom";
 
 
 function EditProfile() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -33,6 +35,12 @@ function EditProfile() {
   const inputRef = useRef();
   const dispatch = useDispatch();
   const { currentUser, loading, error } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/sign-in");
+    }
+  }, [currentUser, navigate]);
 
   // Synchronize form data with current user
   useEffect(() => {
@@ -129,18 +137,16 @@ function EditProfile() {
         body: JSON.stringify(formData),
       });
 
-      // Check for HTTP errors
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to update user");
-      }
-
       const data = await response.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data));
+        return;
+      }
       dispatch(updateUserSuccess(data));
       setTextUpdateSuccess(true);
     } catch (error) {
       console.error("Update Error: ", error.message);
-      dispatch(updateUserFailure(error.message));
+      dispatch(updateUserFailure(error));
     }
   };
 
@@ -164,17 +170,19 @@ function EditProfile() {
         dispatch(deleteUserStart());
         const response = await fetch(`/api/user/delete/${currentUser._id}`, {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
         });
   
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to delete user");
+        const data = await response.json();
+        if (data.success === false) {
+          dispatch(deleteUserFailure(data));
+          return;
         }
-  
         dispatch(deleteUserSuccess());
         alert("Account deleted successfully.");
-        window.location.href = "/"; // Redirect to homepage after deletion
+        // Ensure state is cleared and then redirect
+        setTimeout(() => {
+          navigate("/"); // redirect back to home page after a short delay
+        }, 100); // short delay to ensure state has been reset
       } catch (error) {
         console.error("Delete Error: ", error.message);
         dispatch(deleteUserFailure(error.message));
@@ -286,6 +294,10 @@ function EditProfile() {
           </button>
         </div>
       </form>
+      
+      <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
+        Delete Account
+      </button>
 
       {/* State Update(error&success) */}
 
