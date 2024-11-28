@@ -286,15 +286,14 @@ function EditProfile() {
           <button onClick={handleCancel} className={styles.cancelButton}>
             Cancel
           </button>
-          <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
-            Delete Account
-          </button>
+  
           <button type="submit" className={styles.saveButton}>
             {loading ? "Loading..." : "Save"}
           </button>
         </div>
       </form>
       
+      {/* Delete Account */}
       <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
         Delete Account
       </button>
