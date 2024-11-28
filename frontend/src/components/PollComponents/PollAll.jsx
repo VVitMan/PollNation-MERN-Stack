@@ -204,17 +204,17 @@ function PollAll() {
                 </p>
               ) : (
                 comments[item._id]?.map((comment) => (
-                  <div key={comment._id} className={styles.commentItem}>
-                  {console.log(comment.userId?.profilePicture)}
-                  <img
-  src={
-    comment.userId?.profilePicture && comment.userId.profilePicture.trim() !== ""
-      ? comment.userId.profilePicture
-      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-  }
-  alt="Profile"
-  className={styles.commentProfileImage}
-/>
+                    <div key={comment._id} className={styles.commentItem}>
+                    {console.log(comment.userId?.profilePicture)}
+                    <img
+                        src={
+                            comment.userId?.profilePicture && comment.userId.profilePicture.trim() !== ""
+                            ? comment.userId.profilePicture
+                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                        }
+                        alt="Profile"
+                        className={styles.commentProfileImage}
+                    />
 
                     <div className={styles.commentContent}>
                       <strong className={styles.commentAuthor}>
