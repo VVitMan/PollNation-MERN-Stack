@@ -68,6 +68,30 @@ function ProfilePage() {
             setReportStatus("Failed to submit report.");
         }
     };
+    /* Handle Report Submission */
+const handleReport = async () => {
+    if (!reportReason) {
+        setReportStatus("Please provide a reason for reporting.");
+        return;
+    }
+
+    try {
+        const response =  await fetch("/api/user/reports", {
+                reportedUserId: userData._id, // Ensure userData is defined
+                reason: reportReason, // Ensure reportReason is defined
+            }
+        );
+
+        setReportStatus("Report submitted successfully!");
+        setReportReason(""); // Reset input
+        setShowReportForm(false); // Hide the form
+    } catch (error) {
+        const errorMessage = error.response?.data?.message || error.message;
+        console.error("Error submitting report:", errorMessage); // Log actual error
+        setReportStatus("Failed to submit report.");
+    }
+};
+
 
     /* Loading State */
     if (loading) {
@@ -123,6 +147,7 @@ function ProfilePage() {
                                     className={styles.reportTextarea}
                                 />
                                 <div>
+                                <div className={styles.buttonContainer}>
                                 <button
                                     onClick={() => setShowReportForm(false)}
                                     className={styles.cancelButton}

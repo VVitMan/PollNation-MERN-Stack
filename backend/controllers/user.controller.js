@@ -1,5 +1,6 @@
 import { errorCustom } from "../utils/errorCustom.js";
 import bcryptjs from "bcryptjs";
+import Report from "../models/report.model.js";
 import User from "../models/user.model.js";
 
 export const test = (req, res) => {
@@ -67,6 +68,7 @@ export const submitReport = async (req, res, next) => {
 
     try {
         // Verify the reported user exists
+        // Ensure the reported user exists
         const reportedUser = await User.findById(reportedUserId);
         if (!reportedUser) {
             return res.status(404).json({ message: "Reported user not found." });
@@ -76,6 +78,7 @@ export const submitReport = async (req, res, next) => {
         const report = new Report({
             reportedUserId,
             reporterUserId: req.user.id, // Assuming req.user is populated by verifyToken middleware
+            reporterUserId: req.user.id,
             reason,
         });
 
@@ -89,6 +92,7 @@ export const submitReport = async (req, res, next) => {
     } catch (error) {
         console.error("Error submitting report:", error);
         next(error); // Pass error to the error handling middleware
+        next(error);
     }
 };
 
