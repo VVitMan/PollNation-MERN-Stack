@@ -218,7 +218,7 @@ function PollAll() {
 
                     <div className={styles.commentContent}>
                       <strong className={styles.commentAuthor}>
-                        {comment.userId.username}:{" "}
+                        {comment.userId?.username || "Unknown"}
                       </strong>
                       <span>{comment.content}</span>
                     </div>
