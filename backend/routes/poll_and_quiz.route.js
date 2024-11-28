@@ -9,10 +9,10 @@ router.get('/:username', getPollsAndQuizzesByUser);
 router.post('/create', verifyToken, createPollAndQuiz);
 
 /* Get Poll and Quiz by ID of poll or quiz */
-router.get('/find/:id', getPollsAndQuizzesById);
+router.get('/find/:postId', getPollsAndQuizzesById);
 
 /* Update Poll or Quizz by ID */
-router.put('/update/:id', verifyToken, updatePollAndQuiz);
+router.put('/update/:postId', verifyToken, updatePollAndQuiz);
 
 
 export default router;
