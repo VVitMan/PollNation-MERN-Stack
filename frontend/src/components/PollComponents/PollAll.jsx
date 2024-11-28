@@ -43,7 +43,7 @@ function PollAll() {
     // If comments are being shown and not already loaded, fetch them
     if (!visibleComments[postId] && !comments[postId]) {
       try {
-        const response = await fetch(`/api/comments/posts/${postId}/comments`, {
+        const response = await fetch(`/api/comments/find/posts/${postId}`, {
           method: "GET",
           credentials: "include",
         });
@@ -63,7 +63,7 @@ function PollAll() {
     setLoadingPostId(postId); // Indicate which post is being processed
 
     try {
-      const response = await fetch("/api/comments", {
+      const response = await fetch("/api/comments/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
