@@ -168,20 +168,37 @@
     background-color: #4CAF50; /* Green */
     color: white;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 70px; /* Larger size */
+    height: 70px; /* Larger size */
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 24px;
+    font-size: 32px; /* Larger font size */
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s ease, transform 0.2s ease;
     text-decoration: none;
+    animation: highlightEffect 1s ease-out; /* Trigger animation on load */
 }
 
+/* Hover effect */
 .floatingButton:hover {
     background-color: #45a049; /* Darker Green on hover */
     transform: scale(1.1);
 }
 
+/* Keyframes for the highlight effect */
+@keyframes highlightEffect {
+    0% {
+        transform: scale(0.8); /* Start smaller */
+        opacity: 0.5; /* Slightly transparent */
+    }
+    50% {
+        transform: scale(1.2); /* Scale up */
+        opacity: 1; /* Fully visible */
+    }
+    100% {
+        transform: scale(1); /* Return to normal size */
+        opacity: 1;
+    }
+}

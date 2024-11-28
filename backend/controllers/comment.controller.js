@@ -32,7 +32,7 @@ export const addComment = async (req, res) => {
 
         res.status(201).json(populatedComment);
     } catch (error) {
-        console.error('Error adding comment:', error);
+        console.error('[From Comment Controller] Error adding comment:', error);
         res.status(500).json({ error: 'Failed to add comment.' });
     }
 };
