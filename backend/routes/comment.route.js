@@ -9,12 +9,12 @@ import {
 const router = express.Router();
 
 // Route to add a new comment
-router.post('/', verifyToken, addComment);
+router.post('/create', verifyToken, addComment);
 
 // Route to get all comments for a specific post (poll/quiz)
-router.get('/posts/:postId/comments', getCommentsByPost);
+router.get('/find/posts/:postId', getCommentsByPost);
 
 // Route to delete a specific comment by ID
-router.delete('/:commentId', verifyToken, deleteComment);
+router.delete('/delete/:commentId', verifyToken, deleteComment);
 
 export default router;
