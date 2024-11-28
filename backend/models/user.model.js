@@ -26,6 +26,8 @@ const userSchema = new mongoose.Schema(
       // maxlength: 200, // Limit bio to 200 characters
       default: "This is your bio", // Default value if no bio is provided
     },
+    isBanned: { type: Boolean, default: false }, // Field to track if the user is banned
+    reportCount: { type: Number, default: 0 },  // Field to track the number of reports
   },
   { timestamps: true }
 );
