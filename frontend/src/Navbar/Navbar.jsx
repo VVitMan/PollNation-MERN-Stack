@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Navbar.module.css";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { signOut } from "../redux/user/userSlice";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [active, setActive] = useState("Home");
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for the dropdown
   const [loading, setLoading] = useState(true); // Loading state
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   // Simulate loading user data => loading
   useEffect(() => {
-    // Set loading to false when currentUser is checked, regardless of value
     setLoading(false);
   }, [currentUser]);
 
@@ -19,9 +21,18 @@ function Navbar() {
     setIsOpen(!isOpen);
   };
 
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
+  };
+
   const handleLinkClick = (link) => {
     setActive(link);
     setIsOpen(false); // Close the menu after clicking a link on mobile
+    setDropdownOpen(false); // Close the dropdown when navigating
+  };
+
+  const handleLogout = () => {
+    dispatch(signOut());
   };
 
   return (
@@ -46,18 +57,32 @@ function Navbar() {
         {loading ? (
           <li className={styles.loading}>Loading...</li>
         ) : currentUser ? (
-          <li
-            key="Profile"
-            onClick={() => handleLinkClick("Profile")}
-            className={active === "Profile" ? styles.active : ""}
-          >
-            <Link to={`/profile/${currentUser?.username}`}>{currentUser?.username}</Link>
-            {currentUser.profilePicture && (
-              <img
-                src={currentUser?.profilePicture || "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1731505734~exp=1731509334~hmac=9bea33c021abe0f8cd8cef8a3b9ff9af22f3ca8c201701e289c588f4c559d20e&w=1060"} // ใส่รูป default ไป รูปในgoogle ขึ้นเลย
-                alt="Profile"
-                className={styles.profilePic}
-              />
+          <li className={styles.profile}>
+            <div onClick={toggleDropdown} className={styles.profileToggle}>
+              <span>{currentUser?.username}</span>
+              {currentUser.profilePicture && (
+                <img
+                  src={
+                    currentUser?.profilePicture ||
+                    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                  }
+                  alt="Profile"
+                  className={styles.profilePic}
+                />
+              )}
+              <span className={styles.arrow}>
+                {dropdownOpen ? "▲" : "▼"}
+              </span>
+            </div>
+            {dropdownOpen && (
+              <ul className={styles.dropdownMenu}>
+                <li>
+                  <Link to={`/profile/${currentUser?.username}`}>Profile</Link>
+                </li>
+                <li onClick={handleLogout} className={styles.logoutButton}>
+                  Logout
+                </li>
+              </ul>
             )}
           </li>
         ) : (
@@ -70,6 +95,7 @@ function Navbar() {
           </li>
         )}
       </ul>
+
       <div className={styles.hamburger} onClick={toggleMenu}>
         <span className={styles.line}></span>
         <span className={styles.line}></span>

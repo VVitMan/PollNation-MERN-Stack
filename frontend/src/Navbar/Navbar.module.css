@@ -76,6 +76,64 @@ a:hover {
     margin-left: 9px;
     vertical-align: middle;
 }
+/* Dropdown Container */
+.dropdownMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #333;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    padding: 10px 0;
+    min-width: 150px;
+    z-index: 1000;
+}
+
+.dropdownMenu li {
+    padding: 10px 15px;
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+}
+
+.dropdownMenu li:hover {
+    background-color: #444;
+}
+
+/* Profile Section */
+.profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profileToggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profileToggle span {
+    margin-right: 5px;
+    color: #fff;
+}
+
+.arrow {
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+/* Logout Button */
+.logoutButton {
+    color: red;
+    font-weight: bold;
+    text-align: left;
+}
+
+.logoutButton:hover {
+    color: darkred;
+}
 
 /* Responsive styling */
 @media (max-width: 768px) {
