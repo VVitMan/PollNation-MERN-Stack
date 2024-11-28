@@ -30,6 +30,7 @@ router.delete("/admin/delete/:userId", verifyToken, verifyAdmin, adminDeleteUser
 router.post("/admin/toggle-ban", verifyToken, verifyAdmin, toggleBanUser); // Admin bans/unbans a user
 
 // Define the POST route for `/reports`
+// Report Submission
 router.post("/reports", verifyToken, submitReport); // Submit report against a user
 
 export default router;

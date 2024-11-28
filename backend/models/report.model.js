@@ -1,26 +1,10 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema({
-    reportedUserId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // References the User model
-        required: true,
-    },
-    reporterUserId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User", // References the User model
-        required: true,
-    },
-    reason: {
-        type: String,
-        required: true,
-        trim: true, // Removes leading/trailing spaces
-        maxlength: 500, // Optional: Limit the length of the reason
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now, // Automatically sets the current timestamp
-    },
+  reportedUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // The user being reported
+  reporterUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // The user reporting
+  reason: { type: String, required: true }, // Reason for the report
+  createdAt: { type: Date, default: Date.now }, // Timestamp of the report
 });
 
-export default mongoose.model("Report", reportSchema);
+module.exports = mongoose.model('Report', reportSchema);
