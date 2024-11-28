@@ -93,7 +93,7 @@ function CreatePollQuiz() {
 
         <div className={styles.formGroup}>
           <label className={styles.label}>Question:</label>
-          <input
+          <textarea
             className={styles.input}
             type="text"
             value={question}
