@@ -205,14 +205,17 @@ function PollAll() {
               ) : (
                 comments[item._id]?.map((comment) => (
                   <div key={comment._id} className={styles.commentItem}>
+                  {console.log(comment.userId?.profilePicture)}
                   <img
-                      src={
-                      comment.userId?.profilePicture || 
-                      "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-                  }
-                  alt="Profile"
-                  className={styles.commentProfileImage}
-                  />
+  src={
+    comment.userId?.profilePicture && comment.userId.profilePicture.trim() !== ""
+      ? comment.userId.profilePicture
+      : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+  }
+  alt="Profile"
+  className={styles.commentProfileImage}
+/>
+
                     <div className={styles.commentContent}>
                       <strong className={styles.commentAuthor}>
                         {comment.userId.username}:{" "}

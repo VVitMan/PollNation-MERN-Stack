@@ -76,9 +76,9 @@ function Navbar() {
             </div>
             {dropdownOpen && (
               <ul className={styles.dropdownMenu}>
-                <li>
-                  <Link to={`/profile/${currentUser?.username}`}>Profile</Link>
-                </li>
+                <Link to={`/profile/${currentUser?.username}`}><li>
+                  Profile
+                </li></Link>
                 <li onClick={handleLogout} className={styles.logoutButton}>
                   Logout
                 </li>
