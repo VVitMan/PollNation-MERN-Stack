@@ -226,7 +226,7 @@ function PollAll() {
                 ))
               )}
               <div className={styles.addComment}>
-                <input
+                <textarea
                   type="text"
                   value={commentInputs[item._id] || ""}
                   onChange={(e) => handleInputChange(item._id, e.target.value)}
@@ -238,7 +238,7 @@ function PollAll() {
                   className={styles.commentSubmitButton}
                   disabled={loadingPostId === item._id} // Disable button while submitting
                 >
-                  {loadingPostId === item._id ? "Submitting..." : "Submit"}
+                  {loadingPostId === item._id ? "Posting..." : "Post"}
                 </button>
               </div>
             </div>
