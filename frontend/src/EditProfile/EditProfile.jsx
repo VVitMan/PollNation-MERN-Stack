@@ -18,7 +18,6 @@ import {
 } from "../redux/user/userSlice.js"; // Ensure delete actions are imported
 import { useNavigate } from "react-router-dom";
 
-
 function EditProfile() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -72,24 +71,24 @@ function EditProfile() {
     const file = e.target.files[0]; // Get the selected file
 
     if (file) {
-        // File size validation (4 MB = 4 * 1024 * 1024 bytes)
-        if (file.size > 4 * 1024 * 1024) {
-            setImageError(true); // Set error state
-            alert("File size must be less than 4 MB.");
-            return; // Exit without setting the image
-        }
+      // File size validation (4 MB = 4 * 1024 * 1024 bytes)
+      if (file.size > 4 * 1024 * 1024) {
+        setImageError(true); // Set error state
+        alert("File size must be less than 4 MB.");
+        return; // Exit without setting the image
+      }
 
-        // File type validation (ensure it's an image)
-        if (!file.type.startsWith("image/")) {
-            setImageError(true); // Set error state
-            alert("Only image files are allowed.");
-            return; // Exit without setting the image
-        }
+      // File type validation (ensure it's an image)
+      if (!file.type.startsWith("image/")) {
+        setImageError(true); // Set error state
+        alert("Only image files are allowed.");
+        return; // Exit without setting the image
+      }
 
-        setImage(file); // Set the image for upload
-        setImageError(false); // Reset the error state
+      setImage(file); // Set the image for upload
+      setImageError(false); // Reset the error state
     }
-};
+  };
 
   const handleImageUpload = async (image) => {
     setImageError(false); // Reset error state for a new upload
@@ -165,13 +164,17 @@ function EditProfile() {
   console.log("error state: ", error);
 
   const handleDeleteAccount = async () => {
-    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
       try {
         dispatch(deleteUserStart());
         const response = await fetch(`/api/user/delete/${currentUser._id}`, {
           method: "DELETE",
         });
-  
+
         const data = await response.json();
         if (data.success === false) {
           dispatch(deleteUserFailure(data));
@@ -193,113 +196,117 @@ function EditProfile() {
   return (
     <div className={styles.editProfile}>
       <h1>Edit Profile</h1>
-      <form onSubmit={handleSubmit}>
-        <div className={styles.pictureSection}>
-          <div className={styles.profilePicContainer}>
-            <div className={styles.imageWrapper}>
-              <input
-                type="file"
-                ref={inputRef}
-                hidden
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-              {/* Image */}
-              <img
-                src={formData.profilePicture || currentUser.profilePicture}
-                alt="Profile"
-                className={styles.profilePic}
-              />
-              <div className={styles.hoverEffect}>
-                <i
-                  className="fas fa-edit"
-                  onClick={() => inputRef.current.click()}
-                >
-                  Edit
-                </i>
+
+      {/* Container for Form and Delete Button */}
+      <div className={styles.formAndButtonContainer}>
+        <form onSubmit={handleSubmit}>
+          <div className={styles.pictureSection}>
+            {/* Profile Picture Section */}
+            <div className={styles.profilePicContainer}>
+              <div className={styles.imageWrapper}>
+                <input
+                  type="file"
+                  ref={inputRef}
+                  hidden
+                  accept="image/*"
+                  onChange={handleImageChange}
+                />
+                <img
+                  src={formData.profilePicture || currentUser.profilePicture}
+                  alt="Profile"
+                  className={styles.profilePic}
+                />
+                <div className={styles.hoverEffect}>
+                  <i
+                    className="fas fa-edit"
+                    onClick={() => inputRef.current.click()}
+                  >
+                    Edit
+                  </i>
+                </div>
               </div>
             </div>
+            <p className={styles.image_status}>
+              {imageError ? (
+                <span className={styles.error_text}>
+                  Error uploading image (file size must be less than 4 MB)
+                </span>
+              ) : imagePercent > 0 && imagePercent < 100 ? (
+                <span className={styles.uploading_text}>
+                  {`Uploading: ${imagePercent} %`}
+                </span>
+              ) : imagePercent === 100 ? (
+                <span className={styles.success_text}>
+                  Image uploaded successfully
+                </span>
+              ) : (
+                ""
+              )}
+            </p>
+            <p className={styles.recommendationText}>
+              Use a picture at least 100x100 pixels and less than 4MB.
+            </p>
           </div>
-          <p className={styles.image_status}>
-            {imageError ? (
-              <span className={styles.error_text}>
-                Error uploading image (file size must be less than 4 MB)
-              </span>
-            ) : imagePercent > 0 && imagePercent < 100 ? (
-              <span
-                className={styles.uploading_text}
-              >{`Uploading: ${imagePercent} %`}</span>
-            ) : imagePercent === 100 ? (
-              <span className={styles.success_text}>
-                Image uploaded successfully
-              </span>
-            ) : (
-              ""
-            )}
-          </p>
-          <p className={styles.recommendationText}>
-            Use a picture at least 100x100 pixels and less than 4MB.
-          </p>
-        </div>
 
-        {/* Username */}
-        <label className={styles.label}>Username</label>
-        <input
-          type="text"
-          id="username"
-          value={formData.username}
-          onChange={handleChange}
-          className={styles.input}
-        />
+          {/* Form Fields */}
+          <label className={styles.label}>Username</label>
+          <input
+            type="text"
+            id="username"
+            value={formData.username}
+            onChange={handleChange}
+            className={styles.input}
+          />
 
-        {/* Email */}
-        <label className={styles.label}>Email</label>
-        <input
-          type="text"
-          id="email"
-          value={formData.email}
-          onChange={handleChange}
-          className={styles.input}
-        />
+          <label className={styles.label}>Email</label>
+          <input
+            type="text"
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={styles.input}
+          />
 
-        {/* Password */}
-        <label className={styles.label}>Password</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Password"
-          onChange={handleChange}
-          className={styles.input}
-        />
+          <label className={styles.label}>Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            onChange={handleChange}
+            className={styles.input}
+          />
 
-        {/* Description */}
-        <label className={styles.label}>Description</label>
-        <textarea
-          id="description"
-          value={formData.description}
-          onChange={handleChange}
-          className={styles.textarea}
-        />
+          <label className={styles.label}>Description</label>
+          <textarea
+            id="description"
+            value={formData.description}
+            onChange={handleChange}
+            className={styles.textarea}
+          />
 
-        {/* Button Group */}
-        <div className={styles.buttonGroup}>
-          <button onClick={handleCancel} className={styles.cancelButton}>
-            Cancel
-          </button>
-  
-          <button type="submit" className={styles.saveButton}>
-            {loading ? "Loading..." : "Save"}
+          {/* Button Group Inside the Form */}
+          <div className={styles.buttonGroup}>
+            <button onClick={handleCancel} className={styles.cancelButton}>
+              Cancel
+            </button>
+            <button type="submit" className={styles.saveButton}>
+              {loading ? "Loading..." : "Save"}
+            </button>
+          </div>
+        </form>
+
+        {/* Delete Account Button Outside the Form */}
+        <div className={styles.deleteButtonContainer}>
+          <button
+            className={styles.deleteAccountButton}
+            onClick={handleDeleteAccount}
+          >
+            Delete Account
           </button>
         </div>
-      </form>
-      
-      {/* Delete Account */}
-      <button className={styles.deleteAccountButton} onClick={handleDeleteAccount}>
-        Delete Account
-      </button>
+      </div>
 
-      {/* State Update(error&success) */}
-
+      {/* State Update (error & success) */}
       <p className={styles.error_text}>{error && "Something went wrong"}</p>
       <p className={styles.success_text}>
         {textUpdateSuccess && "User is Updated successfully"}
