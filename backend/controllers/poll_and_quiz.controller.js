@@ -7,6 +7,7 @@ import Comment from '../models/comment.model.js';
 /* Get Poll and Quiz with Comment from all users */
 export const getAllPollsAndQuizzes = async (req, res) => {
     try {
+        console.log("Fetching all polls and quizzes...");
         const polls = await Poll.find().populate('userId', 'username profilePicture');
         const quizzes = await Quiz.find().populate('userId', 'username profilePicture');
 
@@ -14,11 +15,13 @@ export const getAllPollsAndQuizzes = async (req, res) => {
             ...polls.map(poll => ({ ...poll._doc, type: 'Poll' })),
             ...quizzes.map(quiz => ({ ...quiz._doc, type: 'Quiz' })),
         ];
+        console.log("Data fetched:", combinedData);
 
         // Fetch comments for each post (poll or quiz)
         for (const item of combinedData) {
             item.comments = await Comment.find({ postId: item._id }).sort({ timestamp: -1 });
         }
+        console.log("Comment fetched:", item.comments);
 
         res.status(200).json(combinedData);
     } catch (error) {

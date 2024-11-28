@@ -47,32 +47,6 @@ function ProfilePage() {
         fetchData();
     }, [username]);
 
-    /* Handle Report Submission */
-    /* Handle Report Submission */
-const handleReport = async () => {
-    if (!reportReason) {
-        setReportStatus("Please provide a reason for reporting.");
-        return;
-    }
-
-    try {
-        const response =  await fetch("/api/user/reports", {
-                reportedUserId: userData._id, // Ensure userData is defined
-                reason: reportReason, // Ensure reportReason is defined
-            }
-        );
-
-        setReportStatus("Report submitted successfully!");
-        setReportReason(""); // Reset input
-        setShowReportForm(false); // Hide the form
-    } catch (error) {
-        const errorMessage = error.response?.data?.message || error.message;
-        console.error("Error submitting report:", errorMessage); // Log actual error
-        setReportStatus("Failed to submit report.");
-    }
-};
-
-
     /* Loading State */
     if (loading) {
         return <div className={styles.loading}>Loading...</div>;
@@ -86,6 +60,48 @@ const handleReport = async () => {
     /* Filter Data */
     const filteredData = activeTab === "All" ? data : data.filter((item) => item.type === activeTab);
 
+    /* Handle Report Submission */
+    const handleReport = async () => {
+        if (!reportReason) {
+            setReportStatus("Please provide a reason for reporting.");
+            return;
+        }
+    
+        try {
+            // Fetch User ID by username
+            const response = await fetch(`/api/user/id/${username}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user ID: ${response.status}`);
+            }
+            const data = await response.json();
+            const userId = data.userId;
+    
+            // Submit the report
+            const reportResponse = await fetch("/api/user/reports", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    reportedUserId: userId,
+                    reason: reportReason,
+                }),
+            });
+    
+            if (!reportResponse.ok) {
+                const errorData = await reportResponse.json();
+                throw new Error(errorData.message || `HTTP error! Status: ${reportResponse.status}`);
+            }
+    
+            setReportStatus("Report submitted successfully!");
+            setReportReason(""); // Reset input
+            setShowReportForm(false); // Hide the form
+        } catch (error) {
+            console.error("Error submitting report:", error.message);
+            setReportStatus(error.message || "Failed to submit report.");
+        }
+    };
+    
     return (
         <div className={styles.profilePage}>
             {/* Profile Header */}

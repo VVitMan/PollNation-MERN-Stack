@@ -2,6 +2,7 @@ import { errorCustom } from "../utils/errorCustom.js";
 import bcryptjs from "bcryptjs";
 import Report from "../models/report.model.js";
 import User from "../models/user.model.js";
+import Report from "../models/report.model.js";
 
 export const test = (req, res) => {
     res.json({
@@ -57,27 +58,44 @@ export const deleteUser = async (req, res, next) => {
     }
 };
 
+/* Get ID by name */
+export const getId = async (req, res, next) => {
+    try {
+        const { username } = req.params; // Directly extract `username` from `req.params`
+
+        // Find the user by their username
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        console.log(res.status(200).json({ userId: user._id }))
+        res.status(200).json({ userId: user._id }); // Return the user's ID
+    } catch (error) {
+        console.error("Error fetching user ID:", error);
+        next(error); // Pass the error to the error-handling middleware
+    }
+}
+
 /* Report System */
 // Submit a report against a user
 export const submitReport = async (req, res, next) => {
+    const { reportedUserId, reason } = req.body;
 
     if (!reportedUserId || !reason) {
         return res.status(400).json({ message: "Missing required fields: reportedUserId and reason." });
     }
 
     try {
-        // Ensure the reported user exists
         const reportedUser = await User.findById(reportedUserId);
         if (!reportedUser) {
             return res.status(404).json({ message: "Reported user not found." });
         }
 
-        // Prevent self-reporting
         if (req.user.id === reportedUserId) {
             return res.status(400).json({ message: "You cannot report yourself." });
         }
 
-        // Create the report
         const report = new Report({
             reportedUserId,
             reporterUserId: req.user.id,
@@ -85,7 +103,6 @@ export const submitReport = async (req, res, next) => {
         });
 
         await report.save();
-
         res.status(201).json({ message: "Report submitted successfully." });
     } catch (error) {
         console.error("Error submitting report:", error);
@@ -180,5 +197,38 @@ export const toggleBanUser = async (req, res, next) => {
         });
     } catch (error) {
         next(error);
+    }
+};
+
+/* Admin-Specific: */
+export const getReportedUsers = async (req, res, next) => {
+    try {
+        // Aggregate reports to group by reported user, count reports, and fetch reasons/reporters
+        const reports = await Report.aggregate([
+            {
+                $group: {
+                    _id: "$reportedUserId", // Group by reportedUserId
+                    count: { $sum: 1 }, // Count the number of reports
+                    reasons: { $push: "$reason" }, // Collect reasons for reports
+                    reporters: { $push: "$reporterUserId" }, // Collect reporter IDs
+                },
+            },
+            {
+                $lookup: {
+                    from: "users", // Join with User collection
+                    localField: "_id", // Match reportedUserId
+                    foreignField: "_id", // Match with users' _id
+                    as: "userDetails", // Add user details to the result
+                },
+            },
+            {
+                $sort: { count: -1 }, // Sort by the number of reports in descending order
+            },
+        ]);
+
+        res.status(200).json(reports); // Send the aggregated reports as a response
+    } catch (error) {
+        console.error("Error fetching reported users:", error);
+        next(error); // Pass the error to the error-handling middleware
     }
 };
