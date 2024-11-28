@@ -56,6 +56,42 @@ export const deleteUser = async (req, res, next) => {
     }
 };
 
+/* Report System */
+// Submit a report against a user
+export const submitReport = async (req, res, next) => {
+    const { reportedUserId, reason } = req.body;
+
+    if (!reportedUserId || !reason) {
+        return res.status(400).json({ message: "Missing required fields: reportedUserId and reason." });
+    }
+
+    try {
+        // Verify the reported user exists
+        const reportedUser = await User.findById(reportedUserId);
+        if (!reportedUser) {
+            return res.status(404).json({ message: "Reported user not found." });
+        }
+
+        // Create the report
+        const report = new Report({
+            reportedUserId,
+            reporterUserId: req.user.id, // Assuming req.user is populated by verifyToken middleware
+            reason,
+        });
+
+        await report.save();
+
+        // Optionally increment report count on the reported user's profile
+        reportedUser.reportCount = (reportedUser.reportCount || 0) + 1;
+        await reportedUser.save();
+
+        res.status(201).json({ message: "Report submitted successfully." });
+    } catch (error) {
+        console.error("Error submitting report:", error);
+        next(error); // Pass error to the error handling middleware
+    }
+};
+
 
 /* V -------------- Admin System -------------- V */
 /* Admin-Specific: Fetch User Details */
