@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import styles from './ProfilePage.module.css';
-import { FaPencilAlt, FaPlus } from 'react-icons/fa';
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import styles from "./ProfilePage.module.css";
+import { FaPencilAlt, FaPlus } from "react-icons/fa";
 
 function ProfilePage() {
     const { username } = useParams(); // Get username from URL
@@ -12,6 +13,9 @@ function ProfilePage() {
     const [activeTab, setActiveTab] = useState("All");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showReportForm, setShowReportForm] = useState(false); // Toggle report form visibility
+    const [reportReason, setReportReason] = useState(""); // For report functionality
+    const [reportStatus, setReportStatus] = useState(""); // To show feedback on reporting
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -22,8 +26,8 @@ function ProfilePage() {
             try {
                 setLoading(true);
                 const response = await fetch(`/api/poll-and-quiz/${username}`, {
-                    method: 'GET',
-                    credentials: 'include', // Include cookies for authentication
+                    method: "GET",
+                    credentials: "include", // Include cookies for authentication
                 });
 
                 if (!response.ok) {
@@ -34,8 +38,8 @@ function ProfilePage() {
                 setUserData(result.user);
                 setData(result.data); // Set polls and quizzes
             } catch (error) {
-                setError('Failed to load profile data.');
-                console.error('Error fetching profile data:', error);
+                setError("Failed to load profile data.");
+                console.error("Error fetching profile data:", error);
             } finally {
                 setLoading(false);
             }
@@ -44,28 +48,50 @@ function ProfilePage() {
         fetchData();
     }, [username]);
 
-    /* Effect loading Text */
+    /* Handle Report Submission */
+    const handleReport = async () => {
+        if (!reportReason) {
+            setReportStatus("Please provide a reason for reporting.");
+            return;
+        }
+
+        try {
+            const response = await axios.post("/api/user/reports", {
+                reportedUserId: userData._id,
+                reason: reportReason,
+            });
+            setReportStatus("Report submitted successfully!");
+            setReportReason(""); // Reset reason input
+            setShowReportForm(false); // Hide the form after submission
+        } catch (error) {
+            console.error("Error submitting report:", error.response?.data.message || error.message);
+            setReportStatus("Failed to submit report.");
+        }
+    };
+
+    /* Loading State */
     if (loading) {
         return <div className={styles.loading}>Loading...</div>;
     }
 
-    /* Error message */
+    /* Error State */
     if (error) {
-        return <div className={styles.error}>Some Went Wrong</div>;
+        return <div className={styles.error}>Something went wrong</div>;
     }
 
-    const filteredData = activeTab === "All"
-        ? data
-        : data.filter(item => item.type === activeTab);
+    /* Filter Data */
+    const filteredData = activeTab === "All" ? data : data.filter((item) => item.type === activeTab);
 
-    console.log("Filtered",filteredData)
     return (
         <div className={styles.profilePage}>
             {/* Profile Header */}
             <div className={styles.profileHeader}>
                 <img
                     className={styles.profileImage}
-                    src={userData?.profilePicture || 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1731505734~exp=1731509334~hmac=9bea33c021abe0f8cd8cef8a3b9ff9af22f3ca8c201701e289c588f4c559d20e&w=1060'}
+                    src={
+                        userData?.profilePicture ||
+                        "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                    }
                     alt="Profile"
                 />
                 <h1 className={styles.username}>
@@ -77,6 +103,45 @@ function ProfilePage() {
                     )}
                 </h1>
                 <p className={styles.bio}>{userData?.description || "This user has no bio yet."}</p>
+
+                {/* Report User Section */}
+                {currentUser?.username !== username && (
+                    <div className={styles.reportSection}>
+                        {!showReportForm ? (
+                            <button
+                                onClick={() => setShowReportForm(true)}
+                                className={styles.reportButton}
+                            >
+                                Report User
+                            </button>
+                        ) : (
+                            <>
+                                <textarea
+                                    placeholder="Reason for reporting"
+                                    value={reportReason}
+                                    onChange={(e) => setReportReason(e.target.value)}
+                                    className={styles.reportTextarea}
+                                />
+                                <div>
+                                <button
+                                    onClick={() => setShowReportForm(false)}
+                                    className={styles.cancelButton}
+                                >
+                                    Cancel
+                                </button>
+                                <button onClick={handleReport} className={styles.reportButton}>
+                                    Submit Report
+                                </button>
+                                </div>
+                                {reportStatus && (
+                                    <p className={`${styles.reportStatus} ${reportStatus.includes("Failed") ? styles.error : ""}`}>
+                                        {reportStatus}
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* Filter Tabs */}
@@ -108,26 +173,24 @@ function ProfilePage() {
                         <div className={styles.pollHeader}>
                             <img
                                 className={styles.pollProfileImage}
-                                src={userData?.profilePicture || '/default-profile.png'}
+                                src={userData?.profilePicture || "/default-profile.png"}
                                 alt="Profile"
                             />
                             <h2 className={styles.pollUsername}>{userData?.username}</h2>
                             {currentUser?.username === username && (
-                                /* Edit Poll or Quiz */
                                 <Link to={`/update/poll-and-quiz/${item._id}`}>
                                     <FaPencilAlt className={styles.editIcon} />
                                 </Link>
                             )}
                         </div>
                         <p className={styles.pollDescription}>{item.question}</p>
-                        {item.type === 'Poll' ? (
+                        {item.type === "Poll" ? (
                             <p className={styles.voteCount}>
                                 {item.options.reduce((total, option) => total + option.votes, 0)} Votes
                             </p>
                         ) : (
                             <p className={styles.voteCount}>Quiz</p>
                         )}
-                        {/* Option */}
                         <div className={styles.options}>
                             {item.options.map((option) => (
                                 <div key={option._id} className={styles.option}>

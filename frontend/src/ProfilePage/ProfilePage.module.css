@@ -202,3 +202,97 @@
         opacity: 1;
     }
 }
+
+.reportSection {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #ffffff; /* White background for contrast */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%; /* Full width inside container */
+    max-width: 400px; /* Restrict maximum width */
+    border: 1px solid #e0e0e0; /* Light border for separation */
+    transition: transform 0.2s ease-in-out; /* Subtle animation */
+}
+
+.reportSection:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reportTextarea {
+    width: 94%;
+    min-height: 100px; /* Slightly larger textarea */
+    border: 1px solid #dcdcdc; /* Neutral border color */
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-family: "Arial", sans-serif;
+    resize: none; /* Disable resizing */
+    margin-bottom: 15px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reportTextarea:focus {
+    border-color: #007bff; /* Highlighted blue border */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Blue glow on focus */
+}
+
+.reportButtons {
+    display: flex;
+    justify-content: space-between; /* Push buttons to opposite sides */
+    width: 100%; /* Ensure full width for proper alignment */
+    margin-top: 10px;
+}
+
+.reportButton {
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    margin-right: 10px; /* Space between buttons */
+}
+
+.reportButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Lift effect */
+}
+
+.reportButton:active {
+    background-color: #004085; /* Even darker blue */
+    transform: translateY(0); /* Reset lift */
+}
+
+.cancelButton {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+}
+
+.cancelButton:hover {
+    background-color: #f5c6cb; /* Slightly darker red */
+    transform: translateY(-2px); /* Lift effect */
+}
+
+.cancelButton:active {
+    background-color: #f1b0b7; /* Even darker red */
+    transform: translateY(0); /* Reset lift */
+}
+
+.reportStatus {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #28a745; /* Green for success */
+}
+
+.reportStatus.error {
+    color: #dc3545; /* Red for error */
+}
