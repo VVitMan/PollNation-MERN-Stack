@@ -14,6 +14,7 @@ import Community from "./pages/Community";
 import PrivateRoute from "./components/PrivateRoute";
 import EditPollQuiz from './EditPollQuiz/EditPollQuiz.jsx'; // Import the EditPollQuiz component
 import CreatePollAndQuiz from './CreatePollQuiz/CreatePollQuiz.jsx';
+import Admin from './AdminPanel/AdminPanel.jsx';
 
 export default function App() {
   return (
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
           <Route path="/update/poll-and-quiz/:postId" element={<EditPollQuiz />} /> {/* Edit/Poll Quiz Page */}
           <Route path="/create/poll-and-quiz" element={<CreatePollAndQuiz />} />
+          <Route path="/admin" element={<Admin/>} />
         </Routes>
       </div>
     </Router>

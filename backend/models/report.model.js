@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const reportSchema = new mongoose.Schema({
   reportedUserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // The user being reported
@@ -7,4 +7,4 @@ const reportSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }, // Timestamp of the report
 });
 
-module.exports = mongoose.model('Report', reportSchema);
+export default mongoose.model('Report', reportSchema);

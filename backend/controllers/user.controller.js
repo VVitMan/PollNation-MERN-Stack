@@ -1,6 +1,5 @@
 import { errorCustom } from "../utils/errorCustom.js";
 import bcryptjs from "bcryptjs";
-import Report from "../models/report.model.js";
 import User from "../models/user.model.js";
 import Report from "../models/report.model.js";
 

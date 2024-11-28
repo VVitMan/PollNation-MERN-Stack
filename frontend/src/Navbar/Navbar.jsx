@@ -52,6 +52,13 @@ function Navbar() {
         >
           <Link to="/">Home</Link>
         </li>
+        <li
+          key="Admin"
+          onClick={() => handleLinkClick("Admin")}
+          className={active === "Home" ? styles.active : ""}
+        >
+          <Link to="/admin">Admin</Link>
+        </li>
 
         {/* User Profile */}
         {loading ? (
