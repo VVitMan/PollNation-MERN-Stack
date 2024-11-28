@@ -10,7 +10,8 @@ export const getAllPollsAndQuizzes = async (req, res) => {
         console.log("Fetching all polls and quizzes...");
         const polls = await Poll.find().populate('userId', 'username profilePicture');
         const quizzes = await Quiz.find().populate('userId', 'username profilePicture');
-
+        
+        console.log("Fetching all comments...");
         const combinedData = [
             ...polls.map(poll => ({ ...poll._doc, type: 'Poll' })),
             ...quizzes.map(quiz => ({ ...quiz._doc, type: 'Quiz' })),
