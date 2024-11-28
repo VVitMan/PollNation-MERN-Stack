@@ -2,8 +2,9 @@ import User from "../models/user.model.js";
 import Poll from "../models/poll.model.js";
 import Quiz from '../models/quiz.model.js';
 import Vote from '../models/vote.model.js';
+import Comment from '../models/comment.model.js';
 
-/* Get Poll and Quizz from all user */
+/* Get Poll and Quiz with Comment from all users */
 export const getAllPollsAndQuizzes = async (req, res) => {
     try {
         const polls = await Poll.find().populate('userId', 'username profilePicture');
@@ -14,11 +15,18 @@ export const getAllPollsAndQuizzes = async (req, res) => {
             ...quizzes.map(quiz => ({ ...quiz._doc, type: 'Quiz' })),
         ];
 
+        // Fetch comments for each post (poll or quiz)
+        for (const item of combinedData) {
+            item.comments = await Comment.find({ postId: item._id }).sort({ timestamp: -1 });
+        }
+
         res.status(200).json(combinedData);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching polls, quizzes, or comments:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
+
 
 /* Get Poll and Quizz from user @username */
 export const getPollsAndQuizzesByUser = async (req, res) => {
