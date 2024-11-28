@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import styles from "./ProfilePage.module.css";
 import { FaPencilAlt, FaPlus } from "react-icons/fa";
 
@@ -49,25 +48,6 @@ function ProfilePage() {
     }, [username]);
 
     /* Handle Report Submission */
-    const handleReport = async () => {
-        if (!reportReason) {
-            setReportStatus("Please provide a reason for reporting.");
-            return;
-        }
-
-        try {
-            const response = await axios.post("/api/user/reports", {
-                reportedUserId: userData._id,
-                reason: reportReason,
-            });
-            setReportStatus("Report submitted successfully!");
-            setReportReason(""); // Reset reason input
-            setShowReportForm(false); // Hide the form after submission
-        } catch (error) {
-            console.error("Error submitting report:", error.response?.data.message || error.message);
-            setReportStatus("Failed to submit report.");
-        }
-    };
     /* Handle Report Submission */
 const handleReport = async () => {
     if (!reportReason) {
@@ -146,7 +126,6 @@ const handleReport = async () => {
                                     onChange={(e) => setReportReason(e.target.value)}
                                     className={styles.reportTextarea}
                                 />
-                                <div>
                                 <div className={styles.buttonContainer}>
                                 <button
                                     onClick={() => setShowReportForm(false)}

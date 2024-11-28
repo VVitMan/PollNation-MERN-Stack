@@ -60,38 +60,35 @@ export const deleteUser = async (req, res, next) => {
 /* Report System */
 // Submit a report against a user
 export const submitReport = async (req, res, next) => {
-    const { reportedUserId, reason } = req.body;
 
     if (!reportedUserId || !reason) {
         return res.status(400).json({ message: "Missing required fields: reportedUserId and reason." });
     }
 
     try {
-        // Verify the reported user exists
         // Ensure the reported user exists
         const reportedUser = await User.findById(reportedUserId);
         if (!reportedUser) {
             return res.status(404).json({ message: "Reported user not found." });
         }
 
+        // Prevent self-reporting
+        if (req.user.id === reportedUserId) {
+            return res.status(400).json({ message: "You cannot report yourself." });
+        }
+
         // Create the report
         const report = new Report({
             reportedUserId,
-            reporterUserId: req.user.id, // Assuming req.user is populated by verifyToken middleware
             reporterUserId: req.user.id,
             reason,
         });
 
         await report.save();
 
-        // Optionally increment report count on the reported user's profile
-        reportedUser.reportCount = (reportedUser.reportCount || 0) + 1;
-        await reportedUser.save();
-
         res.status(201).json({ message: "Report submitted successfully." });
     } catch (error) {
         console.error("Error submitting report:", error);
-        next(error); // Pass error to the error handling middleware
         next(error);
     }
 };
