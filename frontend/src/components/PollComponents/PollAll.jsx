@@ -7,10 +7,10 @@ function PollAll() {
   const [pollQuizData, setPollQuizData] = useState([]); // Data for both polls and quizzes
   const [selectedOptions, setSelectedOptions] = useState({});
   const [comments, setComments] = useState({}); // Store comments dynamically for each post
+  const [visibleComments, setVisibleComments] = useState({}); // Track visibility of comments for each post
   const [commentInputs, setCommentInputs] = useState({}); // Store comment inputs per post
   const [loadingPostId, setLoadingPostId] = useState(null);
   const navigate = useNavigate();
-  //   const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,20 +34,27 @@ function PollAll() {
     fetchData();
   }, []);
 
-  console.log("PollQuizData:", pollQuizData);
-  const fetchComments = async (postId) => {
-    try {
-      const response = await fetch(`/api/comments/posts/${postId}/comments`, {
-        method: "GET",
-        credentials: "include",
-      });
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+  const toggleComments = async (postId) => {
+    setVisibleComments((prev) => ({
+      ...prev,
+      [postId]: !prev[postId], // Toggle visibility for this postId
+    }));
+
+    // If comments are being shown and not already loaded, fetch them
+    if (!visibleComments[postId] && !comments[postId]) {
+      try {
+        const response = await fetch(`/api/comments/posts/${postId}/comments`, {
+          method: "GET",
+          credentials: "include",
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const postComments = await response.json();
+        setComments((prev) => ({ ...prev, [postId]: postComments })); // Save comments for this postId
+      } catch (error) {
+        console.error("Error fetching comments:", error);
       }
-      const postComments = await response.json();
-      setComments((prev) => ({ ...prev, [postId]: postComments })); // Save comments for this postId
-    } catch (error) {
-      console.error("Error fetching comments:", error);
     }
   };
 
@@ -100,6 +107,7 @@ function PollAll() {
     <>
       {pollQuizData.map((item, index) => (
         <div key={item._id} className={styles.card}>
+          {/* Profile */}
           <div className={styles.cardHeader}>
             <img
               className={styles.cardImage}
@@ -181,25 +189,21 @@ function PollAll() {
           </div>
           <button
             className={styles.viewCommentsButton}
-            onClick={() => fetchComments(item._id)} // Fetch comments dynamically for this poll/quiz
+            onClick={() => toggleComments(item._id)} // Toggle comments dynamically
           >
-            View Comments
+            {visibleComments[item._id] ? "Hide Comments" : "View Comments"}
           </button>
 
           {/* Comments Section */}
-          {comments[item._id] === undefined ? (
-            <p className={styles.noCommentsPrompt}>
-              Click View Comments to see comments for this post.
-            </p>
-          ) : (
+          {visibleComments[item._id] && (
             <div className={styles.commentsContainer}>
               <h3 className={styles.commentsTitle}>Comments</h3>
-              {comments[item._id].length === 0 ? (
+              {comments[item._id]?.length === 0 ? (
                 <p className={styles.noCommentsMessage}>
                   Be the first one to comment!
                 </p>
               ) : (
-                comments[item._id].map((comment) => (
+                comments[item._id]?.map((comment) => (
                   <div key={comment._id} className={styles.commentItem}>
                     <img
                       src={
