@@ -170,10 +170,12 @@ input[type="radio"] {
 /* Comments Container */
 .commentsContainer {
     background-color: #f9f9f9; /* Light gray background */
-    width: 50%;
+    width: 95%; /* Increased width for better alignment */
+    max-width: 800px; /* Limit the maximum width for larger screens */
     max-height: 70%;
+    margin: 0 auto; /* Center horizontally */
     border-radius: 8px;
-    padding: 16px;
+    padding: 20px; /* Increased padding for better spacing */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Softer shadow */
     overflow-y: auto; /* Allows scrolling for long comments */
     position: relative;
@@ -258,6 +260,7 @@ input[type="radio"] {
 /* View Comments Button */
 .viewCommentsButton {
     margin-top: 8px;
+    margin-bottom: 20px; /* Add space below the button */
     padding: 6px 12px;
     background-color: #e8e8e8; /* Very subtle button */
     color: #333;
@@ -387,8 +390,8 @@ input[type="radio"] {
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .commentsContainer {
-        width: 90%; /* Adjust width for smaller screens */
-        padding: 10px;
+        width: 95%; /* Adjust width for smaller screens */
+        padding: 15px; /* Slightly reduce padding */
     }
 
     .commentItem {
