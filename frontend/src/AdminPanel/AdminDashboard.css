@@ -1,60 +1,125 @@
-/* Styling for the Admin Dashboard */
+/* General styling for the admin dashboard */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+}
 
 .admin-dashboard {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-  }
-  
-  .admin-dashboard h1 {
-    font-size: 2rem;
-    color: #007bff;
-    margin-bottom: 20px;
-  }
-  
-  .admin-dashboard table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .admin-dashboard th,
-  .admin-dashboard td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-  }
-  
-  .admin-dashboard th {
-    background-color: #007bff;
-    color: white;
-    font-weight: bold;
-  }
-  
-  .admin-dashboard tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  .admin-dashboard img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-  }
-  
-  .admin-dashboard button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .admin-dashboard button:hover {
-    background-color: #218838;
-  }
-  
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.admin-dashboard h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+/* Table Styling */
+.admin-dashboard table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-dashboard th,
+.admin-dashboard td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.admin-dashboard th {
+  background-color: #007bff;
+  color: white;
+  text-transform: uppercase;
+}
+
+.admin-dashboard tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.admin-dashboard tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Styling for banned users */
+.banned-user td {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Disable other buttons for banned users, except "Unlock Ban" */
+.banned-user button:not(.unlock-ban-button) {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Unlock Ban Button Styling */
+.unlock-ban-button {
+  background-color: #28a745; /* Green for unlock */
+  color: white;
+}
+
+.unlock-ban-button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+/* Profile Image Styling */
+.profile-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Button Styling */
+.admin-dashboard button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.admin-dashboard button:hover {
+  background-color: #0056b3;
+}
+
+.admin-dashboard button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.admin-dashboard button:nth-child(2) {
+  background-color: #dc3545; /* Red for delete */
+}
+
+.admin-dashboard button:nth-child(2):hover {
+  background-color: #b02a37;
+}
+
+.admin-dashboard button:nth-child(3) {
+  background-color: #ffc107; /* Yellow for ban */
+}
+
+.admin-dashboard button:nth-child(3):hover {
+  background-color: #e0a800;
+}

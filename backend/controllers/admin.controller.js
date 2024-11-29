@@ -76,3 +76,31 @@ export const banUser = async (req, res) => {
       res.status(500).json({ error: 'Failed to ban user.' });
   }
 };
+
+/* Unban User */
+export const unbanUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+      // Validate userId
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+          return res.status(400).json({ error: 'Invalid userId format.' });
+      }
+
+      // Update the user's isBanned field
+      const user = await User.findByIdAndUpdate(
+          userId,
+          { isBanned: false },
+          { new: true } // Return the updated document
+      );
+
+      if (!user) {
+          return res.status(404).json({ error: 'User not found.' });
+      }
+
+      res.status(200).json({ message: 'User has been unbanned successfully.', user });
+  } catch (error) {
+      console.error('Error unbanning user:', error);
+      res.status(500).json({ error: 'Failed to unban user.' });
+  }
+};
