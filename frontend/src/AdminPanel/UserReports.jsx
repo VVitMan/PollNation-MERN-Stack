@@ -2,7 +2,8 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
 const UserReports = ({ userId, setShowReports }) => {
-const [reports, setReports] = useState([]); // State to store reports
+  console.log("User Reports", userId, setShowReports);
+  const [reports, setReports] = useState([]); // State to store reports
   const [loading, setLoading] = useState(true); // Loading state
 
   // Fetch reports for the selected user
@@ -40,13 +41,15 @@ const [reports, setReports] = useState([]); // State to store reports
           {reports.map((report) => (
             <li key={report._id}>
               <p>
-                <strong>Reported by:</strong> {report.reporterUserId?.username || "Unknown"}
+                <strong>Reported by:</strong>{" "}
+                {report.reporterUserId?.username || "Unknown"}
               </p>
               <p>
                 <strong>Reason:</strong> {report.reason}
               </p>
               <p>
-                <strong>Date:</strong> {new Date(report.createdAt).toLocaleString()}
+                <strong>Date:</strong>{" "}
+                {new Date(report.createdAt).toLocaleString()}
               </p>
             </li>
           ))}
@@ -60,8 +63,8 @@ const [reports, setReports] = useState([]); // State to store reports
 
 // Define prop types for validation
 UserReports.propTypes = {
-    userId: PropTypes.string.isRequired, // User ID must be a string and is required
-    setShowReports: PropTypes.func.isRequired, // setShowReports must be a function and is required
+  userId: PropTypes.string.isRequired, // User ID must be a string and is required
+  setShowReports: PropTypes.func.isRequired, // setShowReports must be a function and is required
 };
 
 export default UserReports;

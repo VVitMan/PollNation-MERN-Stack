@@ -14,8 +14,8 @@ import Community from "./pages/Community";
 import PrivateRoute from "./components/PrivateRoute";
 import EditPollQuiz from './EditPollQuiz/EditPollQuiz.jsx'; // Import the EditPollQuiz component
 import CreatePollAndQuiz from './CreatePollQuiz/CreatePollQuiz.jsx';
-import Admin from './AdminPanel/AdminPanel.jsx';
-// import AdminDashboard from './AdminPanel/AdminDashboard.jsx';
+// import Admin from './AdminPanel/AdminPanel.jsx';
+import AdminDashboard from './AdminPanel/AdminDashboard.jsx';
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute.jsx';
 
 export default function App() {
@@ -50,8 +50,8 @@ export default function App() {
           <Route path="/create/poll-and-quiz" element={<CreatePollAndQuiz />} />
           {/* Admin Panel */}
           <Route element={<OnlyAdminPrivateRoute />}>
-            <Route path="/admin" element={<Admin/>} />
-            {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> Admin Dashboard Page */}
+            {/* <Route path="/admin" element={<Admin/>} /> */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} /> Admin Dashboard Page
           </Route>
         </Routes>
       </div>

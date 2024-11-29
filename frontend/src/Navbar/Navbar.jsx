@@ -44,7 +44,7 @@ function Navbar() {
 
         {currentUser && currentUser.isAdmin && ( // Conditionally show Admin link
           <li className={styles.navItem}>
-            <Link to="/admin" onClick={() => setIsOpen(false)}>
+            <Link to="/admin/dashboard" onClick={() => setIsOpen(false)}>
               Admin
             </Link>
           </li>
