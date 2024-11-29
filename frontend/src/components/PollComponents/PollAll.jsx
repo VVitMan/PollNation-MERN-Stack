@@ -105,6 +105,14 @@ function PollAll() {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
+    if (!currentUser) {
+      alert("Please log in to delete a comment.");
+      return;
+    }
+    if (currentUser.isBanned) {
+      alert("You are banned and cannot delete comments.");
+      return;
+    }
     // Show confirmation alert
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this comment? This action cannot be undone."
@@ -137,6 +145,14 @@ function PollAll() {
   };
 
   const handleEditComment = async (postId, commentId) => {
+    if (!currentUser) {
+      alert("Please log in to edit a comment.");
+      return;
+    }
+    if (currentUser.isBanned) {
+      alert("You are banned and cannot edit comments.");
+      return;
+    }
     if (!editingContent[commentId]?.trim()) {
       alert("Comment content cannot be empty.");
       return;
