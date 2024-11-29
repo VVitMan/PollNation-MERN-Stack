@@ -6,6 +6,7 @@ const AdminDashboard = () => {
   const [users, setUsers] = useState([]); // State to store user data
   const [selectedUserId, setSelectedUserId] = useState(null); // For viewing reports
   const [showReports, setShowReports] = useState(false); // Toggle reports view
+  const [sortOrder, setSortOrder] = useState("asc"); // Track sorting order
 
   // Fetch users from backend
   const fetchUsers = async () => {
@@ -28,6 +29,20 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchUsers(); // Fetch users on component mount
   }, []);
+
+  // Handle Sorting by Report Count
+  const handleSortByReportCount = () => {
+    const sortedUsers = [...users].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return a.reportCount - b.reportCount;
+      } else {
+        return b.reportCount - a.reportCount;
+      }
+    });
+
+    setUsers(sortedUsers); // Update the sorted users
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Toggle sorting order
+  };
 
   // Handle Delete User
   const handleDeleteUser = async (userId) => {
@@ -109,6 +124,12 @@ const AdminDashboard = () => {
               <th>Profile</th>
               <th>Username</th>
               <th>Email</th>
+              <th
+                className="sortable-column"
+                onClick={handleSortByReportCount}
+              >
+                Report Count {sortOrder === "asc" ? "↑" : "↓"}
+              </th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -127,11 +148,12 @@ const AdminDashboard = () => {
                 </td>
                 <td>{user.username}</td>
                 <td>{user.email}</td>
+                <td>{user.reportCount}</td>
                 <td>
                   <button
                     onClick={() => {
-                      setSelectedUserId(user._id); // Set the user ID for reports
-                      setShowReports(true); // Switch to the reports page
+                      setSelectedUserId(user._id);
+                      setShowReports(true);
                     }}
                   >
                     View Reports

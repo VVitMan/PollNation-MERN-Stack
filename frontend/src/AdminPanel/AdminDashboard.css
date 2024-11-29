@@ -81,7 +81,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease;
-  margin-right: 10px; /* Space between buttons */
+  margin-right: 10px;
 }
 
 .admin-dashboard button:hover {
@@ -94,37 +94,24 @@ body {
 }
 
 .admin-dashboard button:last-child {
-  margin-right: 0; /* Remove extra spacing for the last button */
+  margin-right: 0;
 }
 
 /* Specific Button Colors */
 .admin-dashboard button:nth-child(1) {
-  background-color: #007bff; /* Blue for "View Reports" */
-}
-
-.admin-dashboard button:nth-child(1):hover {
-  background-color: #0056b3;
+  background-color: #007bff;
 }
 
 .admin-dashboard button:nth-child(2) {
-  background-color: #dc3545; /* Red for "Ban" */
-}
-
-.admin-dashboard button:nth-child(2):hover {
-  background-color: #b02a37;
+  background-color: #dc3545;
 }
 
 .admin-dashboard button:nth-child(3) {
-  background-color: #ffc107; /* Yellow for "Delete" */
+  background-color: #ffc107;
 }
 
-.admin-dashboard button:nth-child(3):hover {
-  background-color: #e0a800;
-}
-
-/* Unlock Ban Button */
 .unlock-ban-button {
-  background-color: #28a745; /* Green for "Unlock Ban" */
+  background-color: #28a745;
   color: white;
 }
 
@@ -132,19 +119,14 @@ body {
   background-color: #218838;
 }
 
-/* Responsive Design for Buttons on Smaller Screens */
-@media (max-width: 768px) {
-  .admin-dashboard td {
-    display: flex;
-    flex-direction: column;
-  }
+/* Styling for sortable column header */
+.sortable-column {
+  cursor: pointer;
+  color: #007bff;
+  font-weight: bold;
+}
 
-  .admin-dashboard td button {
-    margin-bottom: 10px; /* Add vertical spacing */
-    margin-right: 0; /* Remove horizontal spacing */
-  }
-
-  .admin-dashboard td button:last-child {
-    margin-bottom: 0; /* Remove spacing for the last button */
-  }
+.sortable-column:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
