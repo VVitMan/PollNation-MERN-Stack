@@ -7,7 +7,7 @@ import Report from "../models/report.model.js";
 export const fetchAllUsers = async (req, res, next) => {
     try {
       // Fetch all users from the User model
-      const users = await User.find({}, "_id username email profilePicture isBanned isAdmin"); // Exclude password field for security
+      const users = await User.find({}, "_id username email profilePicture isBanned isAdmin reportCount"); // Exclude password field for security
   
       res.status(200).json(users);
     } catch (error) {

@@ -63,22 +63,6 @@ body {
   color: #721c24;
 }
 
-/* Disable other buttons for banned users, except "Unlock Ban" */
-.banned-user button:not(.unlock-ban-button) {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* Unlock Ban Button Styling */
-.unlock-ban-button {
-  background-color: #28a745; /* Green for unlock */
-  color: white;
-}
-
-.unlock-ban-button:hover {
-  background-color: #218838; /* Darker green on hover */
-}
-
 /* Profile Image Styling */
 .profile-image {
   width: 50px;
@@ -97,6 +81,7 @@ body {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s ease;
+  margin-right: 10px; /* Space between buttons */
 }
 
 .admin-dashboard button:hover {
@@ -108,8 +93,21 @@ body {
   cursor: not-allowed;
 }
 
+.admin-dashboard button:last-child {
+  margin-right: 0; /* Remove extra spacing for the last button */
+}
+
+/* Specific Button Colors */
+.admin-dashboard button:nth-child(1) {
+  background-color: #007bff; /* Blue for "View Reports" */
+}
+
+.admin-dashboard button:nth-child(1):hover {
+  background-color: #0056b3;
+}
+
 .admin-dashboard button:nth-child(2) {
-  background-color: #dc3545; /* Red for delete */
+  background-color: #dc3545; /* Red for "Ban" */
 }
 
 .admin-dashboard button:nth-child(2):hover {
@@ -117,9 +115,36 @@ body {
 }
 
 .admin-dashboard button:nth-child(3) {
-  background-color: #ffc107; /* Yellow for ban */
+  background-color: #ffc107; /* Yellow for "Delete" */
 }
 
 .admin-dashboard button:nth-child(3):hover {
   background-color: #e0a800;
+}
+
+/* Unlock Ban Button */
+.unlock-ban-button {
+  background-color: #28a745; /* Green for "Unlock Ban" */
+  color: white;
+}
+
+.unlock-ban-button:hover {
+  background-color: #218838;
+}
+
+/* Responsive Design for Buttons on Smaller Screens */
+@media (max-width: 768px) {
+  .admin-dashboard td {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .admin-dashboard td button {
+    margin-bottom: 10px; /* Add vertical spacing */
+    margin-right: 0; /* Remove horizontal spacing */
+  }
+
+  .admin-dashboard td button:last-child {
+    margin-bottom: 0; /* Remove spacing for the last button */
+  }
 }
