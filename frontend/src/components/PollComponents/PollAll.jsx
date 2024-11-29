@@ -309,7 +309,9 @@ function PollAll() {
                         <>
                           <textarea
                             value={
-                              editingContent[comment._id] || comment.content
+                              editingContent[comment._id] !== undefined
+                                ? editingContent[comment._id]
+                                : comment.content
                             }
                             onChange={(e) =>
                               handleEditInputChange(comment._id, e.target.value)
