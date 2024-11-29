@@ -62,8 +62,14 @@ function PollAll() {
   };
 
   const handleAddComment = async (postId) => {
+    /* Check is login? */
     if (!currentUser) {
       alert("Please log in to add a comment.");
+      return;
+    }
+    /* Check Banned ? */
+    if (currentUser.isBanned) {
+      alert("You are banned and cannot add comments.");
       return;
     }
     if (commentInputs[postId]?.trim() === "") return;
