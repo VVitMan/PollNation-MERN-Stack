@@ -3,10 +3,15 @@ import Vote from '../models/vote.model.js';
 // Add a vote to a poll or quiz
 export const createVote = async (req, res) => {
     try {
+        console.log("Request Body:", req.body); // Debug request payload
         const { userId, pollId, quizId, optionIndex, type } = req.body;
+        
+        if (!userId || optionIndex === undefined || !type) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
 
-        if (!userId || !optionIndex || !type) {
-            return res.status(400).json({ message: 'Missing required fields' });
+        if (typeof optionIndex !== "number") {
+            return res.status(400).json({ message: "Invalid optionIndex: must be a number" });
         }
 
         const vote = new Vote({
@@ -18,11 +23,14 @@ export const createVote = async (req, res) => {
         });
 
         await vote.save();
-        res.status(201).json({ message: 'Vote recorded successfully', vote });
+        res.status(201).json({ message: "Vote recorded successfully", vote });
     } catch (error) {
-        res.status(500).json({ message: 'Error recording vote', error: error.message });
+        console.error("Error in createVote:", error.message);
+        res.status(500).json({ message: "Error recording vote", error: error.message });
     }
 };
+
+
 
 // Update an existing vote
 export const updateVote = async (req, res) => {
