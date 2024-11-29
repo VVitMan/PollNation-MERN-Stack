@@ -1,5 +1,7 @@
 import { errorCustom } from "../utils/errorCustom.js";
 import User from "../models/user.model.js";
+import Poll from "../models/poll.model.js";
+import Quiz from "../models/quiz.model.js";
 import Report from "../models/report.model.js";
 
 export const fetchAllUsers = async (req, res, next) => {
@@ -41,6 +43,10 @@ export const deleteUser = async (req, res) => {
       if (!user) {
           return res.status(404).json({ error: 'User not found.' });
       }
+
+      // Delete all polls and quizzes associated with this user
+      await Poll.deleteMany({ userId });
+      await Quiz.deleteMany({ userId });
 
       res.status(200).json({ message: 'User account deleted successfully.' });
   } catch (error) {
