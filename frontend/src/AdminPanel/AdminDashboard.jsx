@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import UserReports from "./UserReports"; // Child component for viewing reports
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]); // State to store user data
@@ -38,7 +39,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div>
+    <div className="admin-dashboard">
       <h1>Admin Dashboard</h1>
       {!showReports ? (
         <table>

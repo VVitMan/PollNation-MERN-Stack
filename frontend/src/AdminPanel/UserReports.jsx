@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import "./UserReports.css";
 
 const UserReports = ({ userId, setShowReports }) => {
   console.log("User Reports", userId, setShowReports);
@@ -31,7 +32,7 @@ const UserReports = ({ userId, setShowReports }) => {
   }, [userId]);
 
   return (
-    <div>
+    <div className="user-reports">
       <button onClick={() => setShowReports(false)}>Back to Dashboard</button>
       <h2>User Reports</h2>
       {loading ? (

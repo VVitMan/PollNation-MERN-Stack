@@ -24,4 +24,3 @@ export const getUserReports = async (req, res, next) => {
       next(error);
     }
 };
-  
