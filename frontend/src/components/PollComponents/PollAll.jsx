@@ -17,120 +17,131 @@ function PollAll() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/poll-and-quiz/all", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setPollQuizData(data);
+          const pollResponse = await fetch("/api/poll-and-quiz/all", {
+              method: "GET",
+              credentials: "include",
+          });
+  
+          if (!pollResponse.ok) {
+              throw new Error(`HTTP error! Status: ${pollResponse.status}`);
+          }
+  
+          const pollData = await pollResponse.json();
+          setPollQuizData(pollData);
+  
+          const token = localStorage.getItem("token") || currentUser?.token;
+          const voteResponse = await fetch("/api/vote/user", {
+              method: "GET",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`,
+              },
+              credentials: "include",
+          });
+  
+          if (!voteResponse.ok) {
+              throw new Error(`HTTP error! Status: ${voteResponse.status}`);
+          }
+  
+          const votes = await voteResponse.json();
+  
+          const userVotes = {};
+          votes.forEach((vote) => {
+              const poll = pollData.find((p) => p._id === vote.pollId);
+              if (poll) {
+                  userVotes[vote.pollId] = poll.options[vote.optionIndex]._id;
+              }
+          });
+  
+          setSelectedOptions(userVotes);
       } catch (error) {
-        console.error("Error fetching data:", error);
+          console.error("Error fetching data:", error);
       }
-    };
+  };
+  
 
     fetchData();
-  }, []);
+}, []);
 
-  const handleOptionSelect = async (pollIndex, postId, optionId) => {
-    const selectedOption = selectedOptions[pollIndex];
-    const token = localStorage.getItem("token") || currentUser?.token; // Get token for authentication
-    const userId = currentUser?._id; // Extract user ID from Redux state
 
-    // Find the index of the selected option
-    const optionIndex = pollQuizData[pollIndex].options.findIndex(
-        (option) => option._id === optionId
-    );
+const handleOptionSelect = async (pollIndex, postId, optionId) => {
+  const selectedOption = selectedOptions[postId];
+  const token = localStorage.getItem("token") || currentUser?.token; // Get token for authentication
+  const userId = currentUser?._id; // Extract user ID from Redux state
 
-    if (optionIndex === -1) {
-        console.error("Invalid option selected");
-        return;
-    }
+  // Prevent duplicate voting
+  if (selectedOption === optionId) {
+      console.log("You already voted for this option");
+      return;
+  }
 
-    try {
-        if (selectedOption === optionId) {
-            // Cancel vote
-            await fetch("/api/vote", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({ userId, pollId: postId }),
-            });
+  // Find the index of the selected option
+  const optionIndex = pollQuizData[pollIndex].options.findIndex(
+      (option) => option._id === optionId
+  );
 
-            // Update vote count in the state
-            setPollQuizData((prevData) => {
-                const updatedData = [...prevData];
-                updatedData[pollIndex].options[optionIndex].votes -= 1; // Decrease votes
-                return updatedData;
-            });
+  if (optionIndex === -1) {
+      console.error("Invalid option selected");
+      return;
+  }
 
-            setSelectedOptions((prev) => ({ ...prev, [pollIndex]: null }));
-        } else if (selectedOption == null) {
-            // Create vote
-            await fetch("/api/vote", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userId,
-                    pollId: postId,
-                    optionIndex, // Use index instead of ID
-                    type: "Poll",
-                }),
-            });
+  try {
+      if (!selectedOption) {
+          // Create vote
+          await fetch("/api/vote", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                  userId,
+                  pollId: postId,
+                  optionIndex, // Use index instead of ID
+                  type: "Poll",
+              }),
+          });
 
-            // Update vote count in the state
-            setPollQuizData((prevData) => {
-                const updatedData = [...prevData];
-                updatedData[pollIndex].options[optionIndex].votes += 1; // Increase votes
-                return updatedData;
-            });
+          // Update state to reflect the new vote
+          setPollQuizData((prevData) => {
+              const updatedData = [...prevData];
+              updatedData[pollIndex].options[optionIndex].votes += 1; // Increase votes
+              return updatedData;
+          });
 
-            setSelectedOptions((prev) => ({ ...prev, [pollIndex]: optionId }));
-        } else {
-            // Update vote
-            await fetch("/api/vote", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userId,
-                    pollId: postId,
-                    optionIndex, // Use index instead of ID
-                }),
-            });
+          setSelectedOptions((prev) => ({ ...prev, [postId]: optionId }));
+      } else {
+          // Update vote
+          await fetch("/api/vote", {
+              method: "PUT",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                  userId,
+                  pollId: postId,
+                  optionIndex, // Use index instead of ID
+              }),
+          });
 
-            // Update vote count in the state
-            setPollQuizData((prevData) => {
-                const updatedData = [...prevData];
-                const previousOptionIndex = pollQuizData[pollIndex].options.findIndex(
-                    (option) => option._id === selectedOption
-                );
-                updatedData[pollIndex].options[previousOptionIndex].votes -= 1; // Decrease previous option votes
-                updatedData[pollIndex].options[optionIndex].votes += 1; // Increase new option votes
-                return updatedData;
-            });
+          // Update vote counts
+          setPollQuizData((prevData) => {
+              const updatedData = [...prevData];
+              const previousOptionIndex = pollQuizData[pollIndex].options.findIndex(
+                  (option) => option._id === selectedOption
+              );
+              updatedData[pollIndex].options[previousOptionIndex].votes -= 1; // Decrease previous option votes
+              updatedData[pollIndex].options[optionIndex].votes += 1; // Increase new option votes
+              return updatedData;
+          });
 
-            setSelectedOptions((prev) => ({ ...prev, [pollIndex]: optionId }));
-        }
-    } catch (error) {
-        console.error("Error handling vote:", error);
-    }
+          setSelectedOptions((prev) => ({ ...prev, [postId]: optionId }));
+      }
+  } catch (error) {
+      console.error("Error handling vote:", error);
+  }
 };
-
-
-
-
 
   const toggleComments = async (postId) => {
     setVisibleComments((prev) => ({
@@ -215,30 +226,42 @@ function PollAll() {
               {item.options.reduce((total, option) => total + option.votes, 0)}{" "}
               Votes
             </p>
+
             <div className={styles.pollOptions}>
-              {item.options.map((option) => (
-                <div
-                  key={option._id}
-                  className={`${styles.option} ${
-                    selectedOptions[index] === option._id
-                      ? styles.selected
-                      : ""
-                  }`}
-                  onClick={() => handleOptionSelect(index, item._id, option._id)}
-                >
-                  <input
-                    type="radio"
-                    name={`poll-${index}`}
-                    value={option._id}
-                    checked={selectedOptions[index] === option._id}
-                    onChange={() =>
-                      handleOptionSelect(index, item._id, option._id)
-                    }
-                  />
-                  <label>{option.text}</label>
-                </div>
-              ))}
-            </div>
+              {item.options.map((option, optionIndex) => {
+                  const totalVotes = item.options.reduce((total, opt) => total + opt.votes, 0);
+                  const votePercentage = totalVotes > 0 ? Math.round((option.votes / totalVotes) * 100) : 0;
+
+                  return (
+                      <div
+                          key={option._id}
+                          className={`${styles.option} ${
+                              selectedOptions[item._id] === option._id ? styles.selected : ""
+                          }`}
+                          onClick={() => handleOptionSelect(index, item._id, option._id)}
+                          style={{ '--percentage': votePercentage }}
+                      >
+                          <input
+                              type="radio"
+                              name={`poll-${index}`}
+                              value={option._id}
+                              checked={selectedOptions[item._id] === option._id} // Preselect based on user's vote
+                              onChange={() =>
+                                  handleOptionSelect(index, item._id, option._id)
+                              }
+                          />
+                          <label>
+                              {option.text} ({votePercentage}%)
+                          </label>
+                      </div>
+                  );
+              })}
+          </div>
+
+
+
+
+
           </div>
           <button
             className={styles.viewCommentsButton}

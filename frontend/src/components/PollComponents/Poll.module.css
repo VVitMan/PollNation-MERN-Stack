@@ -49,7 +49,7 @@
     color: #666;
     margin-top: 5px;
 }
-
+/* Poll Options */
 .pollOptions {
     display: flex;
     flex-direction: column;
@@ -69,17 +69,6 @@
     overflow: hidden;
 }
 
-input[type="radio"] {
-    accent-color: #0077ff;
-}
-
-.option label {
-    flex-grow: 1;
-    position: relative;
-    z-index: 1;
-    font-weight: 500;
-}
-
 /* Progress bar background within option */
 .option::before {
     content: '';
@@ -94,39 +83,66 @@ input[type="radio"] {
     border-radius: 8px;
 }
 
-/* Style for the selected option */
-.option.selected::before {
-    width: 60%; /* Result of the selected option */
-    background-color: #80bfff;
-}
-
-/* Style for unselected options when a selection is made */
-.option.unselected::before {
-    width: 10%; /* Result of the non-selected option */
+/* Dynamic percentage bar for selected and unselected options */
+.option[data-percentage]:not(.selected)::before {
+    width: calc(var(--percentage, 0) * 1%);
     background-color: #e0e0e0;
 }
 
-/* Correct answer styling */
+.option.selected::before {
+    background-color: #80bfff;
+    width: calc(var(--percentage, 0) * 1%);
+}
+
+/* Label and vote percentage */
+.option label {
+    flex-grow: 1;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+}
+
+/* Hover Effects */
+.option:hover {
+    border-color: #0077ff;
+}
+
+/* Styling for selected options */
+.option.selected {
+    border-color: #0077ff;
+    font-weight: bold;
+}
+
+/* Correct Answer Styling */
 .option.correct {
     border: 2px solid #4caf50;
-    background-color: #e0ffe0; /* Light green background */
+    background-color: #e0ffe0;
 }
 
 .option.correct::before {
-    background-color: #4caf50; /* Green progress bar for correct answer */
-    width: 80%;
+    background-color: #4caf50;
+    width: calc(var(--percentage, 0) * 1%);
 }
 
-/* Wrong answer styling */
+/* Wrong Answer Styling */
 .option.wrong {
     border: 2px solid #ff4d4d;
-    background-color: #ffe0e0; /* Light red background */
+    background-color: #ffe0e0;
 }
 
 .option.wrong::before {
-    background-color: #ff4d4d; /* Red progress bar for wrong answer */
-    width: 20%;
+    background-color: #ff4d4d;
+    width: calc(var(--percentage, 0) * 1%);
 }
+
+/* Vote Count Styling */
+.voteCount {
+    margin-left: 5px;
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 5px;
+}
+
 
 /* Explanation box styling */
 .explanation {
