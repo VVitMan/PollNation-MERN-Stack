@@ -7,6 +7,7 @@ import pollRoutes from './routes/poll.route.js';
 import quizRoutes from './routes/quiz.route.js';
 import pollAndQuizRoutes from './routes/poll_and_quiz.route.js';
 import commentRoutes from './routes/comment.route.js'; // Import the comment routes
+import voteRoutes from './routes/vote.route.js'; // Import the vote routes
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
@@ -42,6 +43,7 @@ app.use("/api/poll", pollRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/poll-and-quiz", pollAndQuizRoutes);
 app.use("/api/comments", commentRoutes); // Register the comment routes
+app.use("/api/vote", voteRoutes); // Register the vote routes
 
 /* Error Middleware */
 app.use((err, req, res, next) => {
