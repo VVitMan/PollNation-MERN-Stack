@@ -105,6 +105,15 @@ function PollAll() {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
+    // Show confirmation alert
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this comment? This action cannot be undone."
+    );
+
+    // If user cancels, exit the function
+    if (!confirmDelete) {
+      return;
+    }
     setDeletingCommentId(commentId);
     try {
       const response = await fetch(`/api/comments/delete/${commentId}`, {
@@ -299,14 +308,18 @@ function PollAll() {
                       {editingComment === comment._id ? (
                         <>
                           <textarea
-                            value={editingContent[comment._id] || comment.content}
+                            value={
+                              editingContent[comment._id] || comment.content
+                            }
                             onChange={(e) =>
                               handleEditInputChange(comment._id, e.target.value)
                             }
                             className={styles.editCommentInput}
                           />
                           <button
-                            onClick={() => handleEditComment(item._id, comment._id)}
+                            onClick={() =>
+                              handleEditComment(item._id, comment._id)
+                            }
                             className={styles.commentEditSaveButton}
                             disabled={editingLoading}
                           >
