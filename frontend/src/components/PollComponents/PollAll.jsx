@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Poll.module.css";
+import { useSelector } from "react-redux";
 
 function PollAll() {
   console.log("Poll All working...");
@@ -11,6 +12,8 @@ function PollAll() {
   const [commentInputs, setCommentInputs] = useState({}); // Store comment inputs per post
   const [loadingPostId, setLoadingPostId] = useState(null);
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +62,10 @@ function PollAll() {
   };
 
   const handleAddComment = async (postId) => {
+    if (!currentUser) {
+      alert("Please log in to add a comment.");
+      return;
+    }
     if (commentInputs[postId]?.trim() === "") return;
     setLoadingPostId(postId); // Indicate which post is being processed
 
