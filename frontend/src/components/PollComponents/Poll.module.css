@@ -388,6 +388,31 @@ input[type="radio"] {
     cursor: not-allowed;
 }
 
+
+/* Comment Delete Button */
+.commentDeleteButton {
+    padding: 6px 12px; /* Balanced padding for click area */
+    background-color: #ff4d4d; /* Red to indicate delete action */
+    color: white; /* White text for contrast */
+    border: none; /* Clean borderless design */
+    border-radius: 5px; /* Subtle rounded corners */
+    cursor: pointer; /* Pointer cursor for interactivity */
+    font-size: 13px; /* Match existing font size for buttons */
+    font-weight: bold; /* Slightly bold for emphasis */
+    transition: background-color 0.2s ease; /* Smooth hover effect */
+}
+
+.commentDeleteButton:hover {
+    background-color: #d43f3f; /* Slightly darker red for hover */
+}
+
+.commentDeleteButton:disabled {
+    background-color: #aaa; /* Gray out for disabled state */
+    cursor: not-allowed; /* Show disabled cursor */
+    opacity: 0.6; /* Slightly transparent to indicate inactivity */
+}
+
+
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .commentsContainer {

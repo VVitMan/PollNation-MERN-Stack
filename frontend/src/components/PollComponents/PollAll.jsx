@@ -4,16 +4,15 @@ import styles from "./Poll.module.css";
 import { useSelector } from "react-redux";
 
 function PollAll() {
-  console.log("Poll All working...");
-  const [pollQuizData, setPollQuizData] = useState([]); // Data for both polls and quizzes
+  const [pollQuizData, setPollQuizData] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [comments, setComments] = useState({}); // Store comments dynamically for each post
-  const [visibleComments, setVisibleComments] = useState({}); // Track visibility of comments for each post
-  const [commentInputs, setCommentInputs] = useState({}); // Store comment inputs per post
+  const [comments, setComments] = useState({});
+  const [visibleComments, setVisibleComments] = useState({});
+  const [commentInputs, setCommentInputs] = useState({});
   const [loadingPostId, setLoadingPostId] = useState(null);
+  const [deletingCommentId, setDeletingCommentId] = useState(null); // Track deletion state
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,10 +39,9 @@ function PollAll() {
   const toggleComments = async (postId) => {
     setVisibleComments((prev) => ({
       ...prev,
-      [postId]: !prev[postId], // Toggle visibility for this postId
+      [postId]: !prev[postId],
     }));
 
-    // If comments are being shown and not already loaded, fetch them
     if (!visibleComments[postId] && !comments[postId]) {
       try {
         const response = await fetch(`/api/comments/find/posts/${postId}`, {
@@ -54,7 +52,7 @@ function PollAll() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const postComments = await response.json();
-        setComments((prev) => ({ ...prev, [postId]: postComments })); // Save comments for this postId
+        setComments((prev) => ({ ...prev, [postId]: postComments }));
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
@@ -62,18 +60,16 @@ function PollAll() {
   };
 
   const handleAddComment = async (postId) => {
-    /* Check is login? */
     if (!currentUser) {
       alert("Please log in to add a comment.");
       return;
     }
-    /* Check Banned ? */
     if (currentUser.isBanned) {
       alert("You are banned and cannot add comments.");
       return;
     }
     if (commentInputs[postId]?.trim() === "") return;
-    setLoadingPostId(postId); // Indicate which post is being processed
+    setLoadingPostId(postId);
 
     try {
       const response = await fetch("/api/comments/create", {
@@ -84,7 +80,7 @@ function PollAll() {
         credentials: "include",
         body: JSON.stringify({
           postId,
-          content: commentInputs[postId], // Get the input for this postId
+          content: commentInputs[postId],
         }),
       });
 
@@ -95,13 +91,37 @@ function PollAll() {
       const newComment = await response.json();
       setComments((prev) => ({
         ...prev,
-        [postId]: [...(prev[postId] || []), newComment], // Append the new comment
+        [postId]: [...(prev[postId] || []), newComment],
       }));
-      setCommentInputs((prev) => ({ ...prev, [postId]: "" })); // Clear input for this postId
+      setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
     } catch (error) {
       console.error("Error adding comment:", error);
     } finally {
-      setLoadingPostId(null); // Reset loading state
+      setLoadingPostId(null);
+    }
+  };
+
+  const handleDeleteComment = async (postId, commentId) => {
+    setDeletingCommentId(commentId); // Indicate deletion is in progress
+    try {
+      const response = await fetch(`/api/comments/delete/${commentId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Remove the deleted comment from the state
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.filter((comment) => comment._id !== commentId),
+      }));
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    } finally {
+      setDeletingCommentId(null); // Reset deletion state
     }
   };
 
@@ -202,11 +222,11 @@ function PollAll() {
           </div>
           <button
             className={styles.viewCommentsButton}
-            onClick={() => toggleComments(item._id)} // Toggle comments dynamically
+            onClick={() => toggleComments(item._id)}
           >
             {visibleComments[item._id] ? "Hide Comments" : "View Comments"}
           </button>
-          
+
           {/* Comments Section */}
           {visibleComments[item._id] && (
             <div className={styles.commentsContainer}>
@@ -217,24 +237,33 @@ function PollAll() {
                 </p>
               ) : (
                 comments[item._id]?.map((comment) => (
-                    <div key={comment._id} className={styles.commentItem}>
-                    {console.log("profilePicture of user'comment",comment.userId?.profilePicture)}
+                  <div key={comment._id} className={styles.commentItem}>
                     <img
-                        src={
-                            comment.userId?.profilePicture && comment.userId.profilePicture.trim() !== ""
-                            ? comment.userId.profilePicture
-                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                        }
-                        alt="Profile"
-                        className={styles.commentProfileImage}
+                      src={
+                        comment.userId?.profilePicture?.trim()
+                          ? comment.userId.profilePicture
+                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                      }
+                      alt="Profile"
+                      className={styles.commentProfileImage}
                     />
-
                     <div className={styles.commentContent}>
                       <strong className={styles.commentAuthor}>
                         {comment.userId?.username || "Unknown"}
                       </strong>
                       <span>{comment.content}</span>
                     </div>
+                    {currentUser && currentUser._id === comment.userId?._id && (
+                      <button
+                        onClick={() => handleDeleteComment(item._id, comment._id)}
+                        className={styles.commentDeleteButton}
+                        disabled={deletingCommentId === comment._id}
+                      >
+                        {deletingCommentId === comment._id
+                          ? "Deleting..."
+                          : "Delete"}
+                      </button>
+                    )}
                   </div>
                 ))
               )}
@@ -249,7 +278,7 @@ function PollAll() {
                 <button
                   onClick={() => handleAddComment(item._id)}
                   className={styles.commentSubmitButton}
-                  disabled={loadingPostId === item._id} // Disable button while submitting
+                  disabled={loadingPostId === item._id}
                 >
                   {loadingPostId === item._id ? "Posting..." : "Post"}
                 </button>
