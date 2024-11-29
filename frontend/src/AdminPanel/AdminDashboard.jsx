@@ -76,7 +76,7 @@ const AdminDashboard = () => {
         throw new Error("Failed to ban user");
       }
 
-      const updatedUser = await response.json(); // Get the updated user object
+      // const updatedUser = await response.json(); // Get the updated user object
       setUsers((prev) =>
         prev.map((user) =>
           user._id === userId ? { ...user, isBanned: true } : user
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
         throw new Error("Failed to unban user");
       }
 
-      const updatedUser = await response.json(); // Get the updated user object
+      // const updatedUser = await response.json(); // Get the updated user object
       setUsers((prev) =>
         prev.map((user) =>
           user._id === userId ? { ...user, isBanned: false } : user
