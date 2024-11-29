@@ -8,6 +8,7 @@
     align-items: center;
     background-color: #f8f9fa;
     min-height: 100vh;
+    justify-content: center; /* Center vertically */
 }
 
 /* Profile Header */
@@ -219,10 +220,11 @@
     max-width: 500px;
     border: none;
     transition: all 0.3s ease;
+    margin: 0 auto; /* Center horizontally */
 }
 
 .reportTextarea {
-    width: 100%;
+    width: 75%;
     min-height: 120px;
     border: 1px solid #e5e7eb;
     border-radius: 0.75rem;
@@ -280,6 +282,7 @@
     background-color: #ef4444;
     color: white;
     border: none;
+    margin-top: 20px;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     cursor: pointer;
