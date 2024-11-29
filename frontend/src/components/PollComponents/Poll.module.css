@@ -413,6 +413,85 @@ input[type="radio"] {
 }
 
 
+/* Edit Button */
+.commentEditButton {
+    padding: 6px 12px;
+    background-color: #e8bc0b; /* Blue background for edit action */
+    color: white; /* White text for contrast */
+    border: none; /* No borders for a clean look */
+    border-radius: 5px; /* Slightly rounded corners */
+    cursor: pointer; /* Pointer cursor to indicate clickability */
+    font-size: 13px; /* Match other button font sizes */
+    font-weight: bold; /* Slightly bold for emphasis */
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.commentEditButton:hover {
+    background-color: #e09705; /* Darker blue on hover for feedback */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+}
+
+.commentEditButton:disabled {
+    background-color: #6c757d; /* Gray out when disabled */
+    cursor: not-allowed; /* Show not-allowed cursor */
+    opacity: 0.6; /* Reduce visibility to indicate inactivity */
+}
+
+/* Edit Comment Input */
+.editCommentInput {
+    width: 95%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #333333;
+    background-color: #fafafa;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.editCommentInput:focus {
+    outline: none;
+    border-color: #0077ff;
+    background-color: #ffffff;
+    box-shadow: 0 0 5px rgba(0, 119, 255, 0.3);
+}
+
+/* Edit Comment Buttons */
+.commentEditSaveButton,
+.commentEditCancelButton {
+    padding: 8px 12px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Save Button */
+.commentEditSaveButton {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
+.commentEditSaveButton:hover {
+    background-color: #218838;
+}
+
+/* Cancel Button */
+.commentEditCancelButton {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+.commentEditCancelButton:hover {
+    background-color: #c82333;
+}
+
+
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .commentsContainer {

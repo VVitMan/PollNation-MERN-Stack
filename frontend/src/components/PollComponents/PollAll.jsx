@@ -10,7 +10,10 @@ function PollAll() {
   const [visibleComments, setVisibleComments] = useState({});
   const [commentInputs, setCommentInputs] = useState({});
   const [loadingPostId, setLoadingPostId] = useState(null);
-  const [deletingCommentId, setDeletingCommentId] = useState(null); // Track deletion state
+  const [deletingCommentId, setDeletingCommentId] = useState(null);
+  const [editingComment, setEditingComment] = useState(null);
+  const [editingContent, setEditingContent] = useState({});
+  const [editingLoading, setEditingLoading] = useState(false);
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
 
@@ -102,7 +105,7 @@ function PollAll() {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
-    setDeletingCommentId(commentId); // Indicate deletion is in progress
+    setDeletingCommentId(commentId);
     try {
       const response = await fetch(`/api/comments/delete/${commentId}`, {
         method: "DELETE",
@@ -113,7 +116,6 @@ function PollAll() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
-      // Remove the deleted comment from the state
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId]?.filter((comment) => comment._id !== commentId),
@@ -121,8 +123,52 @@ function PollAll() {
     } catch (error) {
       console.error("Error deleting comment:", error);
     } finally {
-      setDeletingCommentId(null); // Reset deletion state
+      setDeletingCommentId(null);
     }
+  };
+
+  const handleEditComment = async (postId, commentId) => {
+    if (!editingContent[commentId]?.trim()) {
+      alert("Comment content cannot be empty.");
+      return;
+    }
+
+    setEditingLoading(true);
+
+    try {
+      const response = await fetch(`/api/comments/edit/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ content: editingContent[commentId] }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const updatedComment = await response.json();
+
+      setComments((prev) => ({
+        ...prev,
+        [postId]: prev[postId]?.map((comment) =>
+          comment._id === commentId ? updatedComment : comment
+        ),
+      }));
+
+      setEditingComment(null);
+      setEditingContent((prev) => ({ ...prev, [commentId]: "" }));
+    } catch (error) {
+      console.error("Error editing comment:", error);
+    } finally {
+      setEditingLoading(false);
+    }
+  };
+
+  const handleEditInputChange = (commentId, value) => {
+    setEditingContent((prev) => ({ ...prev, [commentId]: value }));
   };
 
   const handleInputChange = (postId, value) => {
@@ -140,7 +186,6 @@ function PollAll() {
     <>
       {pollQuizData.map((item, index) => (
         <div key={item._id} className={styles.card}>
-          {/* Profile */}
           <div className={styles.cardHeader}>
             <img
               className={styles.cardImage}
@@ -227,7 +272,6 @@ function PollAll() {
             {visibleComments[item._id] ? "Hide Comments" : "View Comments"}
           </button>
 
-          {/* Comments Section */}
           {visibleComments[item._id] && (
             <div className={styles.commentsContainer}>
               <h3 className={styles.commentsTitle}>Comments</h3>
@@ -251,18 +295,55 @@ function PollAll() {
                       <strong className={styles.commentAuthor}>
                         {comment.userId?.username || "Unknown"}
                       </strong>
-                      <span>{comment.content}</span>
+
+                      {editingComment === comment._id ? (
+                        <>
+                          <textarea
+                            value={editingContent[comment._id] || comment.content}
+                            onChange={(e) =>
+                              handleEditInputChange(comment._id, e.target.value)
+                            }
+                            className={styles.editCommentInput}
+                          />
+                          <button
+                            onClick={() => handleEditComment(item._id, comment._id)}
+                            className={styles.commentEditSaveButton}
+                            disabled={editingLoading}
+                          >
+                            {editingLoading ? "Saving..." : "Save"}
+                          </button>
+                          <button
+                            onClick={() => setEditingComment(null)}
+                            className={styles.commentEditCancelButton}
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <span>{comment.content}</span>
+                      )}
                     </div>
+
                     {currentUser && currentUser._id === comment.userId?._id && (
-                      <button
-                        onClick={() => handleDeleteComment(item._id, comment._id)}
-                        className={styles.commentDeleteButton}
-                        disabled={deletingCommentId === comment._id}
-                      >
-                        {deletingCommentId === comment._id
-                          ? "Deleting..."
-                          : "Delete"}
-                      </button>
+                      <>
+                        <button
+                          onClick={() => setEditingComment(comment._id)}
+                          className={styles.commentEditButton}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleDeleteComment(item._id, comment._id)
+                          }
+                          className={styles.commentDeleteButton}
+                          disabled={deletingCommentId === comment._id}
+                        >
+                          {deletingCommentId === comment._id
+                            ? "Deleting..."
+                            : "Delete"}
+                        </button>
+                      </>
                     )}
                   </div>
                 ))
