@@ -5,6 +5,7 @@ import styles from "./ProfilePage.module.css";
 import { FaPencilAlt, FaPlus } from "react-icons/fa";
 
 function ProfilePage() {
+    console.log("ProfilePage is rendering...");
     const { username } = useParams(); // Get username from URL
     const { currentUser } = useSelector((state) => state.user); // Logged-in user
     const [userData, setUserData] = useState(null);

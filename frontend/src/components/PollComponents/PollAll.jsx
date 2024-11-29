@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import styles from "./Poll.module.css";
 
 function PollAll() {
+  console.log("Poll All working...");
   const [pollQuizData, setPollQuizData] = useState([]); // Data for both polls and quizzes
   const [selectedOptions, setSelectedOptions] = useState({});
   const [comments, setComments] = useState({}); // Store comments dynamically for each post
@@ -205,7 +205,7 @@ function PollAll() {
               ) : (
                 comments[item._id]?.map((comment) => (
                     <div key={comment._id} className={styles.commentItem}>
-                    {console.log(comment.userId?.profilePicture)}
+                    {console.log("profilePicture of user'comment",comment.userId?.profilePicture)}
                     <img
                         src={
                             comment.userId?.profilePicture && comment.userId.profilePicture.trim() !== ""
