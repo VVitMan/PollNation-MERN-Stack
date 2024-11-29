@@ -1,7 +1,6 @@
 import User from "../models/user.model.js";
 import Poll from "../models/poll.model.js";
 import Quiz from '../models/quiz.model.js';
-import Vote from '../models/vote.model.js';
 import Comment from '../models/comment.model.js';
 
 /* Get Poll and Quiz with Comment from all users */
@@ -135,6 +134,32 @@ export const updatePollAndQuiz = async (req, res) => {
         res.status(200).json({ message: `Poll/Quiz updated successfully`, data: updatedData });
     } catch (error) {
         console.error("Error updating poll/quiz:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+/* Delete Poll or Quiz by Id */
+export const deletePollAndQuiz = async (req, res) => {
+    try {
+        const { postId } = req.params;
+
+        // Delete Poll or Quiz by finding the correct document
+        let deletedData = await Poll.findByIdAndDelete(postId);
+
+        if (!deletedData) {
+            deletedData = await Quiz.findByIdAndDelete(postId);
+        }
+
+        if (!deletedData) {
+            return res.status(404).json({ message: "Poll/Quiz not found" });
+        }
+
+        // Also delete comments associated with the poll/quiz
+        await Comment.deleteMany({ postId });
+
+        res.status(200).json({ message: `Poll/Quiz deleted successfully`, data: deletedData });
+    } catch (error) {
+        console.error("Error deleting poll/quiz:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };

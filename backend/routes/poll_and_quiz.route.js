@@ -1,6 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../utils/verifyUser.js';
-import { getAllPollsAndQuizzes, createPollAndQuiz, getPollsAndQuizzesByUser, getPollsAndQuizzesById, updatePollAndQuiz } from '../controllers/poll_and_quiz.controller.js';
+import { getAllPollsAndQuizzes, createPollAndQuiz, getPollsAndQuizzesByUser, getPollsAndQuizzesById, updatePollAndQuiz, deletePollAndQuiz } from '../controllers/poll_and_quiz.controller.js';
 
 const router = express.Router();
 
@@ -13,6 +13,9 @@ router.get('/find/:postId', getPollsAndQuizzesById);
 
 /* Update Poll or Quizz by ID */
 router.put('/update/:postId', verifyToken, updatePollAndQuiz);
+
+/* Delete Poll or Quizz by ID */
+router.delete('/delete/:postId', verifyToken, deletePollAndQuiz);
 
 
 export default router;

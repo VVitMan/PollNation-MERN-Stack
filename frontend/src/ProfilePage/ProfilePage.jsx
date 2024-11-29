@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styles from "./ProfilePage.module.css";
-import { FaPencilAlt, FaPlus } from "react-icons/fa";
+import { FaPencilAlt, FaPlus, FaTrashAlt } from "react-icons/fa";
 
 function ProfilePage() {
-    console.log("ProfilePage is rendering...");
     const { username } = useParams(); // Get username from URL
     const { currentUser } = useSelector((state) => state.user); // Logged-in user
     const [userData, setUserData] = useState(null);
@@ -48,6 +47,71 @@ function ProfilePage() {
         fetchData();
     }, [username]);
 
+    /* Handle Poll/Quiz Deletion */
+    const handleDelete = async (itemId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(`/api/poll-and-quiz/delete/${itemId}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to delete item: ${response.status}`);
+            }
+
+            setData((prevData) => prevData.filter((item) => item._id !== itemId)); // Remove from state
+            alert("Item deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting item:", error);
+            alert("Failed to delete item.");
+        }
+    };
+
+    /* Handle Report Submission */
+    const handleReport = async () => {
+        if (!reportReason.trim()) {
+            setReportStatus("Please provide a reason for reporting.");
+            return;
+        }
+
+        try {
+            // Fetch User ID by username
+            const response = await fetch(`/api/user/id/${username}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user ID: ${response.status}`);
+            }
+            const data = await response.json();
+            const userId = data.userId;
+
+            // Submit the report
+            const reportResponse = await fetch("/api/user/reports", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    reportedUserId: userId,
+                    reason: reportReason,
+                }),
+            });
+            
+            if (!reportResponse.ok) {
+                const errorData = await reportResponse.json();
+                throw new Error(errorData.message || `HTTP error! Status: ${reportResponse.status}`);
+            }
+
+            setReportStatus("Report submitted successfully!");
+            setReportReason(""); // Reset input
+            setShowReportForm(false); // Hide the form
+        } catch (error) {
+            console.error("Error submitting report:", error.message);
+            setReportStatus(error.message || "Failed to submit report.");
+        }
+    };
+
     /* Loading State */
     if (loading) {
         return <div className={styles.loading}>Loading...</div>;
@@ -61,48 +125,6 @@ function ProfilePage() {
     /* Filter Data */
     const filteredData = activeTab === "All" ? data : data.filter((item) => item.type === activeTab);
 
-    /* Handle Report Submission */
-    const handleReport = async () => {
-        if (!reportReason) {
-            setReportStatus("Please provide a reason for reporting.");
-            return;
-        }
-    
-        try {
-            // Fetch User ID by username
-            const response = await fetch(`/api/user/id/${username}`);
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user ID: ${response.status}`);
-            }
-            const data = await response.json();
-            const userId = data.userId;
-    
-            // Submit the report
-            const reportResponse = await fetch("/api/user/reports", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    reportedUserId: userId,
-                    reason: reportReason,
-                }),
-            });
-    
-            if (!reportResponse.ok) {
-                const errorData = await reportResponse.json();
-                throw new Error(errorData.message || `HTTP error! Status: ${reportResponse.status}`);
-            }
-    
-            setReportStatus("Report submitted successfully!");
-            setReportReason(""); // Reset input
-            setShowReportForm(false); // Hide the form
-        } catch (error) {
-            console.error("Error submitting report:", error.message);
-            setReportStatus(error.message || "Failed to submit report.");
-        }
-    };
-    
     return (
         <div className={styles.profilePage}>
             {/* Profile Header */}
@@ -144,18 +166,22 @@ function ProfilePage() {
                                     className={styles.reportTextarea}
                                 />
                                 <div className={styles.buttonContainer}>
-                                <button
-                                    onClick={() => setShowReportForm(false)}
-                                    className={styles.cancelButton}
-                                >
-                                    Cancel
-                                </button>
-                                <button onClick={handleReport} className={styles.reportButton}>
-                                    Submit Report
-                                </button>
+                                    <button
+                                        onClick={() => setShowReportForm(false)}
+                                        className={styles.cancelButton}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button onClick={handleReport} className={styles.reportButton}>
+                                        Submit Report
+                                    </button>
                                 </div>
                                 {reportStatus && (
-                                    <p className={`${styles.reportStatus} ${reportStatus.includes("Failed") ? styles.error : ""}`}>
+                                    <p
+                                        className={`${styles.reportStatus} ${
+                                            reportStatus.includes("Failed") ? styles.error : ""
+                                        }`}
+                                    >
                                         {reportStatus}
                                     </p>
                                 )}
@@ -219,6 +245,14 @@ function ProfilePage() {
                                 </div>
                             ))}
                         </div>
+                        {currentUser?.username === username && (
+                            <button
+                                onClick={() => handleDelete(item._id)}
+                                className={styles.deleteButton}
+                            >
+                                <FaTrashAlt /> Delete
+                            </button>
+                        )}
                     </div>
                 ))}
             </div>

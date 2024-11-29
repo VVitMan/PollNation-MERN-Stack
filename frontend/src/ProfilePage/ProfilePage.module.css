@@ -1,298 +1,307 @@
 .profilePage {
-    max-width: 800px;
-    margin: 0 auto; /* Centers the page horizontally */
-    padding: 20px;
-    font-family: Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centers the child elements within the container */
+    align-items: center;
+    background-color: #f8f9fa;
+    min-height: 100vh;
 }
 
 /* Profile Header */
 .profileHeader {
     text-align: center;
-    margin-bottom: 20px;
-    width: 100%; /* Ensures full width for text alignment */
+    margin-bottom: 2.5rem;
+    width: 100%;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .profileImage {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 10px;
+    margin-bottom: 1.5rem;
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.profileImage:hover {
+    transform: scale(1.05);
 }
 
 .username {
-    font-size: 1.5em;
-    font-weight: bold;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
 }
 
 .bio {
-    font-size: 0.9em;
-    color: #666;
-    margin-top: 5px;
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 /* Tabs */
 .tabs {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 10px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    width: 90%; /* Ensures the tabs are centered */
+    gap: 2rem;
+    margin: 1rem 0 2rem;
+    border-bottom: none;
+    padding-bottom: 0;
+    width: 100%;
 }
 
 .tab {
-    font-size: 1em;
+    font-size: 1rem;
     cursor: pointer;
-    color: #666;
-    padding: 5px 10px;
+    color: #6b7280;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    background-color: transparent;
+}
+
+.tab:hover {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.08);
 }
 
 .activeTab {
-    font-weight: bold;
-    color: #000;
-    border-bottom: 2px solid #000;
+    font-weight: 600;
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.12);
+    border-bottom: none;
 }
 
 /* Polls List */
 .pollsList {
-    margin-top: 20px;
-    width: 90%; /* Ensures the poll list is centered */
+    margin-top: 2rem;
+    width: 100%;
+    max-width: 800px;
 }
 
-/* Individual Poll Card */
+/* Poll Card */
 .pollCard {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-    position: relative;
-    width: 100%; /* Makes each poll card fill the available width */
-    max-width: 700px; /* Restricts poll card width for better alignment */
+    background-color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pollCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(0, 0, 0, 0.1);
 }
 
 /* Poll Header */
 .pollHeader {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .pollProfileImage {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .pollUsername {
-    font-size: 1.1em;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1a1a;
 }
 
-.editProfileIcon {
-    color: #333;
-    font-size: 1.2em;
+.editProfileIcon, .editIcon {
+    color: #6b7280;
+    font-size: 1.25rem;
     cursor: pointer;
-    transition: color 0.3s;
+    transition: all 0.2s ease;
+    padding: 0.5rem;
+    border-radius: 50%;
 }
 
-.editProfileIcon:hover {
-    color: #007bff; /* Change to blue on hover */
-}
-
-.editIcon {
-    color: #333;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: color 0.3s;
-    position: absolute; /* Position the icon absolutely */
-    right: 28px; /* Adjust the distance from the right edge */
-    top: 28px; /* Adjust the distance from the top */
-}
-
-.editIcon:hover {
-    color: #007bff; /* Change to blue on hover */
-}
-
-/* Add this to make sure the container is relatively positioned */
-.pollItem {
-    position: relative; /* Make this container the reference for absolute positioning */
-}
-
-
-.voteCount {
-    font-size: 0.85em;
-    color: #888;
-    margin-top: 5px;
+.editProfileIcon:hover, .editIcon:hover {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.08);
 }
 
 /* Options */
 .options {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
 }
 
 .option {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    background-color: #f9fafb;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.option:hover {
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateX(4px);
 }
 
 .option label {
-    font-size: 0.9em;
+    font-size: 1rem;
+    color: #374151;
+    font-weight: 500;
 }
 
 .optionImage {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Floating '+' Button */
+/* Floating Button */
 .floatingButton {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #4CAF50; /* Green */
+    bottom: 2rem;
+    right: 2rem;
+    background-color: #3b82f6;
     color: white;
     border-radius: 50%;
-    width: 70px; /* Larger size */
-    height: 70px; /* Larger size */
+    width: 60px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 32px; /* Larger font size */
+    font-size: 1.75rem;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    text-decoration: none;
-    animation: highlightEffect 1s ease-out; /* Trigger animation on load */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Hover effect */
 .floatingButton:hover {
-    background-color: #45a049; /* Darker Green on hover */
+    background-color: #2563eb;
     transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
 }
 
-/* Keyframes for the highlight effect */
-@keyframes highlightEffect {
-    0% {
-        transform: scale(0.8); /* Start smaller */
-        opacity: 0.5; /* Slightly transparent */
-    }
-    50% {
-        transform: scale(1.2); /* Scale up */
-        opacity: 1; /* Fully visible */
-    }
-    100% {
-        transform: scale(1); /* Return to normal size */
-        opacity: 1;
-    }
-}
-
+/* Report Section */
 .reportSection {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    background-color: #ffffff; /* White background for contrast */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    width: 100%; /* Full width inside container */
-    max-width: 400px; /* Restrict maximum width */
-    border: 1px solid #e0e0e0; /* Light border for separation */
-    transition: transform 0.2s ease-in-out; /* Subtle animation */
-}
-
-.reportSection:hover {
-    transform: translateY(-5px); /* Lift effect on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
-}
-
-.buttonContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    border: none;
+    transition: all 0.3s ease;
 }
 
 .reportTextarea {
-    width: 94%;
-    min-height: 100px; /* Slightly larger textarea */
-    border: 1px solid #dcdcdc; /* Neutral border color */
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 16px;
-    font-family: "Arial", sans-serif;
-    resize: none; /* Disable resizing */
-    margin-bottom: 15px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    min-height: 120px;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: all 0.2s ease;
+    background-color: #f9fafb;
 }
 
 .reportTextarea:focus {
-    border-color: #007bff; /* Highlighted blue border */
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3); /* Blue glow on focus */
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    outline: none;
 }
 
 .reportButtons {
     display: flex;
-    justify-content: space-between; /* Push buttons to opposite sides */
-    width: 100%; /* Ensure full width for proper alignment */
-    margin-top: 10px;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.reportButton, .cancelButton {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .reportButton {
-    background-color: #007bff; /* Primary blue */
+    background-color: #3b82f6;
     color: white;
-    margin-right: 10px; /* Space between buttons */
 }
 
 .reportButton:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    transform: translateY(-2px); /* Lift effect */
-}
-
-.reportButton:active {
-    background-color: #004085; /* Even darker blue */
-    transform: translateY(0); /* Reset lift */
+    background-color: #2563eb;
+    transform: translateY(-2px);
 }
 
 .cancelButton {
-    background-color: #f8d7da; /* Light red background */
-    color: #721c24; /* Dark red text */
+    background-color: #f3f4f6;
+    color: #4b5563;
 }
 
 .cancelButton:hover {
-    background-color: #f5c6cb; /* Slightly darker red */
-    transform: translateY(-2px); /* Lift effect */
+    background-color: #e5e7eb;
+    transform: translateY(-2px);
 }
 
-.cancelButton:active {
-    background-color: #f1b0b7; /* Even darker red */
-    transform: translateY(0); /* Reset lift */
+.deleteButton {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.deleteButton:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
 }
 
 .reportStatus {
-    margin-top: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #28a745; /* Green for success */
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.reportStatus.success {
+    color: #059669;
 }
 
 .reportStatus.error {
-    color: #dc3545; /* Red for error */
+    color: #dc2626;
 }
