@@ -15,6 +15,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import EditPollQuiz from './EditPollQuiz/EditPollQuiz.jsx'; // Import the EditPollQuiz component
 import CreatePollAndQuiz from './CreatePollQuiz/CreatePollQuiz.jsx';
 import Admin from './AdminPanel/AdminPanel.jsx';
+// import AdminDashboard from './AdminPanel/AdminDashboard.jsx';
+import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute.jsx';
 
 export default function App() {
   return (
@@ -26,8 +28,6 @@ export default function App() {
         
         {/* Navbar Component */}
         <Navbar />
-
-        
         <br />
         <br />
         <Routes>
@@ -48,7 +48,11 @@ export default function App() {
           <Route path="/edit-profile" element={<EditProfile />} /> {/* Edit Profile Page */}
           <Route path="/update/poll-and-quiz/:postId" element={<EditPollQuiz />} /> {/* Edit/Poll Quiz Page */}
           <Route path="/create/poll-and-quiz" element={<CreatePollAndQuiz />} />
-          <Route path="/admin" element={<Admin/>} />
+          {/* Admin Panel */}
+          <Route element={<OnlyAdminPrivateRoute />}>
+            <Route path="/admin" element={<Admin/>} />
+            {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> Admin Dashboard Page */}
+          </Route>
         </Routes>
       </div>
     </Router>

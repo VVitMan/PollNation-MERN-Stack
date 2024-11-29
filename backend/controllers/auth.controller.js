@@ -15,8 +15,8 @@ export const signup = async (req, res, next) => {
         // Save new user to the database
         await newUser.save();
 
-        // Create Token
-        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+        // Create Token with isAdmin
+        const token = jwt.sign({ id: newUser._id, isAdmin: newUser.isAdmin }, process.env.JWT_SECRET);
 
         // Remove password from response
         const { password: hashedPassword, ...rest } = newUser._doc;
@@ -45,7 +45,7 @@ export const signin = async (req, res, next) => {
         if (!isMatch) return next(errorCustom(401, "Invalid Credentials"));
 
         /* Create Token */
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign({ id: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
 
         /* Remove Password from Response */
         const { password: hashedPassword, ...rest } = user._doc;
@@ -68,7 +68,11 @@ export const google = async (req, res, next) => {
     try {
         const user = await User.findOne({ email: req.body.email });
         if (user) {
-            const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET);
+            /* Create Token with isAdmin */
+            const token = jwt.sign({ 
+                id: user._id,
+                isAdmin: user.isAdmin  // Add this line
+            }, process.env.JWT_SECRET);
             const { password: hashedPassword, ...rest } = user._doc;
             const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000); // expires 1 hour
             res.cookie('access_token', token, { httpOnly: true, expires: expiresDate}).status(200).json(rest);
@@ -91,7 +95,11 @@ export const google = async (req, res, next) => {
             });
             
             await newUser.save();
-            const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+            // Create Token with isAdmin
+            const token = jwt.sign({ 
+                id: newUser._id,
+                isAdmin: newUser.isAdmin  // Add this line
+            }, process.env.JWT_SECRET);
             const { password: hashedPassword_newUser, ...rest } = newUser._doc;
             const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
 

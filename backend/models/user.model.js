@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
     },
     isBanned: { type: Boolean, default: false }, // Field to track if the user is banned
     reportCount: { type: Number, default: 0 },  // Field to track the number of reports
+    isAdmin: { type: Boolean, default: false }, // Field to track if the user is an admin
   },
   { timestamps: true }
 );
