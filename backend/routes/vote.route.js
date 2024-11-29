@@ -1,11 +1,11 @@
 import express from 'express';
-import { createOrToggleVote, updateVote, deleteVote, getUserVotes } from '../controllers/vote.controller.js';
+import { createVote, updateVote, deleteVote, getUserVotes } from '../controllers/vote.controller.js';
 import { verifyToken } from '../utils/verifyUser.js'; // Import the verifyToken middleware
 
 const router = express.Router();
 
 // Create a new vote
-router.post('/', verifyToken, createOrToggleVote);
+router.post('/', verifyToken, createVote);
 
 // Update an existing vote
 router.put('/', verifyToken, updateVote);

@@ -66,16 +66,9 @@ function PollAll() {
 
 const handleOptionSelect = async (pollIndex, postId, optionId) => {
   const selectedOption = selectedOptions[postId];
-  const token = localStorage.getItem("token") || currentUser?.token; // Get token for authentication
+  const token = currentUser?.token; // Retrieve token from Redux state
   const userId = currentUser?._id; // Extract user ID from Redux state
 
-  // Prevent duplicate voting
-  if (selectedOption === optionId) {
-      console.log("You already voted for this option");
-      return;
-  }
-
-  // Find the index of the selected option
   const optionIndex = pollQuizData[pollIndex].options.findIndex(
       (option) => option._id === optionId
   );
@@ -97,19 +90,23 @@ const handleOptionSelect = async (pollIndex, postId, optionId) => {
               body: JSON.stringify({
                   userId,
                   pollId: postId,
-                  optionIndex, // Use index instead of ID
+                  optionIndex,
                   type: "Poll",
               }),
           });
-
-          // Update state to reflect the new vote
-          setPollQuizData((prevData) => {
-              const updatedData = [...prevData];
-              updatedData[pollIndex].options[optionIndex].votes += 1; // Increase votes
-              return updatedData;
+      } else if (selectedOption === optionId) {
+          // Delete vote (toggle off)
+          await fetch("/api/vote", {
+              method: "DELETE",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                  userId,
+                  pollId: postId,
+              }),
           });
-
-          setSelectedOptions((prev) => ({ ...prev, [postId]: optionId }));
       } else {
           // Update vote
           await fetch("/api/vote", {
@@ -121,27 +118,52 @@ const handleOptionSelect = async (pollIndex, postId, optionId) => {
               body: JSON.stringify({
                   userId,
                   pollId: postId,
-                  optionIndex, // Use index instead of ID
+                  optionIndex,
               }),
           });
-
-          // Update vote counts
-          setPollQuizData((prevData) => {
-              const updatedData = [...prevData];
-              const previousOptionIndex = pollQuizData[pollIndex].options.findIndex(
-                  (option) => option._id === selectedOption
-              );
-              updatedData[pollIndex].options[previousOptionIndex].votes -= 1; // Decrease previous option votes
-              updatedData[pollIndex].options[optionIndex].votes += 1; // Increase new option votes
-              return updatedData;
-          });
-
-          setSelectedOptions((prev) => ({ ...prev, [postId]: optionId }));
       }
+
+      // Refetch updated poll data
+      const updatedPollResponse = await fetch("/api/poll-and-quiz/all", {
+          method: "GET",
+          credentials: "include",
+      });
+
+      if (!updatedPollResponse.ok) {
+          throw new Error(`HTTP error! Status: ${updatedPollResponse.status}`);
+      }
+
+      const updatedPollData = await updatedPollResponse.json();
+      setPollQuizData(updatedPollData);
+
+      // Refetch user's votes
+      const updatedVotesResponse = await fetch("/api/vote/user", {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+          },
+      });
+
+      if (!updatedVotesResponse.ok) {
+          throw new Error(`HTTP error! Status: ${updatedVotesResponse.status}`);
+      }
+
+      const updatedVotes = await updatedVotesResponse.json();
+      const updatedUserVotes = {};
+      updatedVotes.forEach((vote) => {
+          const poll = updatedPollData.find((p) => p._id === vote.pollId);
+          if (poll) {
+              updatedUserVotes[vote.pollId] = poll.options[vote.optionIndex]._id;
+          }
+      });
+
+      setSelectedOptions(updatedUserVotes);
   } catch (error) {
       console.error("Error handling vote:", error);
   }
 };
+
 
   const toggleComments = async (postId) => {
     setVisibleComments((prev) => ({
