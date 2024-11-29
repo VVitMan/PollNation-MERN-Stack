@@ -24,3 +24,55 @@ export const getUserReports = async (req, res, next) => {
       next(error);
     }
 };
+
+/* Delete User */
+export const deleteUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+      // Validate userId
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+          return res.status(400).json({ error: 'Invalid userId format.' });
+      }
+
+      // Find and delete the user
+      const user = await User.findByIdAndDelete(userId);
+
+      if (!user) {
+          return res.status(404).json({ error: 'User not found.' });
+      }
+
+      res.status(200).json({ message: 'User account deleted successfully.' });
+  } catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).json({ error: 'Failed to delete user.' });
+  }
+};
+
+/* Ban User */
+export const banUser = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+      // Validate userId
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+          return res.status(400).json({ error: 'Invalid userId format.' });
+      }
+
+      // Update the user's isBanned field
+      const user = await User.findByIdAndUpdate(
+          userId,
+          { isBanned: true },
+          { new: true }
+      );
+
+      if (!user) {
+          return res.status(404).json({ error: 'User not found.' });
+      }
+
+      res.status(200).json({ message: 'User has been banned successfully.' });
+  } catch (error) {
+      console.error('Error banning user:', error);
+      res.status(500).json({ error: 'Failed to ban user.' });
+  }
+};
