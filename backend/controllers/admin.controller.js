@@ -48,6 +48,9 @@ export const deleteUser = async (req, res) => {
       await Poll.deleteMany({ userId });
       await Quiz.deleteMany({ userId });
 
+      // Delete all comments created by this user
+      await Comment.deleteMany({ userId: req.params.id });
+
       res.status(200).json({ message: 'User account deleted successfully.' });
   } catch (error) {
       console.error('Error deleting user:', error);
