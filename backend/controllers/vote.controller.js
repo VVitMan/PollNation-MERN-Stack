@@ -113,7 +113,7 @@ export const getMyAnswers = async (req, res) => {
       }
   
       const optionIds = votes.map((vote) => vote.optionId);
-      console.log("Answered Option Data:", answeredOptionData);
+      console.log("Answered Option Data:", optionIds);
 
       res.status(200).json(optionIds);
     } catch (error) {

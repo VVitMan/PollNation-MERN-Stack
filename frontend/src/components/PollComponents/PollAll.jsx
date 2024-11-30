@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styles from "./Poll.module.css";
@@ -42,127 +42,121 @@ function PollAll() {
     const selectedOption = selectedOptions[pollIndex];
     const token = currentUser?.token; // Get token for authentication
     const userId = currentUser?._id; // Extract user ID from Redux state
-
+  
     // Find the index of the selected option
     const optionIndex = pollQuizData[pollIndex].options.findIndex(
-        (option) => option._id === optionId
+      (option) => option._id === optionId
     );
-
+  
     if (optionIndex === -1) {
-        console.error("Invalid option selected");
-        return;
+      console.error("Invalid option selected");
+      return;
     }
-
+  
     try {
-        if (selectedOption === optionId) {
-            // Cancel vote
-            await fetch("/api/vote/delete", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({ userId, pollId: postId }),
-            });
-            /* ! Frontend illusion !
-            // Update vote count in the state
-            setPollQuizData((prevData) => {
-                const updatedData = [...prevData];
-                updatedData[pollIndex].options[optionIndex].votes -= 1; // Decrease votes
-                return updatedData;
-            });
-            */
-            setSelectedOptions((prev) => ({ ...prev, [pollIndex]: null }));
-        } else if (selectedOption == null) {
-            // Create vote
-            await fetch("/api/vote/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userId,
-                    pollId: postId,
-                    optionId, // Use index instead of ID
-                    type: "Poll",
-                }),
-            });
-
-            /* ! Frontend illusion !
-            // Update vote count in the state
-            setPollQuizData((prevData) => {
-                const updatedData = [...prevData];
-                updatedData[pollIndex].options[optionIndex].votes += 1; // Increase votes
-                return updatedData;
-            });
-            */
-
-            setSelectedOptions((prev) => ({ ...prev, [pollIndex]: optionId }));
-        } else {
-            // Update vote
-            await fetch("/api/vote/change", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    userId,
-                    pollId: postId,
-                    optionId,
-                }),
-            });
-
-            /* ! Frontend illusion !
-            // Update vote count in the state
-            setPollQuizData((prevData) => {
-                const updatedData = [...prevData];
-                const previousOptionIndex = pollQuizData[pollIndex].options.findIndex(
-                    (option) => option._id === selectedOption
-                );
-                updatedData[pollIndex].options[previousOptionIndex].votes -= 1; // Decrease previous option votes
-                updatedData[pollIndex].options[optionIndex].votes += 1; // Increase new option votes
-                return updatedData;
-            });
-            */
-
-            setSelectedOptions((prev) => ({ ...prev, [pollIndex]: optionId }));
-        }
+      if (selectedOption === optionId) {
+        // Cancel vote
+        await fetch("/api/vote/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ userId, pollId: postId }),
+        });
+  
+        preSelectOptions(); // Refresh the selected options
+      } else if (selectedOption == null) {
+        // Create vote
+        await fetch("/api/vote/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId,
+            pollId: postId,
+            optionId,
+            type: "Poll",
+          }),
+        });
+  
+        preSelectOptions(); // Refresh the selected options
+      } else {
+        // Update vote
+        await fetch("/api/vote/change", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId,
+            pollId: postId,
+            optionId,
+          }),
+        });
+  
+        preSelectOptions(); // Refresh the selected options
+      }
     } catch (error) {
-        console.error("Error handling vote:", error);
+      console.error("Error handling vote:", error);
     }
+  };
+  
+
+
+
+const preSelectOptions = async () => {
+  try {
+    console.log("Load Selected Options called!")
+    const response = await fetch("/api/vote/myanswers", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Authorization": `Bearer ${currentUser.token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const allOptionIdData = await response.json();
+    setOptionData(allOptionIdData);
+  } catch (error) {
+    console.error("Error fetching allOptionIdData:", error);
+  }
 };
 
+const preSelectOptionsCalled = useRef(false); // Track whether preSelectOptions has been called
 useEffect(() => {
-  if (!currentUser?.token) {
-    console.log("Waiting for currentUser.token...");
-    return;
-  }
+  
 
-  const preSelectOptions = async () => {
-    try {
-      const response = await fetch("/api/vote/myanswers", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Authorization": `Bearer ${currentUser.token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const allOptionIdData = await response.json();
-      setOptionData(allOptionIdData);
-    } catch (error) {
-      console.error("Error fetching allOptionIdData:", error);
+  const initializeOptions = async () => {
+    if (!currentUser?.token) {
+      console.log("Waiting for currentUser.token...");
+      return;
     }
+
+    if (preSelectOptionsCalled.current) {
+      // Skip if already called
+      console.log("preSelectOptions has already been called.");
+      return;
+    }
+
+    console.log("Token is ready. Calling preSelectOptions...");
+    await preSelectOptions();
+    preSelectOptionsCalled.current = true; // Mark as called
   };
 
   preSelectOptions();
 }, [currentUser?.token]);
+
+useEffect(() => {
+  console.log("Current User at initial load:", currentUser);
+}, [currentUser]);
 
 
 
@@ -252,18 +246,20 @@ useEffect(() => {
               {item.options.reduce((total, option) => total + option.votes, 0)} Votes
             </p>
             <div className={styles.pollOptions}>
-                  {item.options.map((option, optionIndex) => (
-                      <div
-                        key={option._id}
-                        className={`${styles.option} ${
-                          selectedOptions[item._id] === option._id ? styles.selected : ""
-                        }`}
-                        onClick={() => handleOptionSelect(index, item._id, option._id)}
-                      >
-                      <label>{option.text}: {option.votes}</label>
-                    </div>
-                  ))}
+              {item.options.map((option, optionIndex) => (
+                <div
+                  key={option._id}
+                  className={`${styles.option} ${
+                    answeredOptionData.includes(option._id) ? styles.selected : ""
+                  }`}
+                  onClick={() => handleOptionSelect(index, item._id, option._id)}
+                >
+                  <label>{option.text}: {option.votes}</label>
+                </div>
+              ))}
             </div>
+
+
                 {answeredOptionData.map((optionId) => (
                   
                   <div key={optionId}>
