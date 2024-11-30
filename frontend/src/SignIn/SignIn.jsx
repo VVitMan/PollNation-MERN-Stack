@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import { signInStart, signInSuccess, signInFailure, clearError } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
 import styles from "./SignIn.module.css"; // Import the CSS module
@@ -25,6 +25,11 @@ export default function SignIn() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  // Clear the error when the component is mounted
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
   /* Handling Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +48,7 @@ export default function SignIn() {
       // Check if the response indicates a failure
       if (data.success === false) {
         dispatch(signInFailure(data)); // Dispatch failure action
-        console.log(data); // Log error details
+        // console.log(data); // Log error details
         return;
       }
 
@@ -53,6 +58,7 @@ export default function SignIn() {
       dispatch(signInFailure(error)); // Handle fetch error
     }
   };
+  
 
   console.log(error); // Log
   return (

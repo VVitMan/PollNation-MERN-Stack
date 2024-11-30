@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import OAuth from "../components/OAuth";
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import { signInStart, signInSuccess, signInFailure, clearError } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./SignUp.module.css"; // Import the CSS module
 
@@ -21,6 +21,11 @@ export default function SignUp() {
     // Update form data when input changes
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
+  // Clear the error when the component is mounted
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   /* Handling Submit */
   const handleSubmit = async (e) => {
@@ -46,6 +51,7 @@ export default function SignUp() {
       dispatch(signInSuccess(data)); // Dispatch success action
       navigate("/"); // Navigate to the Home page on success
     } catch (error) {
+      console.log("couldn't sign up", error); // Log error details
       dispatch(signInFailure(error)); // Handle fetch error
     }
   };
