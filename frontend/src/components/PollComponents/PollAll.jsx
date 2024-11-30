@@ -102,7 +102,6 @@ const preSelectOptions = async () => {
       if (response.status === 404) {
         // Handle case where no votes are found
         console.warn("No votes found for the user. Setting default empty state.");
-        const { allOptionIdData, allQuestionIdData } = await response.json();
         setQuestionData([]);
         setOptionData([]);
         return;
