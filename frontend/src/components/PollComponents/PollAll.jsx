@@ -200,6 +200,51 @@ useEffect(() => {
     setCommentInputs((prev) => ({ ...prev, [postId]: value }));
   };
 
+  const handleLogout = () => {
+    // Clear user session (e.g., Redux state or cookies)
+    dispatch(logoutUserAction()); // Adjust based on your logout logic
+  
+    // Clear poll/quiz states
+    setAnsweredOptionData([]);
+    setAnsweredQuestionData([]);
+    setVoteCounts([]); // Clear vote counts if stored
+  };
+
+  useEffect(() => {
+  if (!currentUser) {
+    // Clear states if no user is logged in
+    setAnsweredOptionData([]);
+    setAnsweredQuestionData([]);
+    setVoteCounts([]);
+    return;
+  }
+
+  // Fetch user's answers if logged in
+  const fetchAnswers = async () => {
+    try {
+      const response = await fetch("/api/vote/myanswers", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${currentUser.token}`,
+        },
+      });
+      if (response.ok) {
+        const { allOptionIdData, allQuestionIdData, voteCounts } = await response.json();
+        setAnsweredOptionData(allOptionIdData);
+        setAnsweredQuestionData(allQuestionIdData);
+        setVoteCounts(voteCounts);
+      } else {
+        console.warn("Failed to fetch answers:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching answers:", error);
+    }
+  };
+
+  fetchAnswers();
+}, [currentUser]);
+
+  
   return (
     <>
       {pollQuizData.map((item) => {
@@ -225,20 +270,31 @@ useEffect(() => {
             <div className={styles.voteInfo}>
               <p className={styles.voteCount}>{totalVotes} Votes</p>
               <div className={styles.pollOptions}>
-                {item.options.map((option) => {
-                  const optionVote = voteCounts.find((vc) => vc._id === option._id);
-                  const votePercentage = totalVotes > 0 ? (optionVote?.count / totalVotes) * 100 : 0;
+              {item.options.map((option) => {
+                // Default values when no user is logged in
+                const optionVote = currentUser
+                  ? voteCounts.find((vc) => vc._id === option._id)
+                  : { count: 0 }; // Default to 0 if no user
+                const totalVotes = currentUser
+                  ? item.options.reduce((total, opt) => {
+                      const vote = voteCounts.find((vc) => vc._id === opt._id);
+                      return total + (vote?.count || 0);
+                    }, 0)
+                  : 0; // Default to 0 if no user
+                const votePercentage = totalVotes > 0 ? (optionVote?.count / totalVotes) * 100 : 0;
 
                   return (
                     <div
                       key={option._id}
                       className={`${styles.option} ${
-                        answeredQuestionData.includes(item._id)
-                          ? answeredOptionData.includes(option._id)
-                            ? styles.selected
-                            : styles.notSelected
-                          : ""
-                      }`}
+                        currentUser
+                            ? answeredQuestionData.includes(item._id)
+                                ? answeredOptionData.includes(option._id)
+                                    ? styles.selected
+                                    : styles.notSelected
+                                : "" // No class applied if the current question isn't answered
+                            : "" // No class applied if the user is logged out
+                    }`}
                       style={{ "--vote-percentage": `${votePercentage}%` }}
                       onClick={() => handleOptionSelect(item._id, option._id)}
                     >
