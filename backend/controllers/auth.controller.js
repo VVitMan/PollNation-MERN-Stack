@@ -58,7 +58,7 @@ export const signup = async (req, res, next) => {
     const token = jwt.sign(
       { id: newUser._id, isAdmin: newUser.isAdmin },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      { expiresIn: '24h' } // Token expires in 24 hours
     );
 
     // Remove password from response
@@ -68,7 +68,7 @@ export const signup = async (req, res, next) => {
     res
       .cookie("access_token", token, {
         httpOnly: true,
-        expires: new Date(Date.now() + 1 * 60 * 60 * 1000), // Expire in 1 hour
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // Expire in 24 hours
         secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
         sameSite: 'strict' // Helps mitigate CSRF attacks
       })
