@@ -102,15 +102,17 @@ const preSelectOptions = async () => {
       if (response.status === 404) {
         // Handle case where no votes are found
         console.warn("No votes found for the user. Setting default empty state.");
-        setOptionData([]); // Set an empty array if no votes are found
+        const { allOptionIdData, allQuestionIdData } = await response.json();
+        setQuestionData([]);
+        setOptionData([]);
         return;
       }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
     const { allOptionIdData, allQuestionIdData } = await response.json();
-    setOptionData(allOptionIdData);
     setQuestionData(allQuestionIdData);
+    setOptionData(allOptionIdData);
   } catch (error) {
     console.error("Error fetching allOptionIdData:", error);
   }
@@ -224,7 +226,7 @@ useEffect(() => {
                       ? answeredOptionData.includes(option._id)
                         ? styles.selected
                         : styles.notSelected
-                      : ""
+                      : "" // Remove classes if answeredQuestionData doesn't include item._id
                   }`}
                   onClick={() => handleOptionSelect(index, item._id, option._id)}
                 >
