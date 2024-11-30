@@ -16,7 +16,7 @@ export const signup = async (req, res, next) => {
     // Validate username: alphanumeric, 3-20 characters
     const isValidUsername = /^[a-zA-Z0-9_]{3,20}$/.test(username);
     if (!isValidUsername) {
-      return next(errorCustom(400, "Username must be 3-20 characters long and can only contain letters, numbers, and underscores."));
+      return next(errorCustom(400, "Username must be 3-15 characters long and can only contain letters, numbers, underscores and hyphens."));
     }
 
     // Validate email: standard email regex
@@ -34,7 +34,7 @@ export const signup = async (req, res, next) => {
     // Check if the username already exists
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return next(errorCustom(409, "Username is already taken"));
+      return next(errorCustom(409, "Username has been using" ));
     }
 
     // Check if the email already exists
@@ -103,10 +103,10 @@ export const signin = async (req, res, next) => {
       return next(errorCustom(404, "User not found"));
     }
 
-    // // Check if the user is banned => consider
-    // if (user.isBanned) {
-    //   return next(errorCustom(403, "You are banned from logging in."));
-    // }
+    // Check if the user is banned => consider
+    if (user.isBanned) {
+      return next(errorCustom(403, "You are banned from logging in."));
+    }
 
     // Check if the password is correct
     const isMatch = bcryptjs.compareSync(password, user.password);

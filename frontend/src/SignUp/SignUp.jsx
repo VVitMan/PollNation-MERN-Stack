@@ -47,30 +47,42 @@ export default function SignUp() {
     return passwordRegex.test(password);
   };
 
-  /* Handling Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const { username, email, password } = formData;
-
-    // Validate Username
-    if (!isValidUsername(username)) {
-      alert(
-        "⚠️ Username must be between 3 and 15 characters and can only contain letters, numbers, underscores, or hyphens.\n\nExample: user_name123"
-      );
+  
+    // Check if required fields are provided, one by one
+    if (!username) {
+      alert("⚠️ Please enter a username.");
       return;
     }
 
-    // Validate Email
+    if (!isValidUsername(username)) {
+      alert("⚠️ Username must be between 3 and 15 characters and can only contain letters, numbers, underscores, or hyphens.\n\nExample: user_name123");
+      return;
+    }
+  
+    if (!email) {
+      alert("📧 Please enter your email address.");
+      return;
+    }
+  
+    // Validate email format if provided
     if (!isValidEmail(email)) {
       alert("📧 Please enter a valid email address. Example: user@example.com");
       return;
     }
-
-    // Validate Password
+  
+    if (!password) {
+      alert("🔒 Please enter your password.");
+      return;
+    }
+  
+    // Validate password strength if provided
     if (!isValidPassword(password)) {
       alert(
-        "🔒 Password must meet the following criteria:\n\n" +
+        "🔒 Your password must meet the following criteria:\n\n" +
         "• At least 8 characters long\n" +
         "• Include at least one uppercase letter (e.g., A, B, C)\n" +
         "• Include at least one lowercase letter (e.g., a, b, c)\n" +
@@ -80,7 +92,8 @@ export default function SignUp() {
       );
       return;
     }
-
+  
+    // Proceed with sign-up if all checks pass
     try {
       dispatch(signInStart()); // Start the loading state
       const res = await fetch("/api/auth/signup", {
@@ -91,14 +104,14 @@ export default function SignUp() {
         body: JSON.stringify(formData), // Send form data
       });
       const data = await res.json();
-
+  
       // Check if the response indicates a failure
       if (data.success === false) {
         dispatch(signInFailure(data)); // Dispatch failure action
         console.log(data); // Log error details
         return;
       }
-
+  
       dispatch(signInSuccess(data)); // Dispatch success action
       navigate("/"); // Navigate to the Home page on success
     } catch (error) {
@@ -106,6 +119,8 @@ export default function SignUp() {
       dispatch(signInFailure(error)); // Handle fetch error
     }
   };
+  
+
 
   return (
     <div className={styles.signupContainer}>

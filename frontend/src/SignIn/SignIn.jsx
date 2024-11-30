@@ -33,11 +33,11 @@ export default function SignIn() {
     return emailRegex.test(email);
   };
 
-  const isValidPassword = (password) => {
-    // Ensure password is strong: At least 8 characters, one uppercase, one lowercase, one number, and one special character
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    return passwordRegex.test(password);
-  };
+  // const isValidPassword = (password) => {
+  //   // Ensure password is strong: At least 8 characters, one uppercase, one lowercase, one number, and one special character
+  //   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  //   return passwordRegex.test(password);
+  // };
 
   /* Handling Submit */
   const handleSubmit = async (e) => {
@@ -45,31 +45,36 @@ export default function SignIn() {
 
     const { email, password } = formData;
 
-    // Check if required fields are provided
-    if (!email || !password) {
-      alert("Email and password are required.");
+
+    if (!email) {
+      alert("📧 Please enter your email address.");
       return;
     }
-
-    // Validate email format
+  
+    // Validate email format if provided
     if (!isValidEmail(email)) {
       alert("📧 Please enter a valid email address. Example: user@example.com");
       return;
     }
-
-    // Validate password strength
-    if (!isValidPassword(password)) {
-      alert(
-        "🔒 Your password must meet the following criteria:\n\n" +
-        "• At least 8 characters long\n" +
-        "• Include at least one uppercase letter (e.g., A, B, C)\n" +
-        "• Include at least one lowercase letter (e.g., a, b, c)\n" +
-        "• Include at least one number (e.g., 1, 2, 3)\n" +
-        "• Include at least one special character (e.g., !, @, #, $)\n\n" +
-        "Example: MyPassword123!"
-      );
+  
+    if (!password) {
+      alert("🔒 Please enter your password.");
       return;
     }
+  
+    // // Validate password strength if provided
+    // if (!isValidPassword(password)) {
+    //   alert(
+    //     "🔒 Your password must meet the following criteria:\n\n" +
+    //     "• At least 8 characters long\n" +
+    //     "• Include at least one uppercase letter (e.g., A, B, C)\n" +
+    //     "• Include at least one lowercase letter (e.g., a, b, c)\n" +
+    //     "• Include at least one number (e.g., 1, 2, 3)\n" +
+    //     "• Include at least one special character (e.g., !, @, #, $)\n\n" +
+    //     "Example: MyPassword123!"
+    //   );
+    //   return;
+    // }
 
     try {
       dispatch(signInStart()); // Start the loading state
