@@ -41,7 +41,7 @@ function PollAll() {
     fetchData();
   }, []);
 
-  const handleOptionSelect = async (pollIndex, postId, optionId) => {
+  const handleOptionSelect = async (postId, optionId) => {
     const userId = currentUser?._id; // Extract user ID from Redux state
   
     // Debugging logs for tracking inputs
@@ -112,11 +112,15 @@ const preSelectOptions = async () => {
       }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
+    
+    console.log("const data = await response.json();")
     const data = await response.json();
     setAnsweredOptionData(data.allOptionIdData);
     setAnsweredQuestionData(data.allQuestionIdData);
     setVoteCounts(data.voteCounts); // Option counts and details
+    console.log("setAnsweredOptionData(: ", data.allOptionIdData)
+    console.log("setAnsweredOptionData: ", data.allQuestionIdData)
+    console.log("setVoteCounts: ", data.voteCounts)
   } catch (error) {
     console.error("Error fetching allOptionIdData:", error);
   }
@@ -198,12 +202,11 @@ useEffect(() => {
 
   return (
     <>
-      {pollQuizData.map((item, index) => {
-        // Calculate total votes for the current poll or quiz
+      {pollQuizData.map((item) => {
         const totalVotes = voteCounts
-          .filter((vote) => item.options.some((option) => option._id === vote.optionId))
-          .reduce((total, vote) => total + vote.count, 0);
-  
+          .filter((vc) => item.options.some((option) => option._id === vc._id))
+          .reduce((total, vc) => total + vc.count, 0);
+
         return (
           <div key={item._id} className={styles.card}>
             <div className={styles.cardHeader}>
@@ -221,18 +224,11 @@ useEffect(() => {
             <p className={styles.cardDescription}>{item.question}</p>
             <div className={styles.voteInfo}>
               <p className={styles.voteCount}>{totalVotes} Votes</p>
-  
               <div className={styles.pollOptions}>
-                {item.options.map((option, optionIndex) => {
-                  // Find the vote count for the current option
-                  const optionVote = voteCounts.find(
-                    (vote) => vote.optionId === option._id
-                  );
-                  const votePercentage =
-                    totalVotes > 0
-                      ? (optionVote?.count / totalVotes) * 100
-                      : 0;
-  
+                {item.options.map((option) => {
+                  const optionVote = voteCounts.find((vc) => vc._id === option._id);
+                  const votePercentage = totalVotes > 0 ? (optionVote?.count / totalVotes) * 100 : 0;
+
                   return (
                     <div
                       key={option._id}
@@ -243,10 +239,8 @@ useEffect(() => {
                             : styles.notSelected
                           : ""
                       }`}
-                      style={{
-                        "--vote-percentage": `${votePercentage}%`, // Set dynamic width
-                      }}
-                      onClick={() => handleOptionSelect(index, item._id, option._id)}
+                      style={{ "--vote-percentage": `${votePercentage}%` }}
+                      onClick={() => handleOptionSelect(item._id, option._id)}
                     >
                       <label>
                         {option.text}: {optionVote?.count || 0}

@@ -1,5 +1,6 @@
 import express from 'express';
 import Vote from '../models/vote.model.js';
+import mongoose from 'mongoose';
 
 // C-UD in one function
 export const updateVote = async (req, res) => {
@@ -14,12 +15,21 @@ export const updateVote = async (req, res) => {
       }
   
       // Build filter to find the existing vote
-      const filter = { userId };
-      if (pollId) filter.pollId = pollId;
-      if (quizId) filter.quizId = quizId;
-  
+      const filter = {
+        userId, // Always include userId
+        ...(pollId && { pollId }), // Include pollId if it exists
+        ...(quizId && { quizId }), // Include quizId if it exists
+        ...(optionId && { optionId }), // Include optionId if it exists
+      };
+      
+      // Validate required fields
+      if (!pollId && !quizId) {
+        return res.status(400).json({ message: "Either pollId or quizId must be provided" });
+      }
+      
       // Find existing vote
       const existingVote = await Vote.findOne(filter);
+      
   
       if (!existingVote) {
         // Case 1: User hasn't answered this poll/quiz before => Create a new vote
@@ -27,7 +37,7 @@ export const updateVote = async (req, res) => {
           userId,
           pollId: pollId || null, // Set pollId or null
           quizId: quizId || null, // Set quizId or null
-          optionId,
+          optionId, // Set optionId
           type: pollId ? "Poll" : "Quiz", // Determine type based on pollId or quizId
         });
   
@@ -80,6 +90,8 @@ export const getMyAnswers = async (req, res) => {
         return res.status(404).json({ message: "No votes found for the current user" });
       }
   
+      
+  
       // Extract option IDs and question IDs
       const allOptionIdData = votes.map((vote) => vote.optionId.toString());
       const allQuestionIdData = votes.map((vote) => vote.pollId?.toString() || vote.quizId?.toString());
@@ -88,39 +100,22 @@ export const getMyAnswers = async (req, res) => {
       const pollIds = votes.filter((vote) => vote.pollId).map((vote) => vote.pollId);
       const quizIds = votes.filter((vote) => vote.quizId).map((vote) => vote.quizId);
   
+
       // Build match criteria for aggregation
       const matchCriteria = [];
       if (pollIds.length > 0) matchCriteria.push({ pollId: { $in: pollIds } });
       if (quizIds.length > 0) matchCriteria.push({ quizId: { $in: quizIds } });
   
-      const combinedCriteria = matchCriteria.length > 1 ? { $or: matchCriteria } : matchCriteria[0];
-  
-      // Aggregate vote counts per option
       const voteCounts = await Vote.aggregate([
-        { $match: combinedCriteria }, // Match votes for user's polls and quizzes
+        { $match: { pollId: { $in: pollIds } } }, // Match pollId for polls
         {
           $group: {
             _id: "$optionId", // Group by optionId
             count: { $sum: 1 }, // Count the number of votes
           },
         },
-        {
-          $lookup: {
-            from: "options", // Assuming the collection for options is named 'options'
-            localField: "_id",
-            foreignField: "_id",
-            as: "optionDetails",
-          },
-        },
-        { $unwind: "$optionDetails" }, // Flatten the optionDetails array
-        {
-          $project: {
-            optionId: "$_id",
-            count: 1,
-            text: "$optionDetails.text", // Include option text
-          },
-        },
       ]);
+      console.log("Vote Counts:", voteCounts);
   
       // Combine user answers and vote counts into one response
       res.status(200).json({
@@ -133,3 +128,4 @@ export const getMyAnswers = async (req, res) => {
       res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
   };
+  
