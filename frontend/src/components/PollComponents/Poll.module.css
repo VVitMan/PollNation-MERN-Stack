@@ -67,41 +67,39 @@
     position: relative;
     cursor: pointer;
     overflow: hidden;
-}
-
-
-.option label {
+  }
+  
+  .option label {
     flex-grow: 1;
     position: relative;
     z-index: 1;
     font-weight: 500;
-}
-
-/* Progress bar background within option */
-.option::before {
+  }
+  
+  /* Progress bar background within option */
+  .option::before {
     content: '';
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
-    width: 0%; /* Default width for unselected options */
+    width: var(--vote-percentage, 0%); /* Use percentage from CSS variable */
     background-color: #d3d3d3;
     z-index: 0;
     transition: width 0.3s ease, background-color 0.3s ease;
     border-radius: 8px;
-}
-
-/* Style for the selected option */
-.option.selected::before {
-    width: 60%; /* Result of the selected option */
+  }
+  
+  /* Style for the selected option */
+  .option.selected::before {
     background-color: #80bfff;
-}
-
-/* Style for unselected options when a selection is made */
-.option.notSelected::before {
-    width: 30%; /* Result of the non-selected option */
+  }
+  
+  /* Style for unselected options when a selection is made */
+  .option.notSelected::before {
     background-color: #e0e0e0;
-}
+  }
+  
 
 /* Correct answer styling */
 .option.correct {

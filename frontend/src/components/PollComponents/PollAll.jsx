@@ -217,23 +217,37 @@ useEffect(() => {
             <p className={styles.voteCount}>
               {item.options.reduce((total, option) => total + option.votes, 0)} Votes
             </p>
+
+
             <div className={styles.pollOptions}>
-              {item.options.map((option, optionIndex) => (
-                <div
-                  key={option._id}
-                  className={`${styles.option} ${
-                    answeredQuestionData.includes(item._id)
-                      ? answeredOptionData.includes(option._id)
-                        ? styles.selected
-                        : styles.notSelected
-                      : "" // Remove classes if answeredQuestionData doesn't include item._id
-                  }`}
-                  onClick={() => handleOptionSelect(index, item._id, option._id)}
-                >
-                  <label>{option.text}: {option.votes}</label>
-                </div>
-              ))}
-            </div>
+  {item.options.map((option, optionIndex) => {
+    // Calculate the total votes for the question
+    const totalVotes = item.options.reduce((total, opt) => total + opt.votes, 0);
+    // Calculate the percentage for this option
+    const votePercentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
+
+    return (
+      <div
+        key={option._id}
+        className={`${styles.option} ${
+          answeredQuestionData.includes(item._id)
+            ? answeredOptionData.includes(option._id)
+              ? styles.selected
+              : styles.notSelected
+            : ""
+        }`}
+        style={{
+          "--vote-percentage": `${votePercentage}%`, // Pass percentage as CSS variable
+        }}
+        onClick={() => handleOptionSelect(index, item._id, option._id)}
+      >
+        <label>{option.text}: {option.votes}</label>
+      </div>
+    );
+  })}
+</div>
+
+
 
 
                 
