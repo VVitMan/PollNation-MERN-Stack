@@ -13,8 +13,10 @@ function PollAll() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.currentUser); // Adjust based on your state structure
 
-  const [answeredOptionData, setOptionData] = useState([]); // All OptionIDs that this user has answered
-  const [answeredQuestionData, setQuestionData] = useState([]); // All QuestionIDs that this user has answered
+  const [answeredOptionData, setAnsweredOptionData] = useState([]); // All OptionIDs that this user has answered
+  const [answeredQuestionData, setAnsweredQuestionData] = useState([]); // All QuestionIDs that this user has answered
+  const [voteCounts, setVoteCounts] = useState([]);
+  
 
 
   useEffect(() => {
@@ -105,14 +107,16 @@ const preSelectOptions = async () => {
         const { allOptionIdData, allQuestionIdData } = await response.json();
         setQuestionData([]);
         setOptionData([]);
+        setVoteCounts([]); // Option counts and details
         return;
       }
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const { allOptionIdData, allQuestionIdData } = await response.json();
-    setQuestionData(allQuestionIdData);
-    setOptionData(allOptionIdData);
+    const data = await response.json();
+    setAnsweredOptionData(data.allOptionIdData);
+    setAnsweredQuestionData(data.allQuestionIdData);
+    setVoteCounts(data.voteCounts); // Option counts and details
   } catch (error) {
     console.error("Error fetching allOptionIdData:", error);
   }
@@ -129,10 +133,6 @@ useEffect(() => {
 useEffect(() => {
   console.log("Current User at initial load:", currentUser);
 }, [currentUser]);
-
-
-
-
 
 
   const toggleComments = async (postId) => {
@@ -198,120 +198,124 @@ useEffect(() => {
 
   return (
     <>
-      {pollQuizData.map((item, index) => (
-        <div key={item._id} className={styles.card}>
-          <div className={styles.cardHeader}>
-            <img
-              className={styles.cardImage}
-              src={
-                item.userId?.profilePicture ||
-                "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-              }
-              alt="Profile"
-              onClick={() => navigate(`/profile/${item.userId?.username}`)}
-            />
-            <h2 className={styles.cardTitle}>{item.userId?.username}</h2>
-          </div>
-          <p className={styles.cardDescription}>{item.question}</p>
-          <div className={styles.voteInfo}>
-            <p className={styles.voteCount}>
-              {item.options.reduce((total, option) => total + option.votes, 0)} Votes
-            </p>
-
-
-            <div className={styles.pollOptions}>
-  {item.options.map((option, optionIndex) => {
-    // Calculate the total votes for the question
-    const totalVotes = item.options.reduce((total, opt) => total + opt.votes, 0);
-    // Calculate the percentage for this option
-    const votePercentage = totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-
-    return (
-      <div
-        key={option._id}
-        className={`${styles.option} ${
-          answeredQuestionData.includes(item._id)
-            ? answeredOptionData.includes(option._id)
-              ? styles.selected
-              : styles.notSelected
-            : ""
-        }`}
-        style={{
-          "--vote-percentage": `${votePercentage}%`, // Pass percentage as CSS variable
-        }}
-        onClick={() => handleOptionSelect(index, item._id, option._id)}
-      >
-        <label>{option.text}: {option.votes}</label>
-      </div>
-    );
-  })}
-</div>
-
-
-
-
-                
-          </div>
-
-          <button
-            className={styles.viewCommentsButton}
-            onClick={() => toggleComments(item._id)}
-          >
-            {visibleComments[item._id] ? "Hide Comments" : "View Comments"}
-          </button>
-          {visibleComments[item._id] && (
-            <div className={styles.commentsContainer}>
-              <h3 className={styles.commentsTitle}>Comments</h3>
-              {comments[item._id]?.length === 0 ? (
-                <p className={styles.noCommentsMessage}>
-                  Be the first one to comment!
-                </p>
-              ) : (
-                comments[item._id]?.map((comment) => (
-                  <div key={comment._id} className={styles.commentItem}>
-                    <img
-                      src={
-                        comment.userId?.profilePicture &&
-                        comment.userId.profilePicture.trim() !== ""
-                          ? comment.userId.profilePicture
-                          : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                      }
-                      alt="Profile"
-                      className={styles.commentProfileImage}
-                    />
-                    <div className={styles.commentContent}>
-                      <strong className={styles.commentAuthor}>
-                        {comment.userId?.username || "Unknown"}
-                      </strong>
-                      <span>{comment.content}</span>
+      {pollQuizData.map((item, index) => {
+        // Calculate total votes for the current poll or quiz
+        const totalVotes = voteCounts
+          .filter((vote) => item.options.some((option) => option._id === vote.optionId))
+          .reduce((total, vote) => total + vote.count, 0);
+  
+        return (
+          <div key={item._id} className={styles.card}>
+            <div className={styles.cardHeader}>
+              <img
+                className={styles.cardImage}
+                src={
+                  item.userId?.profilePicture ||
+                  "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                }
+                alt="Profile"
+                onClick={() => navigate(`/profile/${item.userId?.username}`)}
+              />
+              <h2 className={styles.cardTitle}>{item.userId?.username}</h2>
+            </div>
+            <p className={styles.cardDescription}>{item.question}</p>
+            <div className={styles.voteInfo}>
+              <p className={styles.voteCount}>{totalVotes} Votes</p>
+  
+              <div className={styles.pollOptions}>
+                {item.options.map((option, optionIndex) => {
+                  // Find the vote count for the current option
+                  const optionVote = voteCounts.find(
+                    (vote) => vote.optionId === option._id
+                  );
+                  const votePercentage =
+                    totalVotes > 0
+                      ? (optionVote?.count / totalVotes) * 100
+                      : 0;
+  
+                  return (
+                    <div
+                      key={option._id}
+                      className={`${styles.option} ${
+                        answeredQuestionData.includes(item._id)
+                          ? answeredOptionData.includes(option._id)
+                            ? styles.selected
+                            : styles.notSelected
+                          : ""
+                      }`}
+                      style={{
+                        "--vote-percentage": `${votePercentage}%`, // Set dynamic width
+                      }}
+                      onClick={() => handleOptionSelect(index, item._id, option._id)}
+                    >
+                      <label>
+                        {option.text}: {optionVote?.count || 0}
+                      </label>
                     </div>
-                  </div>
-                ))
-              )}
-              <div className={styles.addComment}>
-                <textarea
-                  type="text"
-                  value={commentInputs[item._id] || ""}
-                  onChange={(e) =>
-                    handleInputChange(item._id, e.target.value)
-                  }
-                  placeholder="Write your comment..."
-                  className={styles.commentInput}
-                />
-                <button
-                  onClick={() => handleAddComment(item._id)}
-                  className={styles.commentSubmitButton}
-                  disabled={loadingPostId === item._id}
-                >
-                  {loadingPostId === item._id ? "Posting..." : "Post"}
-                </button>
+                  );
+                })}
               </div>
             </div>
-          )}
-        </div>
-      ))}
+  
+            <button
+              className={styles.viewCommentsButton}
+              onClick={() => toggleComments(item._id)}
+            >
+              {visibleComments[item._id] ? "Hide Comments" : "View Comments"}
+            </button>
+            {visibleComments[item._id] && (
+              <div className={styles.commentsContainer}>
+                <h3 className={styles.commentsTitle}>Comments</h3>
+                {comments[item._id]?.length === 0 ? (
+                  <p className={styles.noCommentsMessage}>
+                    Be the first one to comment!
+                  </p>
+                ) : (
+                  comments[item._id]?.map((comment) => (
+                    <div key={comment._id} className={styles.commentItem}>
+                      <img
+                        src={
+                          comment.userId?.profilePicture &&
+                          comment.userId.profilePicture.trim() !== ""
+                            ? comment.userId.profilePicture
+                            : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                        }
+                        alt="Profile"
+                        className={styles.commentProfileImage}
+                      />
+                      <div className={styles.commentContent}>
+                        <strong className={styles.commentAuthor}>
+                          {comment.userId?.username || "Unknown"}
+                        </strong>
+                        <span>{comment.content}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
+                <div className={styles.addComment}>
+                  <textarea
+                    type="text"
+                    value={commentInputs[item._id] || ""}
+                    onChange={(e) =>
+                      handleInputChange(item._id, e.target.value)
+                    }
+                    placeholder="Write your comment..."
+                    className={styles.commentInput}
+                  />
+                  <button
+                    onClick={() => handleAddComment(item._id)}
+                    className={styles.commentSubmitButton}
+                    disabled={loadingPostId === item._id}
+                  >
+                    {loadingPostId === item._id ? "Posting..." : "Post"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </>
   );
-}
-
-export default PollAll;
+  
+} export default PollAll;
