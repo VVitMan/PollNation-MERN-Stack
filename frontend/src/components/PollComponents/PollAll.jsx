@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Poll.module.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { isTokenValid } from "../../utils/isTokenValid";
+import { signOut } from "../../redux/user/userSlice";
 
 function PollAll() {
   const [pollQuizData, setPollQuizData] = useState([]);
@@ -16,6 +18,15 @@ function PollAll() {
   const [editingLoading, setEditingLoading] = useState(false);
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  // Fetch token from cookies
+  const getToken = () => {
+    return document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("access_token="))
+      ?.split("=")[1];
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +74,17 @@ function PollAll() {
   };
 
   const handleAddComment = async (postId) => {
+    /* Check Token Expired */
+    const token = getToken();
+
+    if (!isTokenValid(token)) {
+      // Dispatch the signOut action to reset currentUser
+      dispatch(signOut());
+      alert("Session expired. Please log in again.");
+      navigate("/sign-in");
+      return;
+    }
+
     if (!currentUser) {
       alert("Please log in to add a comment.");
       return;
@@ -105,6 +127,17 @@ function PollAll() {
   };
 
   const handleDeleteComment = async (postId, commentId) => {
+    /* Check Token Expired */
+    const token = getToken();
+
+    if (!isTokenValid(token)) {
+      // Dispatch the signOut action to reset currentUser
+      dispatch(signOut());
+      alert("Session expired. Please log in again.");
+      navigate("/sign-in");
+      return;
+    }
+
     if (!currentUser) {
       alert("Please log in to delete a comment.");
       return;
@@ -145,6 +178,17 @@ function PollAll() {
   };
 
   const handleEditComment = async (postId, commentId) => {
+    /* Check Token Expired */
+    const token = getToken();
+
+    if (!isTokenValid(token)) {
+      // Dispatch the signOut action to reset currentUser
+      dispatch(signOut());
+      alert("Session expired. Please log in again.");
+      navigate("/sign-in");
+      return;
+    }
+
     if (!currentUser) {
       alert("Please log in to edit a comment.");
       return;
