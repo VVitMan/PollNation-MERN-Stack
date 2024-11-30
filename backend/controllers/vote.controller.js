@@ -5,63 +5,62 @@ import mongoose from 'mongoose';
 // C-UD in one function
 export const updateVote = async (req, res) => {
     try {
-      const { userId, pollId, quizId, optionId } = req.body;
-  
-      console.log("Update Request Body:", req.body); // Debug request payload
-  
-      // Validate input
-      if (!userId || (!pollId && !quizId)) {
-        return res.status(400).json({ message: "Missing required fields for updating vote" });
-      }
-  
-      // Build filter to find the existing vote
-      const filter = {
-        userId, // Always include userId
-        ...(pollId && { pollId }), // Include pollId if it exists
-        ...(quizId && { quizId }), // Include quizId if it exists
-        ...(optionId && { optionId }), // Include optionId if it exists
-      };
-      
-      // Validate required fields
-      if (!pollId && !quizId) {
-        return res.status(400).json({ message: "Either pollId or quizId must be provided" });
-      }
-      
-      // Find existing vote
-      const existingVote = await Vote.findOne(filter);
-      
-  
-      if (!existingVote) {
-        // Case 1: User hasn't answered this poll/quiz before => Create a new vote
-        const newVote = new Vote({
+        const { userId, pollId, quizId, optionId } = req.body;
+
+        console.log("Update Request Body:", req.body); // Debug request payload
+        
+        // Validate input
+        if (!userId || (!pollId && !quizId) || !optionId) {
+          return res.status(400).json({ message: "Missing required fields for updating vote" });
+        }
+        
+        // Build filter to find the existing vote (exclude optionId)
+        const filter = {
           userId,
-          pollId: pollId || null, // Set pollId or null
-          quizId: quizId || null, // Set quizId or null
-          optionId, // Set optionId
-          type: pollId ? "Poll" : "Quiz", // Determine type based on pollId or quizId
-        });
-  
-        await newVote.save();
-        console.log("Created Vote!");
-        return res.status(201).json({ message: "Vote created successfully", vote: newVote });
-      }
-  
-      // Case 2: User has answered this poll/quiz before
-      const existingVoteObjectIdString = existingVote.optionId.toString();
-      console.log(existingVoteObjectIdString, "VS", optionId);
-  
-      if (existingVoteObjectIdString === optionId) {
-        // If the same optionId is selected, delete the vote
-        await Vote.deleteOne(filter);
-        console.log("Deleted Vote!");
-        return res.status(200).json({ message: "Vote deleted successfully" });
-      }
-  
-      // Case 3: User has answered but selected a different option => Update the vote
-      existingVote.optionId = optionId;
-      await existingVote.save();
-      console.log("Updated Vote!");
-      return res.status(200).json({ message: "Vote updated successfully", vote: existingVote });
+          ...(pollId && { pollId }), // Include pollId if it exists
+          ...(quizId && { quizId }), // Include quizId if it exists
+        };
+        
+        // Validate required fields
+        if (!pollId && !quizId) {
+          return res.status(400).json({ message: "Either pollId or quizId must be provided" });
+        }
+        
+        // Find existing vote
+        const existingVote = await Vote.findOne(filter);
+        
+        if (!existingVote) {
+          // Case 1: User hasn't answered this poll/quiz before => Create a new vote
+          const newVote = new Vote({
+            userId,
+            pollId: pollId || null, // Set pollId or null
+            quizId: quizId || null, // Set quizId or null
+            optionId, // Set optionId
+            type: pollId ? "Poll" : "Quiz", // Determine type based on pollId or quizId
+          });
+        
+          await newVote.save();
+          console.log("Created Vote!");
+          return res.status(201).json({ message: "Vote created successfully", vote: newVote });
+        }
+        
+        // Case 2: User has answered this poll/quiz before
+        const existingVoteObjectIdString = existingVote.optionId.toString();
+        console.log(existingVoteObjectIdString, "VS", optionId);
+        
+        if (existingVoteObjectIdString === optionId) {
+          // If the same optionId is selected, delete the vote
+          await Vote.deleteOne(filter);
+          console.log("Deleted Vote!");
+          return res.status(200).json({ message: "Vote deleted successfully" });
+        }
+        
+        // Case 3: User has answered but selected a different option => Update the vote
+        existingVote.optionId = optionId;
+        await existingVote.save();
+        console.log("Updated Vote!");
+        return res.status(200).json({ message: "Vote updated successfully", vote: existingVote });
+        
     } catch (error) {
       console.error("Error in updateVote:", error.message);
       res.status(500).json({ message: "Error handling vote", error: error.message });
