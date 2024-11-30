@@ -22,18 +22,21 @@ app.use(express.json());
 app.use(cookieParser());
 
 /* Server Port */
-const port = 3000;
+const port = process.env.PORT || 3000; // Use environment variable or default to 3000
 app.listen(port, () => {
-    console.log(`Server is running on ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
 
 /* Connect MongoDB */
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
     .then(() => {
         console.log("Connected to MongoDB");
     })
     .catch((err) => {
-        console.log(err); // Use "err" for dev phase
+        console.error("MongoDB connection error:", err.message);
     });
 
 /* Routes */
@@ -49,6 +52,7 @@ app.use("/api/vote", voteRoutes); // Register the vote routes
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
     const message = err.message || "Internal Server Error";
+    console.error("Error Middleware:", message); // Log error for debugging
     return res.status(statusCode).json({
         success: false,
         message,
