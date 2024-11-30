@@ -39,72 +39,67 @@ function PollAll() {
   }, []);
 
   const handleOptionSelect = async (pollIndex, postId, optionId) => {
-    const selectedOption = selectedOptions[optionId];
-    const token = currentUser?.token; // Get token for authentication
+    const token = currentUser.token; // Get token for authentication
     const userId = currentUser?._id; // Extract user ID from Redux state
+  
+    // Debugging logs for tracking inputs
+    console.log(`Token: ${currentUser.token}`);
+    console.log("User ID:", userId);
+    console.log("Poll ID:", postId);
+    console.log("Option ID:", optionId);
+  
     try {
-      if (selectedOption === optionId) {
-        // Cancel vote
-        await fetch("/api/vote/delete", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ userId, pollId: postId }),
-        });
-  
-        preSelectOptions(); // Refresh the selected options
-      } else if (selectedOption == null) {
-        // Create vote
-        await fetch("/api/vote/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            userId,
-            pollId: postId,
-            optionId,
-            type: "Poll",
-          }),
-        });
-  
-        preSelectOptions(); // Refresh the selected options
-      } else {
-        // Update vote
-        await fetch("/api/vote/change", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            userId,
-            pollId: postId,
-            optionId,
-          }),
-        });
-  
-        preSelectOptions(); // Refresh the selected options
+      if (!userId) {
+        console.error("User not authenticated or missing userId.");
+        return;
       }
+  
+      // Send the request to the new unified endpoint
+      const response = await fetch("/api/vote/voting", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          userId,
+          pollId: postId,
+          optionId,
+        }),
+      });
+  
+      // Debugging log for the response status
+      console.log("Response Status:", response.status);
+  
+      if (!response.ok) {
+        const errorMessage = await response.text(); // Get detailed error message from server
+        throw new Error(`HTTP error! Status: ${response.status} - ${errorMessage}`);
+      }
+  
+      // Parse and log the response body (optional for debugging)
+      const responseData = await response.json();
+      console.log("Response Data:", responseData);
+  
+      // Refresh the selected options
+      preSelectOptions();
     } catch (error) {
-      console.error("Error handling vote:", error);
+      console.error("Error handling vote:", error.message);
     }
   };
+  
+  
   
 
 
 
 const preSelectOptions = async () => {
   try {
-    console.log("Load Selected Options called!")
+    console.log("**************** Load Selected Options called! **************** ")
     const response = await fetch("/api/vote/myanswers", {
       method: "GET",
       credentials: "include",
       headers: {
-        "Authorization": `Bearer ${currentUser.token}`,
+        "Authorization": `Bearer ${currentUser?.token}`,
       },
     });
 
@@ -118,11 +113,9 @@ const preSelectOptions = async () => {
     console.error("Error fetching allOptionIdData:", error);
   }
 };
-
+/*
 const preSelectOptionsCalled = useRef(false); // Track whether preSelectOptions has been called
 useEffect(() => {
-  
-
   const initializeOptions = async () => {
     if (!currentUser?.token) {
       console.log("Waiting for currentUser.token...");
@@ -140,11 +133,12 @@ useEffect(() => {
     preSelectOptionsCalled.current = true; // Mark as called
   };
 
-  preSelectOptions();
-}, [currentUser?.token]);
+  initializeOptions();
+}, [currentUser]);*/
 
 useEffect(() => {
   console.log("Current User at initial load:", currentUser);
+  console.log(" L With Token:", currentUser.token);
 }, [currentUser]);
 
 

@@ -1,88 +1,64 @@
 import express from 'express';
 import Vote from '../models/vote.model.js';
 
-// Add a vote to a poll or quiz
-export const createVote = async (req, res) => {
-    try {
-        console.log("Create Request Body:", req.body); // Debug request payload
-        const { userId, pollId, quizId, optionId, type } = req.body;
-        
-        if (!userId || optionId === undefined || !type) {
-            return res.status(400).json({ message: "Missing required fields" });
-        }
-
-        const vote = new Vote({
-            userId,
-            pollId,
-            quizId,
-            optionId,
-            type,
-        });
-
-        await vote.save();
-        res.status(201).json({ message: "Vote recorded successfully", vote });
-    } catch (error) {
-        console.error("Error in createVote:", error.message);
-        res.status(500).json({ message: "Error recording vote", error: error.message });
-    }
-};
-
-
-
-// Update an existing vote
+// C-UD in one function
 export const updateVote = async (req, res) => {
     try {
-        const { userId, pollId, quizId, optionId } = req.body;
-        console.log("Update Request Body:", req.body); // Debug request payload
-
-        if (!userId || (!pollId && !quizId)) {
-            return res.status(400).json({ message: 'Missing required fields for updating vote' });
-        }
-
-        const filter = { userId };
-        if (pollId) filter.pollId = pollId;
-        if (quizId) filter.quizId = quizId;
-
-        const vote = await Vote.findOneAndUpdate(filter, { optionId }, { new: true });
-        if (!vote) {
-            return res.status(404).json({ message: 'Vote not found' });
-        }
-
-        res.status(200).json({ message: 'Vote updated successfully', vote });
+      const { userId, pollId, quizId, optionId } = req.body;
+      console.log("Update Request Body:", req.body); // Debug request payload
+  
+      if (!userId || (!pollId && !quizId)) {
+        return res.status(400).json({ message: "Missing required fields for updating vote" });
+      }
+  
+      // Build the filter to find the existing vote
+      const filter = { userId };
+      if (pollId) filter.pollId = pollId;
+      if (quizId) filter.quizId = quizId;
+  
+      // Find the existing vote
+      const existingVote = await Vote.findOne(filter);
+  
+      if (!existingVote) {
+        // Case 1: User hasn't answered this poll/quiz before => Create a new vote
+        console.log("Create Vote!")
+        const newVote = new Vote({
+          userId,
+          pollId,
+          quizId,
+          optionId,
+          type: pollId ? "Poll" : "Quiz", // Determine type based on pollId or quizId
+        });
+  
+        await newVote.save();
+        return res.status(201).json({ message: "Vote created successfully", vote: newVote });
+      }
+      const existingVoteObjectIdString = existingVote.optionId.toString();
+      console.log(existingVoteObjectIdString, "VS", optionId)
+      if (existingVoteObjectIdString === optionId) {
+        // Case 2: User has answered this poll/quiz before and the optionId is the same => Delete the vote
+        console.log("Deleted Vote!")
+        await Vote.deleteOne(filter);
+        return res.status(200).json({ message: "Vote deleted successfully" });
+      }
+  
+      // Case 3: User has answered this poll/quiz before and the optionId is different => Update the vote
+    console.log("Change Vote!")
+      existingVote.optionId = optionId;
+      await existingVote.save();
+      return res.status(200).json({ message: "Vote updated successfully", vote: existingVote });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating vote', error: error.message });
+      console.error("Error in updateVote:", error.message);
+      res.status(500).json({ message: "Error handling vote", error: error.message });
     }
-};
+  };
 
-// Delete a vote
-export const deleteVote = async (req, res) => {
-    try {
-        const { userId, pollId, quizId } = req.body;
-        console.log("Delete Request Body:", req.body); // Debug request payload
-
-        if (!userId || (!pollId && !quizId)) {
-            return res.status(400).json({ message: 'Missing required fields for deleting vote' });
-        }
-
-        const filter = { userId };
-        if (pollId) filter.pollId = pollId;
-        if (quizId) filter.quizId = quizId;
-
-        const result = await Vote.deleteOne(filter);
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ message: 'Vote not found' });
-        }
-
-        res.status(200).json({ message: 'Vote deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Error deleting vote', error: error.message });
-    }
-};
-
+  
+// -R-- function
 // Return all optionId(s) that the current user has been voted.
 export const getMyAnswers = async (req, res) => {
     try {
-      console.log("Request user:", req.user); // Debug user info
+      console.log("getMyAnswers Request user:", req.user); // Debug user info
   
       const userId = req.user.id; // Use 'id' instead of '_id'
       if (!userId) {

@@ -1,17 +1,12 @@
 import express from 'express';
-import { createVote, updateVote, deleteVote, getMyAnswers } from '../controllers/vote.controller.js';
+import { updateVote, getMyAnswers } from '../controllers/vote.controller.js';
 import { verifyToken } from '../utils/verifyUser.js'; // Import the verifyToken middleware
 
 const router = express.Router();
 
-// Create a new vote
-router.post('/create', verifyToken, createVote);
 
-// Update an existing vote
-router.put('/change', verifyToken, updateVote);
-
-// Delete a vote
-router.delete('/delete', verifyToken, deleteVote);
+// Unified vote update route
+router.post("/voting", verifyToken, updateVote);
 
 // Get votes for a specific poll or quiz
 router.get('/myanswers', verifyToken, getMyAnswers);
