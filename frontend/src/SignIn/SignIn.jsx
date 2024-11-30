@@ -13,15 +13,12 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   /* Loading and Error State */
-  // Use Redux state for loading and error tracking
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(false);
   const { loading, error } = useSelector((state) => state.user);
 
   /* Form Data State */
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
   const handleChange = (e) => {
-    // Update form data when input changes
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
@@ -30,9 +27,50 @@ export default function SignIn() {
     dispatch(clearError());
   }, [dispatch]);
 
+  /* Validation Functions */
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validate common email formats
+    return emailRegex.test(email);
+  };
+
+  const isValidPassword = (password) => {
+    // Ensure password is strong: At least 8 characters, one uppercase, one lowercase, one number, and one special character
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   /* Handling Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { email, password } = formData;
+
+    // Check if required fields are provided
+    if (!email || !password) {
+      alert("Email and password are required.");
+      return;
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      alert("📧 Please enter a valid email address. Example: user@example.com");
+      return;
+    }
+
+    // Validate password strength
+    if (!isValidPassword(password)) {
+      alert(
+        "🔒 Your password must meet the following criteria:\n\n" +
+        "• At least 8 characters long\n" +
+        "• Include at least one uppercase letter (e.g., A, B, C)\n" +
+        "• Include at least one lowercase letter (e.g., a, b, c)\n" +
+        "• Include at least one number (e.g., 1, 2, 3)\n" +
+        "• Include at least one special character (e.g., !, @, #, $)\n\n" +
+        "Example: MyPassword123!"
+      );
+      return;
+    }
+
     try {
       dispatch(signInStart()); // Start the loading state
       const res = await fetch("/api/auth/signin", {
@@ -43,12 +81,9 @@ export default function SignIn() {
         body: JSON.stringify(formData), // Send form data
       });
       const data = await res.json();
-      // console.log("data:",data)
 
-      // Check if the response indicates a failure
-      if (data.success === false) {
+      if (!res.ok || data.success === false) {
         dispatch(signInFailure(data)); // Dispatch failure action
-        // console.log(data); // Log error details
         return;
       }
 
@@ -58,9 +93,7 @@ export default function SignIn() {
       dispatch(signInFailure(error)); // Handle fetch error
     }
   };
-  
 
-  console.log(error); // Log
   return (
     <div className={styles.signinContainer}>
       <h1 className={styles.title}>Sign In</h1>
@@ -71,6 +104,7 @@ export default function SignIn() {
           type="text"
           id="email"
           placeholder="Email"
+          value={formData.email}
           className={styles.input}
           onChange={handleChange}
         />
@@ -79,6 +113,7 @@ export default function SignIn() {
           type="password"
           id="password"
           placeholder="Password"
+          value={formData.password}
           className={styles.input}
           onChange={handleChange}
         />
@@ -88,7 +123,6 @@ export default function SignIn() {
           className={`${styles.submitButton} ${loading && styles.loading}`}
           disabled={loading}
         >
-          {/* Display "Loading..." during API call */}
           {loading ? "Loading..." : "Sign in"}
         </button>
         {/* Google OAuth Button */}

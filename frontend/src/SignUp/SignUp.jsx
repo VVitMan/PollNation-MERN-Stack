@@ -17,6 +17,7 @@ export default function SignUp() {
 
   /* Form Data State */
   const [formData, setFormData] = useState({});
+  
   const handleChange = (e) => {
     // Update form data when input changes
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -27,9 +28,59 @@ export default function SignUp() {
     dispatch(clearError());
   }, [dispatch]);
 
+  /* Validation Functions */
+  const isValidUsername = (username) => {
+    // Username: 3-15 characters, letters, numbers, underscores, hyphens
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,15}$/;
+    return usernameRegex.test(username);
+  };
+
+  const isValidEmail = (email) => {
+    // Basic regex to validate common email formats
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const isValidPassword = (password) => {
+    // Password must be at least 8 characters, include uppercase, lowercase, number, and special character
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return passwordRegex.test(password);
+  };
+
   /* Handling Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { username, email, password } = formData;
+
+    // Validate Username
+    if (!isValidUsername(username)) {
+      alert(
+        "⚠️ Username must be between 3 and 15 characters and can only contain letters, numbers, underscores, or hyphens.\n\nExample: user_name123"
+      );
+      return;
+    }
+
+    // Validate Email
+    if (!isValidEmail(email)) {
+      alert("📧 Please enter a valid email address. Example: user@example.com");
+      return;
+    }
+
+    // Validate Password
+    if (!isValidPassword(password)) {
+      alert(
+        "🔒 Password must meet the following criteria:\n\n" +
+        "• At least 8 characters long\n" +
+        "• Include at least one uppercase letter (e.g., A, B, C)\n" +
+        "• Include at least one lowercase letter (e.g., a, b, c)\n" +
+        "• Include at least one number (e.g., 1, 2, 3)\n" +
+        "• Include at least one special character (e.g., !, @, #, $)\n\n" +
+        "Example: MyPassword123!"
+      );
+      return;
+    }
+
     try {
       dispatch(signInStart()); // Start the loading state
       const res = await fetch("/api/auth/signup", {
@@ -51,7 +102,7 @@ export default function SignUp() {
       dispatch(signInSuccess(data)); // Dispatch success action
       navigate("/"); // Navigate to the Home page on success
     } catch (error) {
-      console.log("couldn't sign up", error); // Log error details
+      console.log("Couldn't sign up", error); // Log error details
       dispatch(signInFailure(error)); // Handle fetch error
     }
   };
