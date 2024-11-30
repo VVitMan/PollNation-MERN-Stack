@@ -39,20 +39,9 @@ function PollAll() {
   }, []);
 
   const handleOptionSelect = async (pollIndex, postId, optionId) => {
-    const selectedOption = selectedOptions[pollIndex];
+    const selectedOption = selectedOptions[optionId];
     const token = currentUser?.token; // Get token for authentication
     const userId = currentUser?._id; // Extract user ID from Redux state
-  
-    // Find the index of the selected option
-    const optionIndex = pollQuizData[pollIndex].options.findIndex(
-      (option) => option._id === optionId
-    );
-  
-    if (optionIndex === -1) {
-      console.error("Invalid option selected");
-      return;
-    }
-  
     try {
       if (selectedOption === optionId) {
         // Cancel vote
@@ -260,18 +249,7 @@ useEffect(() => {
             </div>
 
 
-                {answeredOptionData.map((optionId) => (
-                  
-                  <div key={optionId}>
-                    <input
-                      type="radio"
-                      name={`poll-${item._id}`}
-                      value={optionId} // Use optionId instead of option._id
-                      checked={optionId === selectedOptions[item._id]} // Compare optionId with the selected option for this poll
-                      onChange={() => handleOptionSelect(item._id, optionId)} // Pass optionId directly
-                    />
-                  </div>
-                ))}
+                
           </div>
 
           <button

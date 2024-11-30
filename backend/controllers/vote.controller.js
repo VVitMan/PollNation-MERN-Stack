@@ -79,23 +79,6 @@ export const deleteVote = async (req, res) => {
     }
 };
 
-// Fetch votes for a specific poll or quiz
-export const getAnswered = async (req, res) => {
-    try {
-        const { pollId, quizId } = req.query;
-        console.log("Incoming - getAnswered Request"); // Debug request payload
-
-        const filter = {};
-        if (pollId) filter.pollId = pollId;
-        if (quizId) filter.quizId = quizId;
-
-        const votes = await Vote.find(filter);
-        res.status(200).json({ votes });
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching votes', error: error.message });
-    }
-};
-
 // Return all optionId(s) that the current user has been voted.
 export const getMyAnswers = async (req, res) => {
     try {
