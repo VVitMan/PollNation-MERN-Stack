@@ -119,28 +119,14 @@ const preSelectOptions = async () => {
     console.error("Error fetching allOptionIdData:", error);
   }
 };
-/*
-const preSelectOptionsCalled = useRef(false); // Track whether preSelectOptions has been called
+
+// initial load
 useEffect(() => {
   const initializeOptions = async () => {
-    if (!currentUser?.token) {
-      console.log("Waiting for currentUser.token...");
-      return;
-    }
-
-    if (preSelectOptionsCalled.current) {
-      // Skip if already called
-      console.log("preSelectOptions has already been called.");
-      return;
-    }
-
-    console.log("Token is ready. Calling preSelectOptions...");
     await preSelectOptions();
-    preSelectOptionsCalled.current = true; // Mark as called
   };
-
   initializeOptions();
-}, [currentUser]);*/
+}, [currentUser]);
 
 useEffect(() => {
   console.log("Current User at initial load:", currentUser);
