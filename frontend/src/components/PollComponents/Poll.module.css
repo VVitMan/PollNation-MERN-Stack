@@ -69,9 +69,6 @@
     overflow: hidden;
 }
 
-input[type="radio"] {
-    accent-color: #0077ff;
-}
 
 .option label {
     flex-grow: 1;
