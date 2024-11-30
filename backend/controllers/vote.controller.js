@@ -21,7 +21,6 @@ export const updateVote = async (req, res) => {
   
       if (!existingVote) {
         // Case 1: User hasn't answered this poll/quiz before => Create a new vote
-        console.log("Create Vote!")
         const newVote = new Vote({
           userId,
           pollId,
@@ -31,21 +30,22 @@ export const updateVote = async (req, res) => {
         });
   
         await newVote.save();
+        console.log("Create Vote!")
         return res.status(201).json({ message: "Vote created successfully", vote: newVote });
       }
       const existingVoteObjectIdString = existingVote.optionId.toString();
       console.log(existingVoteObjectIdString, "VS", optionId)
       if (existingVoteObjectIdString === optionId) {
         // Case 2: User has answered this poll/quiz before and the optionId is the same => Delete the vote
-        console.log("Deleted Vote!")
         await Vote.deleteOne(filter);
+        console.log("Deleted Vote!")
         return res.status(200).json({ message: "Vote deleted successfully" });
       }
   
       // Case 3: User has answered this poll/quiz before and the optionId is different => Update the vote
-    console.log("Change Vote!")
       existingVote.optionId = optionId;
       await existingVote.save();
+      console.log("Change Vote!")
       return res.status(200).json({ message: "Vote updated successfully", vote: existingVote });
     } catch (error) {
       console.error("Error in updateVote:", error.message);
@@ -68,7 +68,7 @@ export const getMyAnswers = async (req, res) => {
   
       const votes = await Vote.find({ userId }).select("optionId -_id");
       if (!votes || votes.length === 0) {
-        return res.status(404).json({ message: "No votes found for the current user" });
+        return //res.status(404).json({ message: "No votes found for the current user" });
       }
   
       const optionIds = votes.map((vote) => vote.optionId);
