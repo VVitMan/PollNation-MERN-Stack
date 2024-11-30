@@ -13,7 +13,8 @@ function PollAll() {
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.currentUser); // Adjust based on your state structure
 
-  const [answeredOptionData, setOptionData] = useState([]);
+  const [answeredOptionData, setOptionData] = useState([]); // All OptionIDs that this user has answered
+  const [answeredQuestionData, setQuestionData] = useState([]); // All QuestionIDs that this user has answered
 
 
   useEffect(() => {
@@ -39,11 +40,9 @@ function PollAll() {
   }, []);
 
   const handleOptionSelect = async (pollIndex, postId, optionId) => {
-    const token = currentUser.token; // Get token for authentication
     const userId = currentUser?._id; // Extract user ID from Redux state
   
     // Debugging logs for tracking inputs
-    console.log(`Token: ${currentUser.token}`);
     console.log("User ID:", userId);
     console.log("Poll ID:", postId);
     console.log("Option ID:", optionId);
@@ -51,6 +50,7 @@ function PollAll() {
     try {
       if (!userId) {
         console.error("User not authenticated or missing userId.");
+        navigate("/sign-in")
         return;
       }
   
@@ -87,11 +87,6 @@ function PollAll() {
     }
   };
   
-  
-  
-
-
-
 const preSelectOptions = async () => {
   try {
     console.log("**************** Load Selected Options called! **************** ")
@@ -113,8 +108,9 @@ const preSelectOptions = async () => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const allOptionIdData = await response.json();
+    const { allOptionIdData, allQuestionIdData } = await response.json();
     setOptionData(allOptionIdData);
+    setQuestionData(allQuestionIdData);
   } catch (error) {
     console.error("Error fetching allOptionIdData:", error);
   }
@@ -130,7 +126,6 @@ useEffect(() => {
 
 useEffect(() => {
   console.log("Current User at initial load:", currentUser);
-  console.log(" L With Token:", currentUser.token);
 }, [currentUser]);
 
 
@@ -225,7 +220,11 @@ useEffect(() => {
                 <div
                   key={option._id}
                   className={`${styles.option} ${
-                    answeredOptionData.includes(option._id) ? styles.selected : ""
+                    answeredQuestionData.includes(item._id)
+                      ? answeredOptionData.includes(option._id)
+                        ? styles.selected
+                        : styles.notSelected
+                      : ""
                   }`}
                   onClick={() => handleOptionSelect(index, item._id, option._id)}
                 >

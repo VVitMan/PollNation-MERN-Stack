@@ -98,8 +98,8 @@
 }
 
 /* Style for unselected options when a selection is made */
-.option.unselected::before {
-    width: 10%; /* Result of the non-selected option */
+.option.notSelected::before {
+    width: 30%; /* Result of the non-selected option */
     background-color: #e0e0e0;
 }
 

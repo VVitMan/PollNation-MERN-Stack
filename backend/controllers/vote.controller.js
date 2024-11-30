@@ -5,53 +5,59 @@ import Vote from '../models/vote.model.js';
 export const updateVote = async (req, res) => {
     try {
       const { userId, pollId, quizId, optionId } = req.body;
+  
       console.log("Update Request Body:", req.body); // Debug request payload
   
+      // Validate input
       if (!userId || (!pollId && !quizId)) {
         return res.status(400).json({ message: "Missing required fields for updating vote" });
       }
   
-      // Build the filter to find the existing vote
+      // Build filter to find the existing vote
       const filter = { userId };
       if (pollId) filter.pollId = pollId;
       if (quizId) filter.quizId = quizId;
   
-      // Find the existing vote
+      // Find existing vote
       const existingVote = await Vote.findOne(filter);
   
       if (!existingVote) {
         // Case 1: User hasn't answered this poll/quiz before => Create a new vote
         const newVote = new Vote({
           userId,
-          pollId,
-          quizId,
+          pollId: pollId || null, // Set pollId or null
+          quizId: quizId || null, // Set quizId or null
           optionId,
           type: pollId ? "Poll" : "Quiz", // Determine type based on pollId or quizId
         });
   
         await newVote.save();
-        console.log("Create Vote!")
+        console.log("Created Vote!");
         return res.status(201).json({ message: "Vote created successfully", vote: newVote });
       }
+  
+      // Case 2: User has answered this poll/quiz before
       const existingVoteObjectIdString = existingVote.optionId.toString();
-      console.log(existingVoteObjectIdString, "VS", optionId)
+      console.log(existingVoteObjectIdString, "VS", optionId);
+  
       if (existingVoteObjectIdString === optionId) {
-        // Case 2: User has answered this poll/quiz before and the optionId is the same => Delete the vote
+        // If the same optionId is selected, delete the vote
         await Vote.deleteOne(filter);
-        console.log("Deleted Vote!")
+        console.log("Deleted Vote!");
         return res.status(200).json({ message: "Vote deleted successfully" });
       }
   
-      // Case 3: User has answered this poll/quiz before and the optionId is different => Update the vote
+      // Case 3: User has answered but selected a different option => Update the vote
       existingVote.optionId = optionId;
       await existingVote.save();
-      console.log("Change Vote!")
+      console.log("Updated Vote!");
       return res.status(200).json({ message: "Vote updated successfully", vote: existingVote });
     } catch (error) {
       console.error("Error in updateVote:", error.message);
       res.status(500).json({ message: "Error handling vote", error: error.message });
     }
   };
+  
 
   
 // -R-- function
@@ -66,15 +72,25 @@ export const getMyAnswers = async (req, res) => {
         return res.status(400).json({ message: "User ID is missing" });
       }
   
-      const votes = await Vote.find({ userId }).select("optionId -_id");
-      if (!votes || votes.length === 0) {
-        return //res.status(404).json({ message: "No votes found for the current user" });
-      }
-  
-      const optionIds = votes.map((vote) => vote.optionId);
-      console.log("Answered Option Data:", optionIds);
+      // Fetch votes and include optionId, pollId, and quizId in the result
+    const votes = await Vote.find({ userId }).select("optionId pollId quizId -_id");
 
-      res.status(200).json(optionIds);
+    if (!votes || votes.length === 0) {
+      return res.status(404).json({ message: "No votes found for the current user" });
+    }
+
+    // Extract option IDs and question IDs
+    const allOptionIdData = votes.map((vote) => vote.optionId.toString());
+    const allQuestionIdData = votes.map((vote) => vote.pollId?.toString() || vote.quizId?.toString());
+
+
+    console.log("getMyAnswers Respond with =>\n","Poll IDs: ", allOptionIdData," \nQuestion IDs: ", allQuestionIdData,); // Debug user info
+
+    // Send the combined response
+    res.status(200).json({
+      allOptionIdData,
+      allQuestionIdData,
+    });
     } catch (error) {
       console.error("Error in getMyAnswers:", error.message);
       res.status(500).json({ message: "Internal Server Error", error: error.message });
