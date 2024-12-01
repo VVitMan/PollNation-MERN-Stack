@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 function EditProfile() {
+  console.log("EditProfile is rendering...");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",

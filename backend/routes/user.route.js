@@ -1,11 +1,26 @@
 import express from "express";
-import { test, updateUser, deleteUser } from "../controllers/user.controller.js";
+import {
+    test,
+    updateUser,
+    deleteUser,
+    submitReport, // Import the report submission handler
+    getId,
+} from "../controllers/user.controller.js";
+
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
 
-router.get("/", test)
-router.put("/update/:id", verifyToken, updateUser);
-router.delete("/delete/:id", verifyToken, deleteUser);
+router.get("/", test) // Test route
+router.get("/id/:username", verifyToken, getId);
+router.put("/update/:id", verifyToken, updateUser); // User update
+router.delete("/delete/:id", verifyToken, deleteUser); // User delete
+
+
+
+
+// Define the POST route for `/reports`
+// Report Submission
+router.post("/reports", verifyToken, submitReport); // Submit report against a user
 
 export default router;

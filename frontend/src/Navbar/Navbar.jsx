@@ -1,92 +1,87 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [active, setActive] = useState("Home");
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for the dropdown
-  const [loading, setLoading] = useState(true); // Loading state
-  const { currentUser } = useSelector((state) => state.user);
+  const [isOpen, setIsOpen] = useState(false); // Mobile menu toggle
+  const [dropdownOpen, setDropdownOpen] = useState(false); // Dropdown toggle
+  const { currentUser, loading } = useSelector((state) => state.user); // Redux state
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Navigate after logout
 
-  // Simulate loading user data => loading
-  useEffect(() => {
-    setLoading(false);
-  }, [currentUser]);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
-  };
-
-  const handleLinkClick = (link) => {
-    setActive(link);
-    setIsOpen(false); // Close the menu after clicking a link on mobile
-    setDropdownOpen(false); // Close the dropdown when navigating
-  };
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
   const handleLogout = () => {
-    dispatch(signOut());
+    dispatch(signOut()); // Trigger Redux logout
+    setDropdownOpen(false); // Close dropdown
+    navigate("/"); // Redirect to home
+  };
+
+  const closeMenu = () => {
+    setIsOpen(false); // Close mobile menu
+    setDropdownOpen(false); // Close dropdown
   };
 
   return (
     <nav className={styles.navbar}>
-      {/* PollNation Logo */}
-      <div className={styles.logo} onClick={() => handleLinkClick("Home")}>
+      {/* Logo */}
+      <div className={styles.logo} onClick={closeMenu}>
         <Link to="/" className={styles.logoLink}>
           <b>PollNation</b>
         </Link>
       </div>
 
+      {/* Navigation Links */}
       <ul className={`${styles.navLinks} ${isOpen ? styles.open : ""}`}>
-        <li
-          key="Home"
-          onClick={() => handleLinkClick("Home")}
-          className={active === "Home" ? styles.active : ""}
-        >
-          <Link to="/">Home</Link>
+        {/* Always Visible Links */}
+        <li className={styles.navItem}>
+          <Link to="/" onClick={closeMenu}>
+            Home
+          </Link>
         </li>
 
-        {currentUser && currentUser.isAdmin && ( // Conditionally show Admin link
+        {currentUser?.isAdmin && ( // Conditionally show Admin link
           <li className={styles.navItem}>
-            <Link to="/admin/dashboard" onClick={() => setIsOpen(false)}>
+            <Link to="/admin/dashboard" onClick={closeMenu}>
               Admin
             </Link>
           </li>
         )}
 
-        {/* User Profile */}
+        {/* User Profile or Sign-In */}
         {loading ? (
           <li className={styles.loading}>Loading...</li>
         ) : currentUser ? (
           <li className={styles.profile}>
-            <div onClick={toggleDropdown} className={styles.profileToggle}>
-              <span>{currentUser?.username}</span>
-              {currentUser.profilePicture && (
-                <img
-                  src={
-                    currentUser?.profilePicture ||
-                    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-                  }
-                  alt="Profile"
-                  className={styles.profilePic}
-                />
-              )}
-              <span className={styles.arrow}>
-                {dropdownOpen ? "▲" : "▼"}
-              </span>
+            <div
+              onClick={toggleDropdown}
+              className={styles.profileToggle}
+              aria-expanded={dropdownOpen}
+            >
+              <span>{currentUser.username}</span>
+              <img
+                src={
+                  currentUser.profilePicture ||
+                  "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                }
+                alt="Profile"
+                className={styles.profilePic}
+              />
+              <span className={styles.arrow}>{dropdownOpen ? "▲" : "▼"}</span>
             </div>
             {dropdownOpen && (
               <ul className={styles.dropdownMenu}>
-                <Link to={`/profile/${currentUser?.username}`}><li>
-                  Profile
-                </li></Link>
+                <li>
+                  <Link
+                    to={`/profile/${currentUser.username}`}
+                    onClick={closeMenu}
+                  >
+                    Profile
+                  </Link>
+                </li>
                 <li onClick={handleLogout} className={styles.logoutButton}>
                   Logout
                 </li>
@@ -94,17 +89,20 @@ function Navbar() {
             )}
           </li>
         ) : (
-          <li
-            key="SignIn"
-            onClick={() => handleLinkClick("Sign In")}
-            className={styles.signIn}
-          >
-            <Link to="/sign-in">Sign In</Link>
+          <li>
+            <Link to="/sign-in" onClick={closeMenu}>
+              Sign In
+            </Link>
           </li>
         )}
       </ul>
 
-      <div className={styles.hamburger} onClick={toggleMenu}>
+      {/* Hamburger Icon for Mobile */}
+      <div
+        className={styles.hamburger}
+        onClick={toggleMenu}
+        aria-expanded={isOpen}
+      >
         <span className={styles.line}></span>
         <span className={styles.line}></span>
         <span className={styles.line}></span>

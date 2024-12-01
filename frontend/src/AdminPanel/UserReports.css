@@ -1,0 +1,51 @@
+/* Styling for the User Reports */
+
+.user-reports {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  .user-reports h2 {
+    font-size: 1.8rem;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+  
+  .user-reports button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+  }
+  
+  .user-reports button:hover {
+    background-color: #c82333;
+  }
+  
+  .user-reports ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .user-reports li {
+    background: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .user-reports li p {
+    margin: 5px 0;
+  }
+  
+  .user-reports li strong {
+    color: #007bff;
+  }
+  
