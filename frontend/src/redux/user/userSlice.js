@@ -12,6 +12,7 @@ const userSlice = createSlice({
     reducers: {
         signInStart: (state) => {
             state.loading = true;
+            state.error = false; // Clear error when starting a new sign-in/sign-up attempt
         },
         signInSuccess: (state, action) => {
             state.currentUser = action.payload;
@@ -22,6 +23,9 @@ const userSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
             // state.currentUser = null; /* ล้างข้อมูลผู้ใช้เมื่อเข้าสู่ระบบล้มเหลว ไว้ใช้ใน logoutSuccess */
+        },
+        clearError: (state) => {
+            state.error = false; // Explicitly reset error to `false`
         },
         updateUserStart: (state) => {
             state.loading = true;
@@ -59,7 +63,7 @@ export const {
     signInStart, signInSuccess, signInFailure, 
     updateUserStart, updateUserSuccess, updateUserFailure,
     deleteUserStart, deleteUserSuccess, deleteUserFailure,
-    signOut
+    signOut, clearError
 } = userSlice.actions;
 
 

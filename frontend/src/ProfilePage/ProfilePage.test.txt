@@ -1,0 +1,118 @@
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
+import ProfilePage from "./ProfilePage";
+import "@testing-library/jest-dom";
+import { act } from "react-dom/test-utils";
+import { vi } from "vitest";
+
+global.fetch = vi.fn();
+
+const mockData = {
+  user: {
+    username: "testUser",
+    profilePicture: "https://test.com/test-pic.jpg",
+    description: "Test bio",
+  },
+  data: [
+    {
+      _id: "1",
+      type: "Poll",
+      question: "Test Poll",
+      options: [{ _id: "1-1", text: "Option 1", votes: 5 }],
+    },
+    {
+      _id: "2",
+      type: "Quiz",
+      question: "Test Quiz",
+      options: [{ _id: "2-1", text: "Option 1", votes: 0 }],
+    },
+  ],
+};
+
+describe("ProfilePage", () => {
+  beforeEach(() => {
+    global.fetch.mockImplementation((url) => {
+      if (url.includes("/api/poll-and-quiz")) {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve(mockData) });
+      }
+      if (url.includes("/api/user/reports")) {
+        return Promise.resolve({ ok: true });
+      }
+      return Promise.reject(new Error("Unhandled fetch call"));
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("renders profile data and tabs", async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={["/profile/testUser"]}>
+            <Routes>
+              <Route path="/profile/:username" element={<ProfilePage />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { level: 1, name: "testUser" })).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("All")).toBeInTheDocument();
+    expect(screen.getByText("Poll")).toBeInTheDocument();
+    expect(screen.getByText("Quiz")).toBeInTheDocument();
+  });
+
+  it("deletes a poll/quiz", async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={["/profile/testUser"]}>
+            <Routes>
+              <Route path="/profile/:username" element={<ProfilePage />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    const deleteButton = screen.getAllByRole("button", { name: /delete/i })[0];
+    fireEvent.click(deleteButton);
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/poll-and-quiz/delete/1",
+        expect.objectContaining({ method: "DELETE" })
+      );
+    });
+  });
+
+  it("switches tabs correctly", async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <MemoryRouter initialEntries={["/profile/testUser"]}>
+            <Routes>
+              <Route path="/profile/:username" element={<ProfilePage />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      );
+    });
+
+    const tabs = screen.getByRole("tablist");
+    const quizTab = within(tabs).getByText("Quiz");
+    fireEvent.click(quizTab);
+
+    await waitFor(() => {
+      expect(screen.getByText("Test Quiz")).toBeInTheDocument();
+    });
+  });
+});
