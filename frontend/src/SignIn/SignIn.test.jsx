@@ -1,7 +1,4 @@
-// SignIn.test.jsx
-/* eslint-env node, jest */
-/* global afterEach, global */
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -16,11 +13,15 @@ vi.mock('../components/OAuth', () => ({
 
 describe('SignIn Component', () => {
   beforeEach(() => {
-    window.alert = vi.fn(); // Mock window.alert to remove act() warnings
-    global.fetch = vi.fn(); // Mock fetch API
+    // Mock browser alert to prevent act() warnings during testing
+    window.alert = vi.fn();
+
+    // Mock global fetch API
+    global.fetch = vi.fn();
   });
 
   afterEach(() => {
+    // Restore mocks after each test
     vi.restoreAllMocks();
   });
 
@@ -79,7 +80,7 @@ describe('SignIn Component', () => {
   });
 
   it('displays loading state while submitting', async () => {
-    // Mock fetch to simulate a delay in network response
+    // Mock fetch to simulate network delay
     global.fetch.mockImplementation(() =>
       new Promise((resolve) =>
         setTimeout(() => {
@@ -106,6 +107,29 @@ describe('SignIn Component', () => {
     });
 
     expect(screen.getByRole('button', { name: /Loading.../i })).toBeInTheDocument();
+  });
+
+  it('shows error message when server returns error', async () => {
+    // Mock fetch to simulate server error
+    global.fetch.mockImplementation(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({ success: false, message: 'Invalid credentials' }),
+      })
+    );
+
+    await renderSignIn();
+    await act(async () => {
+      fireEvent.change(screen.getByPlaceholderText(/Email/i), {
+        target: { value: 'user@example.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText(/Password/i), {
+        target: { value: 'InvalidPassword1!' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: /Sign in/i }));
+    });
+
+    expect(screen.getByText(/Invalid credentials/i)).toBeInTheDocument();
   });
 
   it('navigates to sign up page when clicking the link', async () => {
