@@ -67,44 +67,38 @@
     position: relative;
     cursor: pointer;
     overflow: hidden;
-}
-
-input[type="radio"] {
-    accent-color: #0077ff;
-}
-
-.option label {
+  }
+  
+  .option label {
     flex-grow: 1;
     position: relative;
     z-index: 1;
     font-weight: 500;
-}
-
-/* Progress bar background within option */
-.option::before {
+  }
+  
+  /* Progress bar background within option */
+  .option::before {
     content: '';
     position: absolute;
     left: 0;
     top: 0;
     height: 100%;
-    width: 0%; /* Default width for unselected options */
-    background-color: #d3d3d3;
+    width: var(--vote-percentage, 0%); /* Use percentage from CSS variable */
     z-index: 0;
     transition: width 0.3s ease, background-color 0.3s ease;
     border-radius: 8px;
-}
-
-/* Style for the selected option */
-.option.selected::before {
-    width: 60%; /* Result of the selected option */
+  }
+  
+  /* Style for the selected option */
+  .option.selected::before {
     background-color: #80bfff;
-}
-
-/* Style for unselected options when a selection is made */
-.option.unselected::before {
-    width: 10%; /* Result of the non-selected option */
+  }
+  
+  /* Style for unselected options when a selection is made */
+  .option.notSelected::before {
     background-color: #e0e0e0;
-}
+  }
+  
 
 /* Correct answer styling */
 .option.correct {
@@ -114,8 +108,12 @@ input[type="radio"] {
 
 .option.correct::before {
     background-color: #4caf50; /* Green progress bar for correct answer */
-    width: 80%;
 }
+
+.option.showCorrect {
+    border: 2px solid #4caf50;
+    background-color: #e0ffe0; /* Light green background */
+  }
 
 /* Wrong answer styling */
 .option.wrong {
@@ -125,7 +123,6 @@ input[type="radio"] {
 
 .option.wrong::before {
     background-color: #ff4d4d; /* Red progress bar for wrong answer */
-    width: 20%;
 }
 
 /* Explanation box styling */
