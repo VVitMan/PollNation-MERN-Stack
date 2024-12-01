@@ -50,8 +50,10 @@ function Navbar() {
           </li>
         )}
 
-        {currentUser ? (
-          // Logged-in User Links
+        {/* User Profile */}
+        {loading ? (
+          <li className={styles.loading}>Loading...</li>
+        ) : currentUser ? (
           <li className={styles.profile}>
             <div onClick={toggleDropdown} className={styles.profileToggle}>
               <span>{currentUser.username}</span>
