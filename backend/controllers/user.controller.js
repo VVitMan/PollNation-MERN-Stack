@@ -3,12 +3,6 @@ import bcryptjs from "bcryptjs";
 import User from "../models/user.model.js";
 import Report from "../models/report.model.js";
 
-export const test = (req, res) => {
-  res.json({
-    message: "user vit from controller",
-  });
-};
-
 /* Update User */
 export const updateUser = async (req, res, next) => {
   /* ตอนเราสร้าง access_token เราใช้ payload เป็น { id: user._id } คือ id ของ user*/

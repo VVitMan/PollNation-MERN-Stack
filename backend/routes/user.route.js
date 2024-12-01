@@ -1,6 +1,5 @@
 import express from "express";
 import {
-    test,
     updateUser,
     deleteUser,
     submitReport, // Import the report submission handler
@@ -11,10 +10,10 @@ import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
 
-router.get("/", test) // Test route
 router.get("/id/:username", verifyToken, getId);
 router.put("/update/:id", verifyToken, updateUser); // User update
 router.delete("/delete/:id", verifyToken, deleteUser); // User delete
+
 
 
 
