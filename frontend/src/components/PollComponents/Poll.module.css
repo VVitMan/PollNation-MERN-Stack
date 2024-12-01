@@ -84,7 +84,6 @@
     top: 0;
     height: 100%;
     width: var(--vote-percentage, 0%); /* Use percentage from CSS variable */
-    background-color: #d3d3d3;
     z-index: 0;
     transition: width 0.3s ease, background-color 0.3s ease;
     border-radius: 8px;
@@ -109,8 +108,12 @@
 
 .option.correct::before {
     background-color: #4caf50; /* Green progress bar for correct answer */
-    width: 80%;
 }
+
+.option.showCorrect {
+    border: 2px solid #4caf50;
+    background-color: #e0ffe0; /* Light green background */
+  }
 
 /* Wrong answer styling */
 .option.wrong {
@@ -120,7 +123,6 @@
 
 .option.wrong::before {
     background-color: #ff4d4d; /* Red progress bar for wrong answer */
-    width: 20%;
 }
 
 /* Explanation box styling */

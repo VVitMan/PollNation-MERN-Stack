@@ -64,11 +64,11 @@ export const createPollAndQuiz = async (req, res) => {
         }
 
         if (type === 'Poll') {
-            const poll = new Poll({ question, options, userId }); // Include `userId` here
+            const poll = new Poll({ question, options, userId, type }); // Include `userId` here
             await poll.save();
             res.status(201).json(poll);
         } else if (type === 'Quiz') {
-            const quiz = new Quiz({ question, options, userId }); // Include `userId` here
+            const quiz = new Quiz({ question, options, userId, type }); // Include `userId` here
             await quiz.save();
             res.status(201).json(quiz);
         } else {
