@@ -53,6 +53,14 @@ function Navbar() {
           <Link to="/">Home</Link>
         </li>
 
+        {currentUser && currentUser.isAdmin && ( // Conditionally show Admin link
+          <li className={styles.navItem}>
+            <Link to="/admin/dashboard" onClick={() => setIsOpen(false)}>
+              Admin
+            </Link>
+          </li>
+        )}
+
         {/* User Profile */}
         {loading ? (
           <li className={styles.loading}>Loading...</li>
