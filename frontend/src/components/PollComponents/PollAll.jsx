@@ -35,7 +35,9 @@ function PollAll() {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
-        const data = await response.json();
+        const text = await response.text();
+        const data = text ? JSON.parse(text) : null; // Parse only if there's content
+
         console.log("setPollQuizData(data);",data);
         setPollQuizData(data);
       } catch (error) {
@@ -70,7 +72,7 @@ function PollAll() {
         credentials: "include",
         body: JSON.stringify({
           userId,
-          pollId: postId,
+          postId,
           optionId,
         }),
       });
@@ -84,7 +86,10 @@ function PollAll() {
       }
   
       // Parse and log the response body (optional for debugging)
-      const responseData = await response.json();
+      const text = await response.text();
+      console.log("Raw response text:", text);
+      const responseData = text ? JSON.parse(text) : null; // Parse only if there's content
+
       console.log("Response Data:", responseData);
   
       // Refresh the selected options
@@ -105,20 +110,27 @@ const preSelectOptions = async () => {
       },
     });
 
+
+    
     if (!response.ok) {
-      if (response.status === 404) {
-        // Handle case where no votes are found
-        console.warn("No votes found for the user. Setting default empty state.");
-        // setQuestionData([]);
-        // setOptionData([]);
-        setVoteCounts([]); // Option counts and details
-        return;
-      }
+      console.warn("No votes found for the user. Setting default empty state.");
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
+    if (response.status === 204) { //204 No content
+      // Handle case where no votes are found
+      console.warn("No votes found for the user. Setting default empty state.");
+      setAnsweredOptionData([]);
+      setAnsweredQuestionData([]);
+      setVoteCounts([]); // Option counts and details
+      return;
+    }
+    
     console.log("const data = await response.json();")
-    const data = await response.json();
+
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null; // Parse only if there's content
+
     setAnsweredOptionData(data.allOptionIdData);
     setAnsweredQuestionData(data.allQuestionIdData);
     setVoteCounts(data.voteCounts); // Option counts and details
@@ -335,7 +347,7 @@ useEffect(() => {
           "Authorization": `Bearer ${currentUser.token}`,
         },
       });
-      if (response.ok) {
+      if (response.ok && response.status !== 204) {
         const { allOptionIdData, allQuestionIdData, voteCounts } = await response.json();
         setAnsweredOptionData(allOptionIdData);
         setAnsweredQuestionData(allQuestionIdData);
@@ -430,7 +442,7 @@ return (
                     }}
                     onClick={() =>
                       currentUser &&
-                      handleOptionSelect(item._id, option._id, item.type)
+                      handleOptionSelect(item._id, option._id) //, item.type
                     }
                   >
                     <label>
