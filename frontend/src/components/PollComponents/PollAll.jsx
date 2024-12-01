@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Poll.module.css";
 import { useSelector } from "react-redux";
@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 
 function PollAll() {
   const [pollQuizData, setPollQuizData] = useState([]);
-  const [selectedOptions, setSelectedOptions] = useState({});
   const [comments, setComments] = useState({});
   const [visibleComments, setVisibleComments] = useState({});
   const [commentInputs, setCommentInputs] = useState({});

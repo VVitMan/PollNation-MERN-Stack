@@ -20,11 +20,3 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store); // save "store" -> persistent store => local store
-
-/* export const store = configureStore({
-    reducer: {user: userReducer},
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        serializableCheck: false,
-    }),
-
-}) */

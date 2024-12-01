@@ -10,7 +10,6 @@ import PollAll from './components/PollComponents/PollAll.jsx';
 import SignIn from "./SignIn/SignIn.jsx";
 import SignUp from './SignUp/SignUp.jsx';
 // import Profile from "./Profile [unuse]/Profile.jsx";
-import Community from "./pages/Community";
 import PrivateRoute from "./components/PrivateRoute";
 import EditPollQuiz from './EditPollQuiz/EditPollQuiz.jsx'; // Import the EditPollQuiz component
 import CreatePollAndQuiz from './CreatePollQuiz/CreatePollQuiz.jsx';
@@ -40,8 +39,6 @@ export default function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/profile/:username" element={<ProfilePage />} />
           </Route>
-
-          <Route path="/community" element={<Community />} />
 
           {/* Poll Routes */}
           <Route path="/profile/:username" element={<ProfilePage />} /> {/* Profile Page */}
