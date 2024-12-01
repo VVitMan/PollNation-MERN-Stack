@@ -105,8 +105,8 @@ const preSelectOptions = async () => {
       if (response.status === 404) {
         // Handle case where no votes are found
         console.warn("No votes found for the user. Setting default empty state.");
-        setQuestionData([]);
-        setOptionData([]);
+        // setQuestionData([]);
+        // setOptionData([]);
         setVoteCounts([]); // Option counts and details
         return;
       }
@@ -200,15 +200,15 @@ useEffect(() => {
     setCommentInputs((prev) => ({ ...prev, [postId]: value }));
   };
 
-  const handleLogout = () => {
-    // Clear user session (e.g., Redux state or cookies)
-    dispatch(logoutUserAction()); // Adjust based on your logout logic
+  // const handleLogout = () => {
+  //   // Clear user session (e.g., Redux state or cookies)
+  //   dispatch(logoutUserAction()); // Adjust based on your logout logic
   
-    // Clear poll/quiz states
-    setAnsweredOptionData([]);
-    setAnsweredQuestionData([]);
-    setVoteCounts([]); // Clear vote counts if stored
-  };
+  //   // Clear poll/quiz states
+  //   setAnsweredOptionData([]);
+  //   setAnsweredQuestionData([]);
+  //   setVoteCounts([]); // Clear vote counts if stored
+  // };
 
   useEffect(() => {
   if (!currentUser) {
