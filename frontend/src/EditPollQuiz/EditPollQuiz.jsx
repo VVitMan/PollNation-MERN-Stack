@@ -26,7 +26,7 @@ function EditPollQuiz() {
         const data = await response.json();
 
         if (response.ok) {
-          setType(data.__t || "Poll"); // Set type based on discriminator key or default to 'Poll'
+          setType(data.type || "Poll"); // Set type based on discriminator key or default to 'Poll'
           setQuestion(data.question);
           setOptions(data.options);
         } else {

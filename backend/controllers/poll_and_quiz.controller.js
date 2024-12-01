@@ -87,14 +87,28 @@ export const getPollsAndQuizzesById = async (req, res) => {
 
         // Find by ID in both Poll and Quiz collections
         let data = await Poll.findById(postId);
-        if (!data) {
+        if (data) {
+            // If found in Poll collection, add a type to differentiate
+            data = {
+                ...data.toObject(), // Convert Mongoose Document to plain object
+                type: 'Poll', // Add the type key to identify it as a Poll
+            };
+        } else {
             data = await Quiz.findById(postId);
+            if (data) {
+                // If found in Quiz collection, add a type to differentiate
+                data = {
+                    ...data.toObject(), // Convert Mongoose Document to plain object
+                    type: 'Quiz', // Add the type key to identify it as a Quiz
+                };
+            }
         }
-
+        
         if (!data) {
             return res.status(404).json({ message: 'Poll or Quiz not found' });
         }
-
+        
+        console.log("poll or quiz", data)
         res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching data', error });
