@@ -183,10 +183,7 @@ useEffect(() => {
       alert("Please log in to add a comment.");
       return;
     }
-    if (currentUser.isBanned) {
-      alert("You are banned and cannot add comments.");
-      return;
-    }
+
     if (commentInputs[postId]?.trim() === "") return;
     setLoadingPostId(postId);
 
@@ -226,10 +223,7 @@ useEffect(() => {
       alert("Please log in to delete a comment.");
       return;
     }
-    if (currentUser.isBanned) {
-      alert("You are banned and cannot delete comments.");
-      return;
-    }
+
     // Show confirmation alert
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this comment? This action cannot be undone."
@@ -267,10 +261,7 @@ useEffect(() => {
       alert("Please log in to edit a comment.");
       return;
     }
-    if (currentUser.isBanned) {
-      alert("You are banned and cannot edit comments.");
-      return;
-    }
+
     if (!editingContent[commentId]?.trim()) {
       alert("Comment content cannot be empty.");
       return;
@@ -317,16 +308,6 @@ useEffect(() => {
   const handleInputChange = (postId, value) => {
     setCommentInputs((prev) => ({ ...prev, [postId]: value }));
   };
-
-  // const handleLogout = () => {
-  //   // Clear user session (e.g., Redux state or cookies)
-  //   dispatch(logoutUserAction()); // Adjust based on your logout logic
-  
-  //   // Clear poll/quiz states
-  //   setAnsweredOptionData([]);
-  //   setAnsweredQuestionData([]);
-  //   setVoteCounts([]); // Clear vote counts if stored
-  // };
 
   useEffect(() => {
   if (!currentUser) {

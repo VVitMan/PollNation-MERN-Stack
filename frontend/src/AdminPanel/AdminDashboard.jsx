@@ -46,6 +46,7 @@ const AdminDashboard = () => {
 
   // Handle Delete User
   const handleDeleteUser = async (userId) => {
+    alert("Are you sure wanted to delete userId" + userId);
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",

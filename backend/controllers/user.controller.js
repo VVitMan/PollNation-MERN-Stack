@@ -55,16 +55,12 @@ export const deleteUser = async (req, res, next) => {
       return next(errorCustom(404, "User not found"));
     }
 
-    // Delete all polls and quizzes associated with this user
-    await Poll.deleteMany({ userId: req.params.id });
-    await Quiz.deleteMany({ userId: req.params.id });
+    // Clear authentication cookie if required
+    res.clearCookie("access_token")
 
-    // Delete all comments created by this user
-    await Comment.deleteMany({ userId: req.params.id });
-    
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: 'Failed to delete user.' });
   }
 };
 

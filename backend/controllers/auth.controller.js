@@ -222,7 +222,7 @@ export const deleteUser = async (req, res, next) => {
     }
 
     // Clear authentication cookie if required
-    res.clearCookie("access_token");
+    res.clearCookie("access_token")
 
     // Respond with success
     res.status(200).json({ message: "User deleted successfully" });
