@@ -98,6 +98,7 @@ function EditPollQuiz() {
       {message && <p className={styles.message}>{message}</p>}
       <form onSubmit={handleSubmit}>
         <div className={styles.formGroup}>
+          {/* Question: */}
           <label className={styles.label}>Question:</label>
           <input
             className={styles.input}
@@ -107,7 +108,7 @@ function EditPollQuiz() {
             required
           />
         </div>
-
+        {/* Options: */}
         <div className={styles.formGroup}>
           <label className={styles.label}>Options:</label>
           {options.map((option, index) => (
@@ -120,7 +121,6 @@ function EditPollQuiz() {
                 required
               />
               {type === "Quiz" && (
-                <>
                   <label className={styles.correctCheckbox}>
                     <input
                       type="checkbox"
@@ -131,16 +131,6 @@ function EditPollQuiz() {
                     />
                     Correct Answer
                   </label>
-                  <input
-                    className={styles.explanationInput}
-                    type="text"
-                    value={option.explanation}
-                    placeholder="Explanation (optional)"
-                    onChange={(e) =>
-                      handleExplanationChange(index, e.target.value)
-                    }
-                  />
-                </>
               )}
               {options.length > 1 && (
                 <button
