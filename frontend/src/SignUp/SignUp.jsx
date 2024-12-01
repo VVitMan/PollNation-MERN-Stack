@@ -50,7 +50,7 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const { username, email, password } = formData;
+    const { username, email, password, confirmPassword } = formData;
   
     // Check if required fields are provided, one by one
     if (!username) {
@@ -90,6 +90,12 @@ export default function SignUp() {
         "• Include at least one special character (e.g., !, @, #, $)\n\n" +
         "Example: MyPassword123!"
       );
+      return;
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      alert("🔒 Passwords do not match. Please confirm your password correctly.");
       return;
     }
   
@@ -148,6 +154,13 @@ export default function SignUp() {
           type="password"
           id="password"
           placeholder="Password"
+          className={styles.input}
+          onChange={handleChange}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          id="confirmPassword"
           className={styles.input}
           onChange={handleChange}
         />

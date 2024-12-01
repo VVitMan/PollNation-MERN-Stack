@@ -6,11 +6,16 @@ import jwt from "jsonwebtoken";
 /* Sign Up */
 export const signup = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, confirmPassword } = req.body;
 
     // Check if required fields are provided
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !confirmPassword) {
       return next(errorCustom(400, "All fields are required"));
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      return next(errorCustom(400, "Passwords do not match"));
     }
 
     // Validate username: alphanumeric, 3-20 characters
@@ -207,26 +212,4 @@ export const signout = (req, res) => {
     .clearCookie("access_token")
     .status(200)
     .json("User Logged Out Successfully");
-};
-
-/* Delete User */
-export const deleteUser = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    // Find and delete the user
-    const user = await User.findByIdAndDelete(id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Clear authentication cookie if required
-    res.clearCookie("access_token")
-
-    // Respond with success
-    res.status(200).json({ message: "User deleted successfully" });
-  } catch (error) {
-    next(error); // Pass error to the error handler
-  }
 };
