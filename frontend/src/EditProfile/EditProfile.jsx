@@ -211,13 +211,6 @@ function EditProfile() {
   };
 
   /* Validation Functions */
-  const isValidUsername = (username) => {
-    // Username: 3-15 characters, letters, numbers, underscores, hyphens
-    const usernameRegex = /^[a-zA-Z0-9_-]{3,15}$/;
-    return usernameRegex.test(username);
-  };
-
-  /* Validation Functions */
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validate common email formats
     return emailRegex.test(email);
@@ -232,10 +225,7 @@ function EditProfile() {
      // Username validation
     if (!formData.username.trim()) {
       newErrors.username = "⚠️ Username cannot be empty.";
-    } else if (!isValidUsername(formData.username)) {
-      newErrors.username = "⚠️ Username must be 3-15 characters and can only contain letters, numbers, underscores, or hyphens.";
-    }
-
+    } 
     // Email validation
     if (!formData.email.trim()) {
       newErrors.email = "📧 Email cannot be empty.";
