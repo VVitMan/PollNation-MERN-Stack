@@ -105,7 +105,6 @@ const preSelectOptions = async () => {
       if (response.status === 404) {
         // Handle case where no votes are found
         console.warn("No votes found for the user. Setting default empty state.");
-        const { allOptionIdData, allQuestionIdData } = await response.json();
         setQuestionData([]);
         setOptionData([]);
         setVoteCounts([]); // Option counts and details
@@ -225,6 +224,7 @@ useEffect(() => {
     try {
       const response = await fetch("/api/vote/myanswers", {
         method: "GET",
+        credentials: "include",
         headers: {
           "Authorization": `Bearer ${currentUser.token}`,
         },
