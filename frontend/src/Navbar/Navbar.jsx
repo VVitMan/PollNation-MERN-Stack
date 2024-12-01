@@ -75,7 +75,10 @@ function Navbar() {
             {dropdownOpen && (
               <ul className={styles.dropdownMenu}>
                 <li>
-                  <Link to={`/profile/${currentUser.username}`} onClick={closeMenu}>
+                  <Link
+                    to={`/profile/${currentUser.username}`}
+                    onClick={closeMenu}
+                  >
                     Profile
                   </Link>
                 </li>
