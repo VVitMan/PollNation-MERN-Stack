@@ -3,6 +3,23 @@ import bcryptjs from "bcryptjs";
 import User from "../models/user.model.js";
 import Report from "../models/report.model.js";
 
+export const verifyPassword = async (req, res) => {
+  try {
+    const { userId, password } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+    const isMatch = bcryptjs.compareSync(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: "Incorrect password." });
+    }
+    res.status(200).json({ success: true, message: "Password verified." });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Internal server error." });
+  }
+};
+
 /* Update User */
 export const updateUser = async (req, res, next) => {
   /* ตอนเราสร้าง access_token เราใช้ payload เป็น { id: user._id } คือ id ของ user*/
@@ -11,23 +28,41 @@ export const updateUser = async (req, res, next) => {
   }
 
   try {
-    if (req.body.password) {
-      req.body.password = bcryptjs.hashSync(req.body.password, 12);
+    const user = await User.findById(req.params.id);
+
+    // Verify the current password if provided
+    if (req.body.currentPassword) {
+      const isPasswordValid = bcryptjs.compareSync(
+        req.body.currentPassword,
+        user.password
+      );
+      if (!isPasswordValid) {
+        return next(errorCustom(400, "Current password is incorrect"));
+      }
     }
 
+
+    // Update password if a new one is provided
+    if (req.body.newPassword) {
+      req.body.password = bcryptjs.hashSync(req.body.newPassword, 12);
+    }
+
+    // Filter out fields that should not be updated directly
+    const fieldsToUpdate = {
+      username: req.body.username,
+      email: req.body.email,
+      description: req.body.description,
+      profilePicture: req.body.profilePicture,
+    };
+    if (req.body.password) fieldsToUpdate.password = req.body.password;
+
+    // Perform the update
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
-      {
-        $set: {
-          username: req.body.username,
-          email: req.body.email,
-          password: req.body.password,
-          description: req.body.description,
-          profilePicture: req.body.profilePicture,
-        },
-      },
+      { $set: fieldsToUpdate },
       { new: true }
     );
+    
     /* remove password before sent to client side */
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);

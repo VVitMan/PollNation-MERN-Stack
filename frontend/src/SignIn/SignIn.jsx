@@ -61,20 +61,6 @@ export default function SignIn() {
       alert("🔒 Please enter your password.");
       return;
     }
-  
-    // // Validate password strength if provided
-    // if (!isValidPassword(password)) {
-    //   alert(
-    //     "🔒 Your password must meet the following criteria:\n\n" +
-    //     "• At least 8 characters long\n" +
-    //     "• Include at least one uppercase letter (e.g., A, B, C)\n" +
-    //     "• Include at least one lowercase letter (e.g., a, b, c)\n" +
-    //     "• Include at least one number (e.g., 1, 2, 3)\n" +
-    //     "• Include at least one special character (e.g., !, @, #, $)\n\n" +
-    //     "Example: MyPassword123!"
-    //   );
-    //   return;
-    // }
 
     try {
       dispatch(signInStart()); // Start the loading state
