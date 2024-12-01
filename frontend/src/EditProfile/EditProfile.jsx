@@ -19,17 +19,25 @@ import {
 import { useNavigate } from "react-router-dom";
 
 function EditProfile() {
+  console.log("EditProfile is rendering...");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     description: "",
     profilePicture: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
   const [image, setImage] = useState(null);
   const [imagePercent, setImagePercent] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [textUpdateSuccess, setTextUpdateSuccess] = useState(false);
+  const [passwordVerified, setPasswordVerified] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+
 
   const inputRef = useRef();
   const dispatch = useDispatch();
@@ -49,6 +57,9 @@ function EditProfile() {
         email: currentUser.email,
         description: currentUser.description,
         profilePicture: currentUser.profilePicture,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
       });
     }
   }, [currentUser]);
@@ -126,43 +137,26 @@ function EditProfile() {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      dispatch(updateUserStart());
-      const response = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      if (data.success === false) {
-        dispatch(updateUserFailure(data));
-        return;
-      }
-      dispatch(updateUserSuccess(data));
-      setTextUpdateSuccess(true);
-    } catch (error) {
-      console.error("Update Error: ", error.message);
-      dispatch(updateUserFailure(error));
-    }
-  };
-
+  
   const handleCancel = () => {
     setFormData({
       username: currentUser.username,
       email: currentUser.email,
       description: currentUser.description || "",
       profilePicture: currentUser.profilePicture,
+      currentPassword: "", // Reset current password
+      newPassword: "", // Reset new password
+      confirmPassword: "", // Reset confirm password
     });
     setImage(null);
     setImageError(false);
     setTextUpdateSuccess(false);
+    setPasswordVerified(false); // Reset password verified state
+    setPasswordError(""); // Clear password error
   };
   console.log("formData: ", formData);
   console.log("error state: ", error);
-
+  
   const handleDeleteAccount = async () => {
     if (
       window.confirm(
@@ -174,7 +168,7 @@ function EditProfile() {
         const response = await fetch(`/api/user/delete/${currentUser._id}`, {
           method: "DELETE",
         });
-
+        
         const data = await response.json();
         if (data.success === false) {
           dispatch(deleteUserFailure(data));
@@ -190,6 +184,116 @@ function EditProfile() {
         console.error("Delete Error: ", error.message);
         dispatch(deleteUserFailure(error.message));
       }
+    }
+  };
+  
+  const handleVerifyPassword = async () => {
+    setPasswordError(""); // Clear previous error
+    setPasswordVerified(false); // Reset passwordVerified state initially
+    try {
+      const response = await fetch("/api/user/verify-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: currentUser._id, password: formData.currentPassword }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setPasswordVerified(true);
+        alert("Password verified successfully.");
+      } else {
+        setPasswordVerified(false); // Disable new password fields
+        setPasswordError("Incorrect password. Please try again.");
+      }
+    } catch {
+      setPasswordVerified(false); // Disable new password fields
+      setPasswordError("An error occurred while verifying your password.");
+    }
+  };
+
+  /* Validation Functions */
+  const isValidUsername = (username) => {
+    // Username: 3-15 characters, letters, numbers, underscores, hyphens
+    const usernameRegex = /^[a-zA-Z0-9_-]{3,15}$/;
+    return usernameRegex.test(username);
+  };
+
+  /* Validation Functions */
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validate common email formats
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setTextUpdateSuccess(false); // Update text successfully to hide
+    // Reset field errors
+    const newErrors = {};
+
+     // Username validation
+    if (!formData.username.trim()) {
+      newErrors.username = "⚠️ Username cannot be empty.";
+    } else if (!isValidUsername(formData.username)) {
+      newErrors.username = "⚠️ Username must be 3-15 characters and can only contain letters, numbers, underscores, or hyphens.";
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "📧 Email cannot be empty.";
+      
+    } else if (!isValidEmail(formData.email)) {
+      newErrors.email = "📧 Please provide a valid email address.";
+    }
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      alert("New password and confirm password do not match.");
+      return;
+    }
+
+     // Password validation (if any password field is filled)
+    if (formData.newPassword || formData.confirmPassword || formData.currentPassword) {
+      if (!formData.currentPassword) {
+        newErrors.currentPassword = "🔒 Current password cannot be empty.";
+      }
+      if (!formData.newPassword) {
+        newErrors.newPassword = "🔒 New password cannot be empty.";
+      }
+      if (!formData.confirmPassword) {
+        newErrors.confirmPassword = "🔒 Confirm password cannot be empty.";
+      }
+      if (formData.newPassword !== formData.confirmPassword) {
+        newErrors.confirmPassword = "🔒 New password and confirm password must match.";
+      }
+    }
+
+    // If errors exist, set them in state and return
+    if (Object.keys(newErrors).length > 0) {
+      setFieldErrors(newErrors);
+      return;
+    }
+
+    // Clear errors if validation passes
+    setFieldErrors({});
+
+    try {
+      dispatch(updateUserStart());
+      const response = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data));
+        setFieldErrors({ general: data.message || "Failed to update profile" });
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setTextUpdateSuccess(true);
+    } catch (error) {
+      console.error("Update Error: ", error.message);
+      dispatch(updateUserFailure(error));
+      setFieldErrors({ general: "An error occurred. Please try again." });
     }
   };
 
@@ -257,6 +361,7 @@ function EditProfile() {
             onChange={handleChange}
             className={styles.input}
           />
+           {fieldErrors.username && <p className={styles.errorText}>{fieldErrors.username}</p>}
 
           <label className={styles.label}>Email</label>
           <input
@@ -266,15 +371,49 @@ function EditProfile() {
             onChange={handleChange}
             className={styles.input}
           />
+          {fieldErrors.email && <p className={styles.errorText}>{fieldErrors.email}</p>}
 
-          <label className={styles.label}>Password</label>
+          <label className={styles.label}>Current Password</label>
           <input
             type="password"
-            id="password"
-            placeholder="Password"
+            id="currentPassword"
+            placeholder="Current Password"
+            value={formData.currentPassword}
             onChange={handleChange}
             className={styles.input}
           />
+          {fieldErrors.currentPassword && <p className={styles.errorText}>{fieldErrors.currentPassword}</p>}
+
+          <button type="button" onClick={handleVerifyPassword}>
+            Verify Password
+          </button>
+          {passwordError && <p>{passwordError}</p>}
+          {!passwordVerified && <p className={styles.note}>Please verify your current password to update it.</p>}
+
+          <label className={styles.label}>New Password</label>
+          <input
+            type="password"
+            id="newPassword"
+            placeholder="New Password"
+            disabled={!passwordVerified}
+            value={formData.newPassword}
+            onChange={handleChange}
+            className={styles.input}
+          />
+          {fieldErrors.newPassword && <p className={styles.errorText}>{fieldErrors.newPassword}</p>}
+
+          <label className={styles.label}>Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Confirm Password"
+            disabled={!passwordVerified}
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className={styles.input}
+          />
+          {fieldErrors.confirmPassword && <p className={styles.errorText}>{fieldErrors.confirmPassword}</p>}
+
 
           <label className={styles.label}>Description</label>
           <textarea
@@ -286,7 +425,7 @@ function EditProfile() {
 
           {/* Button Group Inside the Form */}
           <div className={styles.buttonGroup}>
-            <button onClick={handleCancel} className={styles.cancelButton}>
+            <button type="button" onClick={handleCancel} className={styles.cancelButton}>
               Cancel
             </button>
             <button type="submit" className={styles.saveButton}>

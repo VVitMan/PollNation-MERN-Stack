@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice";
+import { signInStart, signInSuccess, signInFailure, clearError } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
 import styles from "./SignIn.module.css"; // Import the CSS module
@@ -13,21 +13,55 @@ export default function SignIn() {
   const dispatch = useDispatch();
 
   /* Loading and Error State */
-  // Use Redux state for loading and error tracking
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState(false);
   const { loading, error } = useSelector((state) => state.user);
 
   /* Form Data State */
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
   const handleChange = (e) => {
-    // Update form data when input changes
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
+
+  // Clear the error when the component is mounted
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  /* Validation Functions */
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validate common email formats
+    return emailRegex.test(email);
+  };
+
+  // const isValidPassword = (password) => {
+  //   // Ensure password is strong: At least 8 characters, one uppercase, one lowercase, one number, and one special character
+  //   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  //   return passwordRegex.test(password);
+  // };
 
   /* Handling Submit */
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { email, password } = formData;
+
+
+    if (!email) {
+      alert("📧 Please enter your email address.");
+      return;
+    }
+  
+    // Validate email format if provided
+    if (!isValidEmail(email)) {
+      alert("📧 Please enter a valid email address. Example: user@example.com");
+      return;
+    }
+  
+    if (!password) {
+      alert("🔒 Please enter your password.");
+      return;
+    }
+
     try {
       dispatch(signInStart()); // Start the loading state
       const res = await fetch("/api/auth/signin", {
@@ -38,12 +72,9 @@ export default function SignIn() {
         body: JSON.stringify(formData), // Send form data
       });
       const data = await res.json();
-      // console.log("data:",data)
 
-      // Check if the response indicates a failure
-      if (data.success === false) {
+      if (!res.ok || data.success === false) {
         dispatch(signInFailure(data)); // Dispatch failure action
-        console.log(data); // Log error details
         return;
       }
 
@@ -54,7 +85,6 @@ export default function SignIn() {
     }
   };
 
-  console.log(error); // Log
   return (
     <div className={styles.signinContainer}>
       <h1 className={styles.title}>Sign In</h1>
@@ -65,6 +95,7 @@ export default function SignIn() {
           type="text"
           id="email"
           placeholder="Email"
+          value={formData.email}
           className={styles.input}
           onChange={handleChange}
         />
@@ -73,6 +104,7 @@ export default function SignIn() {
           type="password"
           id="password"
           placeholder="Password"
+          value={formData.password}
           className={styles.input}
           onChange={handleChange}
         />
@@ -82,7 +114,6 @@ export default function SignIn() {
           className={`${styles.submitButton} ${loading && styles.loading}`}
           disabled={loading}
         >
-          {/* Display "Loading..." during API call */}
           {loading ? "Loading..." : "Sign in"}
         </button>
         {/* Google OAuth Button */}
