@@ -225,6 +225,7 @@ function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setTextUpdateSuccess(false); // Update text successfully to hide
     // Reset field errors
     const newErrors = {};
 
@@ -238,6 +239,7 @@ function EditProfile() {
     // Email validation
     if (!formData.email.trim()) {
       newErrors.email = "📧 Email cannot be empty.";
+      
     } else if (!isValidEmail(formData.email)) {
       newErrors.email = "📧 Please provide a valid email address.";
     }
