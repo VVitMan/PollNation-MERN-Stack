@@ -96,3 +96,38 @@ export const deleteComment = async (req, res) => {
         res.status(500).json({ error: 'Failed to delete comment.' });
     }
 };
+
+/**
+ * Edit a specific comment by ID
+ */
+export const editComment = async (req, res) => {
+    const { commentId } = req.params;
+    const { content } = req.body; // Updated content of the comment
+
+    try {
+        // Validate inputs
+        if (!commentId || !commentId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ error: 'Invalid commentId format.' });
+        }
+
+        if (!content || content.trim() === "") {
+            return res.status(400).json({ error: 'Content cannot be empty.' });
+        }
+
+        // Find and update the comment
+        const updatedComment = await Comment.findByIdAndUpdate(
+            commentId,
+            { content },
+            { new: true } // Return the updated document
+        ).populate('userId', 'username profilePicture'); // Populate user details
+
+        if (!updatedComment) {
+            return res.status(404).json({ error: 'Comment not found.' });
+        }
+
+        res.status(200).json(updatedComment);
+    } catch (error) {
+        console.error('Error editing comment:', error);
+        res.status(500).json({ error: 'Failed to edit comment.' });
+    }
+};

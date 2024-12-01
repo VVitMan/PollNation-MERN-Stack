@@ -1,21 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Navbar.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "../redux/user/userSlice";
 
 function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [active, setActive] = useState("Home");
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for the dropdown
-  const [loading, setLoading] = useState(true); // Loading state
-  const { currentUser } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  console.log("Navbar is rendering...");
 
-  // Simulate loading user data => loading
-  useEffect(() => {
-    setLoading(false);
-  }, [currentUser]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for the dropdown
+  const { currentUser } = useSelector((state) => state.user); // Redux state for user
+  const dispatch = useDispatch();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -25,32 +20,26 @@ function Navbar() {
     setDropdownOpen(!dropdownOpen); // Toggle dropdown visibility
   };
 
-  const handleLinkClick = (link) => {
-    setActive(link);
-    setIsOpen(false); // Close the menu after clicking a link on mobile
-    setDropdownOpen(false); // Close the dropdown when navigating
-  };
-
   const handleLogout = () => {
     dispatch(signOut());
   };
 
   return (
     <nav className={styles.navbar}>
-      {/* PollNation Logo */}
-      <div className={styles.logo} onClick={() => handleLinkClick("Home")}>
+      {/* Logo */}
+      <div className={styles.logo} onClick={() => setIsOpen(false)}>
         <Link to="/" className={styles.logoLink}>
           <b>PollNation</b>
         </Link>
       </div>
 
+      {/* Navigation Links */}
       <ul className={`${styles.navLinks} ${isOpen ? styles.open : ""}`}>
-        <li
-          key="Home"
-          onClick={() => handleLinkClick("Home")}
-          className={active === "Home" ? styles.active : ""}
-        >
-          <Link to="/">Home</Link>
+        {/* Always Visible Links */}
+        <li className={styles.navItem}>
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            Home
+          </Link>
         </li>
 
         {currentUser && currentUser.isAdmin && ( // Conditionally show Admin link
@@ -67,26 +56,26 @@ function Navbar() {
         ) : currentUser ? (
           <li className={styles.profile}>
             <div onClick={toggleDropdown} className={styles.profileToggle}>
-              <span>{currentUser?.username}</span>
-              {currentUser.profilePicture && (
-                <img
-                  src={
-                    currentUser?.profilePicture ||
-                    "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
-                  }
-                  alt="Profile"
-                  className={styles.profilePic}
-                />
-              )}
+              <span>{currentUser.username}</span>
+              <img
+                src={
+                  currentUser.profilePicture ||
+                  "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+                }
+                alt="Profile"
+                className={styles.profilePic}
+              />
               <span className={styles.arrow}>
                 {dropdownOpen ? "▲" : "▼"}
               </span>
             </div>
             {dropdownOpen && (
               <ul className={styles.dropdownMenu}>
-                <Link to={`/profile/${currentUser?.username}`}><li>
-                  Profile
-                </li></Link>
+                <li>
+                  <Link to={`/profile/${currentUser.username}`}>
+                    Profile
+                  </Link>
+                </li>
                 <li onClick={handleLogout} className={styles.logoutButton}>
                   Logout
                 </li>
@@ -94,16 +83,16 @@ function Navbar() {
             )}
           </li>
         ) : (
-          <li
-            key="SignIn"
-            onClick={() => handleLinkClick("Sign In")}
-            className={styles.signIn}
-          >
-            <Link to="/sign-in">Sign In</Link>
+          // Logged-out User Link
+          <li>
+            <Link to="/sign-in" onClick={() => setIsOpen(false)}>
+              Sign In
+            </Link>
           </li>
         )}
       </ul>
 
+      {/* Hamburger Icon for Mobile */}
       <div className={styles.hamburger} onClick={toggleMenu}>
         <span className={styles.line}></span>
         <span className={styles.line}></span>
