@@ -245,7 +245,6 @@ useEffect(() => {
   fetchAnswers();
 }, [currentUser]);
 
-  
 return (
   <>
     {pollQuizData.map((item) => {
@@ -255,7 +254,8 @@ return (
         return total + (optionVote?.count || 0);
       }, 0);
 
-      const userAnsweredThisQuestion = currentUser && answeredQuestionData.includes(item._id);
+      const userAnsweredThisQuestion =
+        currentUser && answeredQuestionData.includes(item._id);
 
       return (
         <div key={item._id} className={styles.card}>
@@ -273,19 +273,22 @@ return (
           </div>
           <p className={styles.cardDescription}>{item.question}</p>
           <div className={styles.voteInfo}>
-            {/* Display "?" votes if the question is not answered */}
+            {/* Display "?" votes if no user interaction */}
             <p className={styles.voteCount}>
               {item.type === "Quiz"
                 ? `${userAnsweredThisQuestion ? totalVotes : "?"} Answered`
-                : `${totalVotes} Votes`}
+                : `${totalVotes > 0 ? totalVotes : "?"} Votes`}
             </p>
-
 
             <div className={styles.pollOptions}>
               {item.options.map((option) => {
-                const optionVote = voteCounts.find((vc) => vc._id === option._id);
+                const optionVote = voteCounts.find(
+                  (vc) => vc._id === option._id
+                );
                 const votePercentage =
-                  totalVotes > 0 ? (optionVote?.count / totalVotes) * 100 : 0;
+                  totalVotes > 0
+                    ? (optionVote?.count / totalVotes) * 100
+                    : 0;
 
                 let optionClass = "";
 
@@ -326,7 +329,9 @@ return (
                   >
                     <label>
                       {option.text}
-                      {item.type === "Poll" && optionVote?.count !== undefined && ` (${optionVote.count})`}
+                      {item.type === "Poll" &&
+                        optionVote?.count !== undefined &&
+                        ` (${optionVote.count})`}
                     </label>
                   </div>
                 );
