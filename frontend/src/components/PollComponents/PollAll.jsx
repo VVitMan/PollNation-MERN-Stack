@@ -275,8 +275,12 @@ return (
           <div className={styles.voteInfo}>
             {/* Display "?" votes if the question is not answered */}
             <p className={styles.voteCount}>
-              {userAnsweredThisQuestion ? `${totalVotes} Votes` : "? Votes"}
+              {item.type === "Quiz"
+                ? `${userAnsweredThisQuestion ? totalVotes : "?"} Answered`
+                : `${totalVotes} Votes`}
             </p>
+
+
             <div className={styles.pollOptions}>
               {item.options.map((option) => {
                 const optionVote = voteCounts.find((vc) => vc._id === option._id);
