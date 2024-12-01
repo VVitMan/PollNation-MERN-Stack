@@ -43,7 +43,7 @@ app.use("/api/poll", pollRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/poll-and-quiz", pollAndQuizRoutes);
 app.use("/api/comments", commentRoutes); // Register the comment routes
-app.use("/api/vote/", voteRoutes); // Register the comment routes
+app.use("/api/vote", voteRoutes); // Register the comment routes
 
 
 

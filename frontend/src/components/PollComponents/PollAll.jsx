@@ -200,15 +200,15 @@ useEffect(() => {
     setCommentInputs((prev) => ({ ...prev, [postId]: value }));
   };
 
-  const handleLogout = () => {
-    // Clear user session (e.g., Redux state or cookies)
-    dispatch(logoutUserAction()); // Adjust based on your logout logic
+  // const handleLogout = () => {
+  //   // Clear user session (e.g., Redux state or cookies)
+  //   dispatch(logoutUserAction()); // Adjust based on your logout logic
   
-    // Clear poll/quiz states
-    setAnsweredOptionData([]);
-    setAnsweredQuestionData([]);
-    setVoteCounts([]); // Clear vote counts if stored
-  };
+  //   // Clear poll/quiz states
+  //   setAnsweredOptionData([]);
+  //   setAnsweredQuestionData([]);
+  //   setVoteCounts([]); // Clear vote counts if stored
+  // };
 
   useEffect(() => {
   if (!currentUser) {
