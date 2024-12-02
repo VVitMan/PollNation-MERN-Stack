@@ -123,14 +123,14 @@ export const signin = async (req, res, next) => {
     const token = jwt.sign(
       { id: user._id, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      { expiresIn: '24h' } // Token expires in 1 hour
     );
 
     /* Remove Password from Response */
     const { password: hashedPassword, ...rest } = user._doc;
 
     /* Set Token in Cookie */
-    const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000); // Expire in 1 hour
+    const expiresDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // Expire in 24 hour
     res
       .cookie("access_token", token, {
         httpOnly: true,
@@ -159,7 +159,7 @@ export const google = async (req, res, next) => {
         process.env.JWT_SECRET
       );
       const { password: hashedPassword, ...rest } = user._doc;
-      const expiresDate = new Date(Date.now() + 1 * 60 * 60 * 1000); // expires 1 hour
+      const expiresDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // expires 24 hour
       res
         .cookie("access_token", token, { httpOnly: true, expires: expiresDate })
         .status(200)
