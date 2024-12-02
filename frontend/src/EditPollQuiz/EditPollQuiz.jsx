@@ -52,12 +52,6 @@ function EditPollQuiz() {
     setOptions(updatedOptions);
   };
 
-  const handleExplanationChange = (index, value) => {
-    const updatedOptions = [...options];
-    updatedOptions[index].explanation = value;
-    setOptions(updatedOptions);
-  };
-
   const addOption = () => {
     setOptions([...options, { text: "", correct: false, explanation: "" }]);
   };
