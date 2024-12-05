@@ -4,6 +4,9 @@ import { useDispatch } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 
+import { Button } from "@mui/material";
+import GoogleIcon from "@mui/icons-material/Google";
+
 export default function OAuth() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,13 +40,14 @@ export default function OAuth() {
     }
   };
   return (
-    <button
-      type="button"
+    <Button
+      variant="outlined"
+      fullWidth
+      startIcon={<GoogleIcon />}
       onClick={handleGoogleClick}
-      className="bg-red-700 text-white rounded-lg p-3 
-    uppercase hover:opacity-95 "
+      sx={{ mt: 2 }}
     >
-      Continue with google
-    </button>
+      Sign in with Google
+    </Button>
   );
 }

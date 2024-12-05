@@ -3,7 +3,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { signInStart, signInSuccess, signInFailure, clearError } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
-import styles from "./SignIn.module.css"; // Import the CSS module
+// import styles from "./SignIn.module.css"; // Import the CSS module
+
+/* Material-UI Components */
+import {
+  Container,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 
 export default function SignIn() {
   /* Navigate */
@@ -100,52 +111,65 @@ export default function SignIn() {
   };
 
   return (
-    <div className={styles.signinContainer}>
-      <h1 className={styles.title}>Sign In</h1>
-      {/* Form Section */}
-      <form onSubmit={handleSubmit} className={styles.form}>
-        {/* Email Input */}
-        <input
-          type="text"
+    <Container maxWidth="xs" sx={{ mt: 5 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Sign In
+      </Typography>
+
+      <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+        {/* Email Field */}
+        <TextField
+          fullWidth
           id="email"
-          placeholder="Email"
+          label="Email"
+          variant="outlined"
           value={formData.email}
-          className={styles.input}
           onChange={handleChange}
+          margin="normal"
         />
-        {/* Password Input */}
-        <input
-          type="password"
+
+        {/* Password Field */}
+        <TextField
+          fullWidth
           id="password"
-          placeholder="Password"
+          label="Password"
+          type="password"
+          variant="outlined"
           value={formData.password}
-          className={styles.input}
           onChange={handleChange}
+          margin="normal"
         />
+
         {/* Submit Button */}
-        <button
+        <Button
           type="submit"
-          className={`${styles.submitButton} ${loading && styles.loading}`}
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 2 }}
           disabled={loading}
         >
-          {loading ? "Loading..." : "Sign in"}
-        </button>
-        {/* Google OAuth Button */}
+          {loading ? <CircularProgress size={24} /> : "Sign In"}
+        </Button>
+
+        {/* OAuth Button */}
         <OAuth />
-      </form>
+      </Box>
 
-      {/* Sign Up Link */}
-      <div className={styles.additionalSpacing}>
-        <p>
-          Don’t have an account?{" "}
-          <Link to="/sign-up" className={styles.link}>
-            Sign up
-          </Link>
-        </p>
-      </div>
+      {/* Error Message */}
+      {error && (
+        <Alert severity="error" sx={{ mt: 2 }}>
+          {error.message || "Something went wrong"}
+        </Alert>
+      )}
 
-      {/* Error Message Display */}
-      {error && <p className={styles.errorMessage}>{error.message || "Something went wrong"}</p>}
-    </div>
+      {/* Sign-Up Link */}
+      <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
+        Don’t have an account?{" "}
+        <Link to="/sign-up" style={{ textDecoration: "none", color: "#1976d2" }}>
+          Sign up
+        </Link>
+      </Typography>
+    </Container>
   );
 }
