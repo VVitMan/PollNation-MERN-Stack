@@ -23,7 +23,7 @@ app.use(cors()); // Allow all origins by default
 // Example of custom CORS configuration
 
 const corsOptions = {
-    origin: '*', // Allow only your frontend domain
+    origin: 'http://54.83.86.180:5173', // Allow only your frontend domain
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true, // Allow cookies to be sent with requests
 };
