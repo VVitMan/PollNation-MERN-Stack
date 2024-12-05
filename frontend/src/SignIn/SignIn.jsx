@@ -78,7 +78,7 @@ export default function SignIn() {
     
     try {
       dispatch(signInStart()); // Start the loading state
-      const res = await fetch("/api/auth/signin", {
+      const res = await fetch("http://54.83.86.180:3000/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -102,7 +102,7 @@ export default function SignUp() {
     // Proceed with sign-up if all checks pass
     try {
       dispatch(signInStart()); // Start the loading state
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch("http://54.83.86.180:3000/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

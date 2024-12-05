@@ -165,7 +165,7 @@ function EditProfile() {
     ) {
       try {
         dispatch(deleteUserStart());
-        const response = await fetch(`/api/user/delete/${currentUser._id}`, {
+        const response = await fetch(`http://54.83.86.180:3000/api/user/delete/${currentUser._id}`, {
           method: "DELETE",
         });
         
@@ -191,7 +191,7 @@ function EditProfile() {
     setPasswordError(""); // Clear previous error
     setPasswordVerified(false); // Reset passwordVerified state initially
     try {
-      const response = await fetch("/api/user/verify-password", {
+      const response = await fetch("http://54.83.86.180:3000/api/user/verify-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: currentUser._id, password: formData.currentPassword }),
@@ -266,7 +266,7 @@ function EditProfile() {
 
     try {
       dispatch(updateUserStart());
-      const response = await fetch(`/api/user/update/${currentUser._id}`, {
+      const response = await fetch(`http://54.83.86.180:3000/api/user/update/${currentUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

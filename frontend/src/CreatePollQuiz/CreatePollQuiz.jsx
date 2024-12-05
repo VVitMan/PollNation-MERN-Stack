@@ -49,7 +49,7 @@ function CreatePollQuiz() {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/poll-and-quiz/create', {
+      const response = await fetch('http://54.83.86.180:3000/azpi/poll-and-quiz/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

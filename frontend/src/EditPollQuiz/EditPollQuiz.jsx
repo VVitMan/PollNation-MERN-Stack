@@ -17,7 +17,7 @@ function EditPollQuiz() {
     // Fetch the existing poll or quiz data
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api/poll-and-quiz/find/${postId}`, {
+        const response = await fetch(`http://54.83.86.180:3000/api/poll-and-quiz/find/${postId}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -64,7 +64,7 @@ function EditPollQuiz() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/api/poll-and-quiz/update/${postId}`, {
+      const response = await fetch(`http://54.83.86.180:3000/azpi/poll-and-quiz/update/${postId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

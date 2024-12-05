@@ -24,7 +24,7 @@ function ProfilePage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/poll-and-quiz/${username}`, {
+        const response = await fetch(`http://54.83.86.180:3000/api/poll-and-quiz/${username}`, {
           method: "GET",
           credentials: "include", // Include cookies for authentication
         });
@@ -55,7 +55,7 @@ function ProfilePage() {
     if (!confirmDelete) return;
 
     try {
-      const response = await fetch(`/api/poll-and-quiz/delete/${itemId}`, {
+      const response = await fetch(`http://54.83.86.180:3000/api/poll-and-quiz/delete/${itemId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -81,7 +81,7 @@ function ProfilePage() {
 
     try {
       // Fetch User ID by username
-      const response = await fetch(`/api/user/id/${username}`);
+      const response = await fetch(`http://54.83.86.180:3000/api/user/id/${username}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch user ID: ${response.status}`);
       }
@@ -89,7 +89,7 @@ function ProfilePage() {
       const userId = data.userId;
 
       // Submit the report
-      const reportResponse = await fetch("/api/user/reports", {
+      const reportResponse = await fetch("http://54.83.86.180:3000/api/user/reports", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

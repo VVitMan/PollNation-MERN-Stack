@@ -25,7 +25,7 @@ function PollAll() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/poll-and-quiz/all", {
+        const response = await fetch("http://54.83.86.180:3000/api/poll-and-quiz/all", {
           method: "GET",
           credentials: "include",
         });
@@ -63,7 +63,7 @@ function PollAll() {
       }
   
       // Send the request to the new unified endpoint
-      const response = await fetch("/api/vote/voting", {
+      const response = await fetch("http://54.83.86.180:3000/api/vote/voting", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -101,7 +101,7 @@ function PollAll() {
 const preSelectOptions = async () => {
   try {
     console.log("**************** Load Selected Options called! **************** ")
-    const response = await fetch("/api/vote/myanswers", {
+    const response = await fetch("http://54.83.86.180:3000/api/vote/myanswers", {
       method: "GET",
       credentials: "include",
       headers: {
@@ -162,7 +162,7 @@ useEffect(() => {
 
     if (!visibleComments[postId] && !comments[postId]) {
       try {
-        const response = await fetch(`/api/comments/find/posts/${postId}`, {
+        const response = await fetch(`http://54.83.86.180:3000/api/comments/find/posts/${postId}`, {
           method: "GET",
           credentials: "include",
         });
@@ -187,7 +187,7 @@ useEffect(() => {
     setLoadingPostId(postId);
 
     try {
-      const response = await fetch("/api/comments/create", {
+      const response = await fetch("http://54.83.86.180:3000/api/comments/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -234,7 +234,7 @@ useEffect(() => {
     }
     setDeletingCommentId(commentId);
     try {
-      const response = await fetch(`/api/comments/delete/${commentId}`, {
+      const response = await fetch(`http://54.83.86.180:3000/api/comments/delete/${commentId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -269,7 +269,7 @@ useEffect(() => {
     setEditingLoading(true);
 
     try {
-      const response = await fetch(`/api/comments/edit/${commentId}`, {
+      const response = await fetch(`http://54.83.86.180:3000/api/comments/edit/${commentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -320,7 +320,7 @@ useEffect(() => {
   // Fetch user's answers if logged in
   const fetchAnswers = async () => {
     try {
-      const response = await fetch("/api/vote/myanswers", {
+      const response = await fetch("http://54.83.86.180:3000/api/vote/myanswers", {
         method: "GET",
         credentials: "include",
         headers: {
