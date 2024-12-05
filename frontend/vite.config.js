@@ -21,13 +21,14 @@ export default defineConfig({
     },
   },
   server: {
+    host: '0.0.0.0', // Allow external access
+    port: 5173,      // Use the same port (optional)
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3000', // Backend API
         changeOrigin: true,
-        secure: false
-
-      }
-    }
-  }
+        secure: false,
+      },
+    },
+  },
 })
