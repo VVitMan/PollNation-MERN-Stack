@@ -40,3 +40,40 @@ Poll Nation is an interactive platform that allows users to create, share, and p
 1. Clone the repository:
    ```bash
    git clone https://github.com/VVitMan/PollNation-MERN-Stack.git
+2. Navigate to the project directory:
+   ```bash
+   cd PollNation-MERN-Stack
+3. Install dependencies for both the frontend and backend:
+   ```bash
+   npm install
+4. Set up environment variables:
+   - Create a .env file in the root directory.
+   - Add the following keys:
+     ```bash
+     MONGO_URI=<Your MongoDB URI>
+     JWT_SECRET=<Your JWT Secret>
+     PORT=5000
+
+### Running the Application
+1. Start the backend server:
+   ```bash
+   npm run dev
+2. Start the React frontend:
+   ```bash
+   cd frontend
+   npm run dev
+
+## Future Plans
+- Implement CI/CD workflows using GitHub Actions.
+- Enhance analytics features for user engagement tracking.
+- Develop a mobile-friendly version of the platform.
+
+## License
+This project is licensed under the MIT License.
+
+## Contact
+- Developers:
+   - Mr. Itthikon Amonkhana
+   - Mr. Tarnakit Pornvoravanij
+- University: Srinakharinwirot University, Bangkok, Thailand
+- Repository: https://github.com/VVitMan/PollNation-MERN-Stack.git
