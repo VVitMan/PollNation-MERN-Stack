@@ -10,6 +10,10 @@ Poll Nation is an interactive platform that allows users to create, share, and p
 - **Commenting System**: Engage with other users through comments on quizzes and polls.
 - **Voting and Feedback**: View results for polls and receive feedback on quiz answers.
 - **Admin Tools**: Monitor user report, ban user and delete user account.
+- **User Reporting**: Users can report inappropriate behavior or content from others in profile page.
+- **Admin Dashboard**:
+   - View reports received by users.
+   - Take action by banning users, unban users and delete user account.
 
 ## Technologies Used
 
