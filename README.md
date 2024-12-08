@@ -32,6 +32,8 @@ Poll Nation is an interactive platform that allows users to create, share, and p
 - Node.js and npm installed on your local machine.
 - MongoDB Atlas account or local MongoDB setup.
 - Git for version control.
+- Firebase Authentication for Google Authentication
+- Firebase Storage for store the user's image
 
 ### Installation
 
