@@ -47,12 +47,16 @@ Poll Nation is an interactive platform that allows users to create, share, and p
    ```bash
    npm install
 4. Set up environment variables:
-   - Create a .env file in the root directory.
+   - Create a .env file in the backend directory.
    - Add the following keys:
      ```bash
      MONGO_URI=<Your MongoDB URI>
      JWT_SECRET=<Your JWT Secret>
      PORT=5000
+   - Create a .env file in the frontend directory.
+   - Add the following keys:
+     ```bash
+     VITE_FIREBASE_API_KEY=<Your Firebase API Key>
 
 ### Running the Application
 1. Start the backend server:
